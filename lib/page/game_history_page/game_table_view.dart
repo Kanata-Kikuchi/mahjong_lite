@@ -1,23 +1,22 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/model/game_model.dart';
+import 'package:mahjong_lite/notifier/game_score_notifier.dart';
+import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
-class GameTable extends StatelessWidget {
+class GameTable extends ConsumerWidget {
   const GameTable({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
 
-    List list = [
-      Game(game: 1, time: 00, score1st: (0, 25000), score2nd: (1, 2500), score3rd: (2, 250), score4th: (3, 25)),
-      Game(game: 2, time: 00, score1st: (1, 25000), score2nd: (2, 2500), score3rd: (3, 250), score4th: (0, 25)),
-      Game(game: 3, time: 00, score1st: (2, 25000), score2nd: (3, 2500), score3rd: (0, 250), score4th: (1, 25)),
-      Game(game: 0, time: 00, score1st: (0, 25000), score2nd: (1, 2500), score3rd: (2, 250), score4th: (3, 25)),
-    ];
+    final gameList = ref.watch(gameScoreProvider);
+    final name = ref.read(playerProvider.notifier);
 
-    Widget gameContent(List list, int i) {
-      if(list[i].game == 0) {
+    Widget gameContent(List<Game> gameList, int i) {
+      if(gameList.length == i + 1) {
         return Padding(
           padding: EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
           child: Row(
@@ -30,7 +29,7 @@ class GameTable extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      '第${list[i - 1].game + 1}試合',
+                      gameList[i].game,
                       style: MahjongTextStyle.tableLabel,
                     ),
                     Text(
@@ -73,7 +72,7 @@ class GameTable extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      '第${list[i].game}試合',
+                      gameList[i].game,
                       style: MahjongTextStyle.tableLabel,
                     ),
                     Text(
@@ -90,11 +89,11 @@ class GameTable extends StatelessWidget {
                   textBaseline: TextBaseline.alphabetic,
                   children: [
                     Text(
-                      '${list[i].score1st.$1} さん',
+                      name.name(initial: gameList[i].score1st!.$1),
                       style: MahjongTextStyle.tableSel,
                     ),
                     Text(
-                      list[i].score1st.$2.toString(),
+                      gameList[i].score1st!.$2,
                       style: MahjongTextStyle.tableAnotation,
                     ),
                   ],
@@ -107,11 +106,11 @@ class GameTable extends StatelessWidget {
                   textBaseline: TextBaseline.alphabetic,
                   children: [
                     Text(
-                      '${list[i].score2nd.$1} さん',
+                      name.name(initial: gameList[i].score2nd!.$1),
                       style: MahjongTextStyle.tableSel,
                     ),
                     Text(
-                      list[i].score2nd.$2.toString(),
+                      gameList[i].score2nd!.$2,
                       style: MahjongTextStyle.tableAnotation,
                     ),
                   ],
@@ -124,11 +123,11 @@ class GameTable extends StatelessWidget {
                   textBaseline: TextBaseline.alphabetic,
                   children: [
                     Text(
-                      '${list[i].score3rd.$1} さん',
+                      name.name(initial: gameList[i].score3rd!.$1),
                       style: MahjongTextStyle.tableSel,
                     ),
                     Text(
-                      list[i].score3rd.$2.toString(),
+                      gameList[i].score3rd!.$2,
                       style: MahjongTextStyle.tableAnotation,
                     ),
                   ],
@@ -141,11 +140,11 @@ class GameTable extends StatelessWidget {
                   textBaseline: TextBaseline.alphabetic,
                   children: [
                     Text(
-                      '${list[i].score4th.$1} さん',
+                      name.name(initial: gameList[i].score4th!.$1),
                       style: MahjongTextStyle.tableSel,
                     ),
                     Text(
-                      list[i].score4th.$2.toString(),
+                      gameList[i].score4th!.$2,
                       style: MahjongTextStyle.tableAnotation,
                     ),
                   ],
@@ -208,8 +207,8 @@ class GameTable extends StatelessWidget {
           SizedBox(),
           Expanded(
             child: ListView.separated(
-              itemCount: list.length,
-              itemBuilder: (context, i) => gameContent(list, i),
+              itemCount: gameList.length,
+              itemBuilder: (context, i) => gameContent(gameList, i),
               separatorBuilder: (context, i) => ColumnDivider(),
             )
           )

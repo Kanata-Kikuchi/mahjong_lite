@@ -10,10 +10,10 @@ class TotalTable extends StatelessWidget {
   Widget build(BuildContext context) {
 
     List list = [
-      Game(game: 1, time: 00, score1st: (0, 25000), score2nd: (1, 2500), score3rd: (2, 250), score4th: (3, 25)),
-      Game(game: 2, time: 00, score1st: (1, 25000), score2nd: (2, 2500), score3rd: (3, 250), score4th: (0, 25)),
-      Game(game: 3, time: 00, score1st: (2, 25000), score2nd: (3, 2500), score3rd: (0, 250), score4th: (1, 25)),
-      Game(game: 0, time: 00, score1st: (0, 25000), score2nd: (1, 2500), score3rd: (2, 250), score4th: (3, 25)),
+      // Game(game: 1, time: 00, score1st: (0, 25000), score2nd: (1, 2500), score3rd: (2, 250), score4th: (3, 25)),
+      // Game(game: 2, time: 00, score1st: (1, 25000), score2nd: (2, 2500), score3rd: (3, 250), score4th: (0, 25)),
+      // Game(game: 3, time: 00, score1st: (2, 25000), score2nd: (3, 2500), score3rd: (0, 250), score4th: (1, 25)),
+      // Game(game: 0, time: 00, score1st: (0, 25000), score2nd: (1, 2500), score3rd: (2, 250), score4th: (3, 25)),
     ];
 
     Widget gameContent(List list, int i) {

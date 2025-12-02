@@ -4,6 +4,7 @@ import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/notifier/agari_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/notifier/revise_comment_notifier.dart';
+import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class ReviseRyukyoku extends ConsumerStatefulWidget {
@@ -257,7 +258,11 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
                           _textFlag = true;
                         }
                       });
-                      text.set(value);
+                      text.set(
+                        index: ref.read(roundTableProvider.notifier).reviseIndex(),
+                        text: value
+                      );
+                      // print('resivre_ryukyoku/index: ${ref.read(roundTableProvider.notifier).reviseIndex()}');
                       _enableCheck();
                     },
                   )

@@ -1,14 +1,26 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ReviseCommentNotifier extends Notifier<String> {
+class ReviseCommentNotifier extends Notifier<Map<int, String>> {
 
   @override
-  String build() => '';
+  Map<int, String> build() => {};
 
-  void set(String text) {
-    state = text;
+  void set({
+    required int index,
+    required String text
+  }) {
+
+    state = {
+      ...state,
+      index: text
+    };
+
+  }
+
+  void reset() {
+    state = {};
   }
 
 }
 
-final reviseCommentProvider = NotifierProvider<ReviseCommentNotifier, String>(ReviseCommentNotifier.new);
+final reviseCommentProvider = NotifierProvider<ReviseCommentNotifier, Map<int, String>>(ReviseCommentNotifier.new);

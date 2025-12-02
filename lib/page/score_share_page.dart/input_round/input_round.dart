@@ -5,6 +5,7 @@ import 'package:mahjong_lite/data/agari_flag_enum.dart';
 import 'package:mahjong_lite/data/kyoku_map.dart';
 import 'package:mahjong_lite/data/rule/syanyu_enum.dart';
 import 'package:mahjong_lite/notifier/agari_notifier.dart';
+import 'package:mahjong_lite/notifier/game_notifier.dart';
 import 'package:mahjong_lite/notifier/game_score_notifier.dart';
 import 'package:mahjong_lite/notifier/game_set_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
@@ -35,8 +36,6 @@ class InputRound extends ConsumerWidget {
 
     final round = ref.watch(roundProvider);
     final syanyu = ref.watch(ruleProvider).syanyu;
-    final uma = ref.watch(ruleProvider).uma;
-    final oka = ref.watch(ruleProvider).oka;
     final gameSet = ref.watch(gameSetProvider.notifier);
 
     return GestureDetector(
@@ -56,7 +55,7 @@ class InputRound extends ConsumerWidget {
               .initial;
 
           final reachStick = a.reach.where((w) => w == true).length; // この局のリーチ棒.
-          reach.add(reachStick); // 状態変更.
+          reach.add(add: reachStick); // 状態変更.
           final kyoutaku = ref.read(reachProvider) * 1000; // この局までのリーチ棒の合計.
 
 
@@ -93,16 +92,14 @@ class InputRound extends ConsumerWidget {
             round.honba();
             reach.reset();
           } else if (a.agari != null) { // 親以外が和了.
-            round.kyoku();
-            round.reset();
+            round.childAgari();
             reach.reset();
             player.progress();
           } else { // 流局なら.
             if (a.tenpai[host]) { // 親が聴牌なら.
               round.honba();
             } else { // 親がノーテンなら.
-              round.kyoku();
-              round.honba();
+              round.hostNoten();
               player.progress();
             }
           }
@@ -118,26 +115,32 @@ class InputRound extends ConsumerWidget {
             score: scoreList
           );
 
-          if (rNow.$1 == 7) { // 南4局.
+          final continueHost = (){
+            if (a.flag == AgariFlag.ryukyou) {
+              return a.tenpai[host];
+            } else {
+              return host == a.agari;
+            }
+          }();
+
+          if (rNow.$1 == 7 && !continueHost) { // 南4局.
+            player.finish();
             if (syanyu == Syanyu.ari) {
               final top = scoreList.map((m) => m.$2).reduce(max);
               if (top > 30000) {
-                final gameScore = ref.read(gameScoreProvider.notifier);
-                gameScore.set(uma: uma, oka: oka, score: scoreList);
                 gameSet.finish();
               }
             } else if (syanyu == Syanyu.none) {
-              final gameScore = ref.read(gameScoreProvider.notifier);
-              gameScore.set(uma: uma, oka: oka, score: scoreList);
               gameSet.finish();
             } else {
               throw Exception('imput_round.dart/syanyu');
             }
-          } else if (rNow.$1 == 11) { // 西4局.
-            final gameScore = ref.read(gameScoreProvider.notifier);
-            gameScore.set(uma: uma, oka: oka, score: scoreList);
+          } else if (rNow.$1 == 11 && !continueHost) { // 西4局.
+            player.finish();
             gameSet.finish();
           }
+
+          print('round: $rNow, gemaSet: ${ref.read(gameSetProvider)}');
 
           // ref.read(agariProvider.notifier).record();
 
@@ -146,7 +149,7 @@ class InputRound extends ConsumerWidget {
           // print('r: $rNow, ne: $rNext');
           // final pnz = ref.read(playerProvider).map((m) => (m.name, m.zikaze.toString())).toList();
           // print('${pnz[0].$1}: ${pnz[0].$2}, ${pnz[1].$1}: ${pnz[1].$2}, ${pnz[2].$1}: ${pnz[2].$2}, ${pnz[3].$1}: ${pnz[3].$2}');
-          debugPrintAgari(ref.read(agariProvider));
+          // debugPrintAgari(ref.read(agariProvider));
         }
       },
 

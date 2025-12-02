@@ -9,7 +9,7 @@ import 'package:mahjong_lite/notifier/game_set_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/page/score_share_page.dart/extra_round.dart';
 import 'package:mahjong_lite/page/score_share_page.dart/input_round/input_round.dart';
-import 'package:mahjong_lite/page/score_share_page.dart/next_game/next_game.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/finish_game/finish_game.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class ScoreSharePage extends ConsumerWidget {
@@ -26,7 +26,7 @@ class ScoreSharePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 
     final players = ref.watch(playerProvider);
-    final game = ref.watch(gameProvider);
+    final game = ref.watch(gameProvider.notifier);
     final gameSet = ref.watch(gameSetProvider);
 
     return CupertinoPageScaffold(
@@ -45,7 +45,7 @@ class ScoreSharePage extends ConsumerWidget {
                     SizedBox( // ロン・ツモ・流局入力.
                       width: w / 4,
                       child: gameSet
-                          ? NextGame()
+                          ? FinishGame()
                           : InputRound()
                           // : NextGame()
                     ),
@@ -75,7 +75,7 @@ class ScoreSharePage extends ConsumerWidget {
                       host: players[3].zikaze == 0
                     ),
                     Text( // ゲーム数表記.
-                      '第$game試合',
+                      game.string(),
                       style: MahjongTextStyle.scoreAnotation
                     ),
                     ScoreBox( // right.
@@ -122,6 +122,22 @@ class ScoreSharePage extends ConsumerWidget {
                             onTap: () => Navigator.pushNamed(context, '/history')
                           )
                         ],
+                        // children: gameSet
+                        //     ? [
+                        //       SizedBox.shrink(),
+                        //       SizedBox.shrink()
+                        //     ]
+                        //     : [
+                        //       NextBtn(
+                        //         label: '局内容',
+                        //         onTap: () => Navigator.pushNamed(context, '/content')
+                        //       ),
+                        //       const SizedBox(width: 20),
+                        //       NextBtn(
+                        //         label: '試合履歴',
+                        //         onTap: () => Navigator.pushNamed(context, '/history')
+                        //       )
+                        //     ]
                       ),
                     )
                   ],

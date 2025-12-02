@@ -8,6 +8,7 @@ import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/notifier/agari_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/notifier/revise_comment_notifier.dart';
+import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 import 'package:mahjong_lite/layout/popup/select_sheet.dart';
 
@@ -389,7 +390,10 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
                           _textFlag = true;
                         }
                       });
-                      text.set(value);
+                      text.set(
+                        index: ref.read(roundTableProvider.notifier).reviseIndex(),
+                        text: value
+                      );
                       _enableCheck();
                     },
                   )

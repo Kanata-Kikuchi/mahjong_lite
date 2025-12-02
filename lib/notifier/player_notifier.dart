@@ -3,6 +3,13 @@ import 'package:mahjong_lite/model/player_model.dart';
 
 class PlayerNotifier extends Notifier<List<Player>> {
 
+  List<Player> memory = [
+      Player(name: 'Aさん', initial: 0, zikaze: 0, score: 25000),
+      Player(name: 'Bさん', initial: 1, zikaze: 1, score: 25000),
+      Player(name: 'Cさん', initial: 2, zikaze: 2, score: 25000),
+      Player(name: 'Dさん', initial: 3, zikaze: 3, score: 25000)
+    ];
+
   @override
   List<Player> build() {
     return [
@@ -13,10 +20,44 @@ class PlayerNotifier extends Notifier<List<Player>> {
     ];
   }
 
+  void changeTonNan() {
+    state = [
+      state[0].copyWith(name: state[1].name),
+      state[1].copyWith(name: state[0].name),
+      state[2],
+      state[3]
+    ];
+  }
+
+  void changeNanSya() {
+    state = [
+      state[0],
+      state[1].copyWith(name: state[2].name),
+      state[2].copyWith(name: state[1].name),
+      state[3]
+    ];
+  }
+
+  void changeSyaPei() {
+    state = [
+      state[0],
+      state[1],
+      state[2].copyWith(name: state[3].name),
+      state[3].copyWith(name: state[2].name)
+    ];
+  }
+
   void progress() {
     state = [
       for (final player in state) 
         player.copyWith(zikaze: (player.zikaze - 1) % 4)
+    ];
+  }
+
+  void finish() {
+    state = [
+      for (final player in state) 
+        player.copyWith(zikaze: (player.zikaze + 1) % 4)
     ];
   }
 
@@ -26,8 +67,11 @@ class PlayerNotifier extends Notifier<List<Player>> {
     required int score,
     required List<bool> reach,
     required int kyoutaku,
-    required int honba
+    required int honba,
+    bool? revise = false
   }) {
+
+    if (revise != true) {memory = [...state];}
 
     state = [ // リーチ棒の減算.
       for (final player in state) 
@@ -55,8 +99,11 @@ class PlayerNotifier extends Notifier<List<Player>> {
     required int? childScore,
     required List<bool> reach,
     required int kyoutaku,
-    required int honba
+    required int honba,
+    bool? revise = false
   }) {
+
+    if (revise != true) {memory = [...state];}
 
     final host = state.firstWhere((w) => w.zikaze == 0).initial;
 
@@ -96,8 +143,11 @@ class PlayerNotifier extends Notifier<List<Player>> {
 
   void ryukyoku({
     required List<bool> reach,
-    required List<bool> tenpai
+    required List<bool> tenpai,
+    bool? revise = false
   }) {
+
+    if (revise != true) {memory = [...state];}
 
     int tenpaiAdd;
     int tenpaiSub;
@@ -132,6 +182,23 @@ class PlayerNotifier extends Notifier<List<Player>> {
         else
           player.copyWith(score: player.score - tenpaiSub)
     ];
+  }
+
+  String name({required int initial}) { // 名前を途中で変えない前提.
+    return state.firstWhere((w) => w.initial == initial).name;
+  }
+
+  void reset() {
+    state = [
+      state[0].copyWith(zikaze: 0, score: 25000),
+      state[1].copyWith(zikaze: 1, score: 25000),
+      state[2].copyWith(zikaze: 2, score: 25000),
+      state[3].copyWith(zikaze: 3, score: 25000)
+    ];
+  }
+
+  void revise() {
+    state = memory;
   }
 
 }

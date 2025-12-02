@@ -2,28 +2,28 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/model/round_table.dart';
+import 'package:mahjong_lite/notifier/game_set_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/page/round_content_page/revise/input_revise.dart';
+import 'package:mahjong_lite/page/round_content_page/revise/show_comment.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class RoundTableView extends ConsumerWidget {
   const RoundTableView({
-    // required this.list,
     super.key
   });
-
-  // final List list;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
     final list = ref.watch(roundTableProvider);
     final name = ref.watch(playerProvider).map((m) => m.name).toList();
+    final gameSet = ref.watch(gameSetProvider);
 
     Widget roundContent(List<RoundTable> list, int i) {
 
-      if (list.length == i + 1) {
+      if (list.length == i + 1 && !gameSet) {
         return Padding(
           padding: EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
           child: Row(
@@ -40,7 +40,7 @@ class RoundTableView extends ConsumerWidget {
                       style: MahjongTextStyle.tableLabel,
                     ),
                     Text(
-                      '  ${list[i].honba}',
+                      ' ${list[i].honba}',
                       style: MahjongTextStyle.tableAnotation,
                     )
                   ],
@@ -63,6 +63,91 @@ class RoundTableView extends ConsumerWidget {
             ]
           )
         );
+      } else if (list[i].revise ?? false) {
+
+        // print('round_table_view/index: $i');
+        
+        return Padding(
+          padding: EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
+          child: Stack(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Row(
+                      children: [
+                        Text(
+                          list[i].kyoku,
+                          style: MahjongTextStyle.tableLabel,
+                        ),
+                        Text(
+                          '  ${list[i].honba}',
+                          style: MahjongTextStyle.tableAnotation,
+                        )
+                      ],
+                    )
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: Text(
+                      list[i].p0.toString(),
+                      style: MahjongTextStyle.tableSel,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: Text(
+                      list[i].p1.toString(),
+                      style: MahjongTextStyle.tableSel,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: Text(
+                      list[i].p2.toString(),
+                      style: MahjongTextStyle.tableSel,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: Text(
+                      list[i].p3.toString(),
+                      style: MahjongTextStyle.tableSel,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: i == list.length - 2
+                          ? InputRevise() // 修正ポップアップ.
+                          : SizedBox.shrink()
+                    )
+                  )
+                ]
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 19,
+                    child: Container(height: 1, color: CupertinoColors.systemRed)
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: ShowComment(index:i)
+                    )
+                  )
+                ],
+              )
+            ],
+          )
+        );
       } else {
         return Padding(
           padding: EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
@@ -80,7 +165,7 @@ class RoundTableView extends ConsumerWidget {
                       style: MahjongTextStyle.tableLabel,
                     ),
                     Text(
-                      '  ${list[i].honba}',
+                      ' ${list[i].honba}',
                       style: MahjongTextStyle.tableAnotation,
                     )
                   ],
@@ -119,7 +204,7 @@ class RoundTableView extends ConsumerWidget {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: i == list.length - 2
-                      ? InputRevise()
+                      ? InputRevise() // 修正ポップアップ.
                       : SizedBox.shrink()
                 )
               )
@@ -169,7 +254,9 @@ class RoundTableView extends ConsumerWidget {
           SizedBox(),
           Expanded(
             child: ListView.separated(
-              itemCount: list.length,
+              itemCount: gameSet
+                  ? list.length - 1
+                  : list.length,
               itemBuilder: (context, i) => roundContent(list, i),
               separatorBuilder: (context, i) => ColumnDivider(),
             )

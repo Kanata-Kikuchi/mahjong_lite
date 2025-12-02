@@ -6,7 +6,7 @@ import 'package:mahjong_lite/layout/layout_page.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class RoomHost extends StatefulWidget {
-  RoomHost({super.key});
+  const RoomHost({super.key});
 
   @override
   State<RoomHost> createState() => _RoomHostState();
