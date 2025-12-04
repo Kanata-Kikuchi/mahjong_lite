@@ -14,10 +14,10 @@ import 'package:mahjong_lite/notifier/revise_comment_notifier.dart';
 import 'package:mahjong_lite/notifier/round_notifier.dart';
 import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/notifier/ruleh_notifier.dart';
-import 'package:mahjong_lite/page/score_share_page.dart/finish_game/next_game_dialog.dart';
-import 'package:mahjong_lite/page/score_share_page.dart/input_round/agari_dialog.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/finish_game/popup/next_game/next_game_dialog.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/agari_dialog.dart';
 import 'package:mahjong_lite/debug/debug_print_agari.dart';
-import 'package:mahjong_lite/page/score_share_page.dart/finish_game/result_game_dialog.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/finish_game/popup/result_game/result_game_dialog.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class FinishGame extends ConsumerWidget {
@@ -56,20 +56,20 @@ class FinishGame extends ConsumerWidget {
         final oka = ref.watch(ruleProvider).oka;
         
         final scoreList = ref.read(playerProvider)
-            .map((m) => (m.initial, m.score))
+            .map((m) => (m.name, m.initial, m.score))
             .toList();
 
         final gameScore = ref.read(gameScoreProvider.notifier);
               gameScore.set(
                 game: game.string(),
                 nextGame: game.nextString(),
-                uma: uma,
-                oka: oka,
-                score: scoreList
+                uma: uma!,
+                oka: oka!,
+                score: scoreList,
               );
         /*----------------------------------------------------------------*/
 
-        final resultGame = await resultGamePopup(context); // Popup.
+        final resultGame = await resultGamePopup(context); // ゲーム結果Popup.
 
         if (resultGame == false) { // キャンセルを押したら.
           gameScore.reset();
@@ -80,11 +80,11 @@ class FinishGame extends ConsumerWidget {
 
         bool? resultNext;
 
-        if (resultGame == true) { // １個目のポップアップで完了が押されたら.
+        if (resultGame == true) { // ゲーム結果(result_game_content)のポップアップで完了が押されたら.
           resultNext = await nextGamePopup(context); // Popup.
         }
 
-        if (resultNext == true) { // ２個目のポップアップで完了が押されたら.
+        if (resultNext == true) { // 親決め(next_game_content)のポップアップで完了が押されたら.
 
           /*-------------------------- リセット群 --------------------------*/
           ref.read(playerProvider.notifier).reset(); // 自風と点数.
@@ -97,8 +97,6 @@ class FinishGame extends ConsumerWidget {
 
           ref.read(gameProvider.notifier).progress(); // 試合を進める.
 
-        } else if (resultNext == false) { // キャンセルを押したら.
-          gameScore.reset();
         }
 
       },

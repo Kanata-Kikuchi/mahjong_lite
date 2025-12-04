@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mahjong_lite/layout/button/back_btn.dart';
 import 'package:mahjong_lite/layout/button/next_btn.dart';
-import 'package:mahjong_lite/page/game_history_page/game_table_view.dart';
+import 'package:mahjong_lite/page/game_history_page/table/game_table_view.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/layout/layout_page.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
@@ -37,7 +37,7 @@ class GameHistoryPage extends StatelessWidget {
                 ),
                 ColumnDivider(),
                 Expanded(
-                  child: GameTable(),
+                  child: GameTableView(),
                 ),
                 ColumnDivider(),
                 SizedBox( // フッター.

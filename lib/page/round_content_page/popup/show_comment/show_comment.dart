@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mahjong_lite/page/round_content_page/revise/popup/popup_comment.dart';
+import 'package:mahjong_lite/page/round_content_page/popup/show_comment/content/popup_comment.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class ShowComment extends ConsumerWidget {

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/notifier/game_score_notifier.dart';
-import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
+
+final order = [
+  '1着',
+  '2着',
+  '3着',
+  '4着'
+];
 
 class ResultGameContent extends ConsumerWidget {
   const ResultGameContent({super.key});
@@ -10,20 +16,31 @@ class ResultGameContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final name = ref.watch(playerProvider).map((m) => m.name).toList();
-    final sortList = ref.watch(gameScoreProvider.notifier).sortInitial();
+    final sortList = ref.watch(gameScoreProvider);
 
     if (sortList.length == 1) {
       
       return SizedBox.shrink();
+       /* 
+       ポップアップを閉じた瞬間にsortListが減るため一瞬エラーが出るから
+       <sortList.length == 1> この条件でエラー回避のために
+       <SizedBox.shrink()> を用意。UIには表示されるものではない。
+       */
       
     } else {
 
+      final name = [
+        sortList[sortList.length - 2].score1st!.$1,
+        sortList[sortList.length - 2].score2nd!.$1,
+        sortList[sortList.length - 2].score3rd!.$1,
+        sortList[sortList.length - 2].score4th!.$1
+      ];
+
       final score = [
-        sortList[sortList.length - 2].score1st!.$2,
-        sortList[sortList.length - 2].score2nd!.$2,
-        sortList[sortList.length - 2].score3rd!.$2,
-        sortList[sortList.length - 2].score4th!.$2
+        sortList[sortList.length - 2].score1st!.$3,
+        sortList[sortList.length - 2].score2nd!.$3,
+        sortList[sortList.length - 2].score3rd!.$3,
+        sortList[sortList.length - 2].score4th!.$3
       ];
       
       return Column(
@@ -33,7 +50,7 @@ class ResultGameContent extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
-                name[i],
+                '${order[i]}  ${name[i]}',
                 style: MahjongTextStyle.choiceLabelL,
               ),
               Text(

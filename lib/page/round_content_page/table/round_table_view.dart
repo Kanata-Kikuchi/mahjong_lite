@@ -5,8 +5,8 @@ import 'package:mahjong_lite/model/round_table.dart';
 import 'package:mahjong_lite/notifier/game_set_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/notifier/round_table_notifier.dart';
-import 'package:mahjong_lite/page/round_content_page/revise/input_revise.dart';
-import 'package:mahjong_lite/page/round_content_page/revise/show_comment.dart';
+import 'package:mahjong_lite/page/round_content_page/popup/inpu_revise/input_revise.dart';
+import 'package:mahjong_lite/page/round_content_page/popup/show_comment/show_comment.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class RoundTableView extends ConsumerWidget {
@@ -16,6 +16,11 @@ class RoundTableView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    /*
+      横軸 : 今の試合の席順(東 → 南 → 西 → 北)　=> initialName()
+      縦軸 : 各局
+    */
 
     final list = ref.watch(roundTableProvider);
     final name = ref.watch(playerProvider).map((m) => m.name).toList();

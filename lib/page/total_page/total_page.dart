@@ -3,7 +3,7 @@ import 'package:mahjong_lite/layout/button/back_btn.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/layout/layout_page.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
-import 'package:mahjong_lite/page/total_page/total_table.dart';
+import 'package:mahjong_lite/page/total_page/table/total_table_view.dart';
 
 class TotalPage extends StatelessWidget {
   const TotalPage({super.key});
@@ -36,7 +36,7 @@ class TotalPage extends StatelessWidget {
                 ),
                 ColumnDivider(),
                 Expanded(
-                  child: TotalTable(),
+                  child: TotalTableView(),
                 ),
                 ColumnDivider(),
                 SizedBox( // フッター.

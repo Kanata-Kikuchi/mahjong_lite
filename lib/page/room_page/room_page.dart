@@ -1,23 +1,36 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/layout/button/enable_btn.dart';
 import 'package:mahjong_lite/layout/button/tab_btn.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/layout/layout_page.dart';
-import 'package:mahjong_lite/page/room_page/room_page_content.dart';
+import 'package:mahjong_lite/notifier/ruleh_notifier.dart';
+import 'package:mahjong_lite/page/room_page/child/content_child.dart';
+import 'package:mahjong_lite/page/room_page/host/content_host.dart';
 
-class RoomPage extends StatefulWidget {
+class RoomPage extends ConsumerStatefulWidget {
   const RoomPage({super.key});
 
   @override
-  State<RoomPage> createState() => _RoomPageState();
+  ConsumerState<RoomPage> createState() => _RoomPageState();
 }
 
-class _RoomPageState extends State<RoomPage> {
+class _RoomPageState extends ConsumerState<RoomPage> {
+
   int _selected = 0;
-  bool enabled = true;
+  bool _enable = false;
+
+  final nameController = TextEditingController(); // 画面切り替えても保持したいから親で管理.
+
+  void _check(bool enable) {
+    setState(() => _enable = enable);
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    final rule = ref.read(ruleProvider.notifier);
+
     return CupertinoPageScaffold(
       child: Center(
         child: Padding(
@@ -41,21 +54,39 @@ class _RoomPageState extends State<RoomPage> {
                           TabBtn(
                             label: 'ルームを作る',
                             selected: _selected == 0,
-                            onTap: () => setState(() => _selected = 0)
+                            onTap: () {
+                              setState(() {
+                                _selected = 0;
+                                _enable = false;
+                              });
+                              rule.reset();
+                            }
                           ),
                           TabBtn(
                             label: 'ルームに入る',
                             selected: _selected == 1,
-                            onTap: () => setState(() => _selected = 1)
+                            onTap: () {
+                              setState(() {
+                                _selected = 1;
+                                _enable = false;
+                              });
+                              rule.reset();
+                            }
                           )
                         ],
                       )
                     ),
                     ColumnDivider(),
                     Expanded(
-                      child: RoomPageContent(
-                        selected: _selected
-                      )
+                      child: _selected == 0
+                          ? ContentHost(
+                              nameController: nameController,
+                              check: _check,
+                            )
+                          : ContentChild(
+                              nameController: nameController,
+                              check: _check,
+                              )
                     ),
                     ColumnDivider(),
                     SizedBox( // フットボタン.
@@ -63,12 +94,12 @@ class _RoomPageState extends State<RoomPage> {
                       child: _selected == 0
                           ? EnableBtn(
                               label: "作る",
-                              enabled: enabled,
+                              enabled: _enable,
                               onTap: () => Navigator.pushNamed(context, '/room_host')
                             )
                           : EnableBtn(
                               label: "入る",
-                              enabled: enabled,
+                              enabled: _enable,
                               onTap: () => Navigator.pushNamed(context, '/room_child')
                             )
                     ),

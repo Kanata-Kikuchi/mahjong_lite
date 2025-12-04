@@ -13,7 +13,7 @@ import 'package:mahjong_lite/notifier/reach_notifier.dart';
 import 'package:mahjong_lite/notifier/round_notifier.dart';
 import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/notifier/ruleh_notifier.dart';
-import 'package:mahjong_lite/page/score_share_page.dart/input_round/agari_dialog.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/agari_dialog.dart';
 import 'package:mahjong_lite/debug/debug_print_agari.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
@@ -140,7 +140,7 @@ class InputRound extends ConsumerWidget {
             gameSet.finish();
           }
 
-          print('round: $rNow, gemaSet: ${ref.read(gameSetProvider)}');
+          // print('round: $rNow, gemaSet: ${ref.read(gameSetProvider)}');
 
           // ref.read(agariProvider.notifier).record();
 

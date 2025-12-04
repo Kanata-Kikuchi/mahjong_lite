@@ -13,7 +13,7 @@ import 'package:mahjong_lite/notifier/reach_notifier.dart';
 import 'package:mahjong_lite/notifier/round_notifier.dart';
 import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/notifier/ruleh_notifier.dart';
-import 'package:mahjong_lite/page/round_content_page/revise/revise_dialog.dart';
+import 'package:mahjong_lite/page/round_content_page/popup/inpu_revise/revise_dialog.dart';
 
 class InputRevise extends ConsumerWidget {
   const InputRevise({

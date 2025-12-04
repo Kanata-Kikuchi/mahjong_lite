@@ -1,30 +1,32 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/layout/button/cancel_btn.dart';
+import 'package:mahjong_lite/layout/button/enable_btn.dart';
 import 'package:mahjong_lite/layout/button/ok_btn.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/layout/layout_page.dart';
+import 'package:mahjong_lite/notifier/player_notifier.dart';
+import 'package:mahjong_lite/notifier/ruleh_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
-class RoomHost extends StatefulWidget {
+class RoomHost extends ConsumerStatefulWidget {
   const RoomHost({super.key});
 
   @override
-  State<RoomHost> createState() => _RoomHostState();
+  ConsumerState<RoomHost> createState() => _RoomHostState();
 }
 
-class _RoomHostState extends State<RoomHost> {
-  String rooId = 'abc123';
+bool _enable = false;
 
-  String hostName = "Aさん";
-
-  String childNameb = 'Bさん';
-
-  String childNamec = 'Cさん';
-
-  String childNamed = 'Dさん';
+class _RoomHostState extends ConsumerState<RoomHost> {
 
   @override
   Widget build(BuildContext context) {
+
+    final player = ref.read(playerProvider.notifier);
+    final p = ref.watch(playerProvider);
+    final rooId = ref.watch(ruleProvider).id;
+
     return CupertinoPageScaffold(
       child: Center(
         child: Padding(
@@ -51,7 +53,7 @@ class _RoomHostState extends State<RoomHost> {
                             style: MahjongTextStyle.tabBlack
                           ),
                           Text(
-                            '東 : $hostName',
+                            '東 : ${p[0].name}',
                             style: MahjongTextStyle.tabAnnotation
                           )
                         ],
@@ -75,7 +77,7 @@ class _RoomHostState extends State<RoomHost> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        childNameb,
+                                        p[1].name,
                                         style: MahjongTextStyle.choiceLabelL,
                                       ),
                                       ColumnDivider()
@@ -84,15 +86,13 @@ class _RoomHostState extends State<RoomHost> {
                                 )
                               ],
                             ),
-                            GestureDetector( // 切り替えボタン.
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () => setState(() {
-                                final buf = childNameb;
-                                childNameb = childNamec;
-                                childNamec = buf;
-                              }),
-                              child: const Icon(CupertinoIcons.arrow_up_arrow_down, size: 15)
-                            ),
+                            _enable
+                                ? GestureDetector( // 切り替えボタン.
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () => player.changeNanSya(),
+                                  child: const Icon(CupertinoIcons.arrow_up_arrow_down, size: 15)
+                                )
+                                : const Icon(CupertinoIcons.arrow_up_arrow_down, size: 15, color: CupertinoColors.systemGrey),
                             Row( // 西.
                               children: [
                                 Text(
@@ -103,7 +103,7 @@ class _RoomHostState extends State<RoomHost> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        childNamec,
+                                        p[2].name,
                                         style: MahjongTextStyle.choiceLabelL,
                                       ),
                                       ColumnDivider()
@@ -112,15 +112,13 @@ class _RoomHostState extends State<RoomHost> {
                                 )
                               ],
                             ),
-                            GestureDetector( // 切り替えボタン.
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () => setState(() {
-                                final buf = childNamec;
-                                childNamec = childNamed;
-                                childNamed = buf;
-                              }),
-                              child: const Icon(CupertinoIcons.arrow_up_arrow_down, size: 15)
-                            ),
+                            _enable
+                                ? GestureDetector( // 切り替えボタン.
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () => player.changeNanSya(),
+                                  child: const Icon(CupertinoIcons.arrow_up_arrow_down, size: 15)
+                                )
+                                : const Icon(CupertinoIcons.arrow_up_arrow_down, size: 15, color: CupertinoColors.systemGrey),
                             Row( // 北.
                               children: [
                                 Text(
@@ -131,7 +129,7 @@ class _RoomHostState extends State<RoomHost> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        childNamed,
+                                        p[3].name,
                                         style: MahjongTextStyle.choiceLabelL,
                                       ),
                                       ColumnDivider()
@@ -151,8 +149,9 @@ class _RoomHostState extends State<RoomHost> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          OkBtn(
+                          EnableBtn(
                             label: 'ゲーム開始',
+                            enabled: _enable,
                             onTap: () => Navigator.pushNamed(context, '/share'),
                           ),
                           CancelBtn(

@@ -6,12 +6,13 @@ import 'package:mahjong_lite/data/rule/uma_enum.dart';
 
 class Rule {
 
-  final String name;
-  final Uma uma;
-  final Oka oka;
-  final Tobi tobi;
-  final Syanyu syanyu;
-  final Agariyame agariyame;
+  final String? name;
+  final Uma? uma;
+  final Oka? oka;
+  final Tobi? tobi;
+  final Syanyu? syanyu;
+  final Agariyame? agariyame;
+  final String? id;
 
   Rule({
     required this.name,
@@ -19,7 +20,8 @@ class Rule {
     required this.oka,
     required this.tobi,
     required this.syanyu,
-    required this.agariyame
+    required this.agariyame,
+    required this.id
   });
 
   Rule copyWith({
@@ -28,7 +30,8 @@ class Rule {
     Oka? oka,
     Tobi? tobi,
     Syanyu? syanyu,
-    Agariyame? agariyame
+    Agariyame? agariyame,
+    String? id
   }) {
     return Rule(
       name: name ?? this.name,
@@ -36,7 +39,8 @@ class Rule {
       oka: oka ?? this.oka,
       tobi: tobi ?? this.tobi,
       syanyu: syanyu ?? this.syanyu,
-      agariyame: agariyame ?? this.agariyame
+      agariyame: agariyame ?? this.agariyame,
+      id: id ?? this.id
     );
   }
 

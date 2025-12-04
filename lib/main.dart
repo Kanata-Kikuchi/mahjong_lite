@@ -4,8 +4,8 @@ import 'package:mahjong_lite/theme/app_theme.dart';
 import 'package:mahjong_lite/page/game_history_page/game_history_page.dart';
 import 'package:mahjong_lite/page/round_content_page/round_content_page.dart';
 import 'package:mahjong_lite/page/logo_page/logo_page.dart';
-import 'package:mahjong_lite/page/room_page/room_child/room_child.dart';
-import 'package:mahjong_lite/page/room_page/room_host/room_host.dart';
+import 'package:mahjong_lite/page/room_page/child/room_child.dart';
+import 'package:mahjong_lite/page/room_page/host/room_host.dart';
 import 'package:mahjong_lite/page/room_page/room_page.dart';
 import 'package:mahjong_lite/page/score_share_page.dart/score_share_page.dart';
 import 'package:mahjong_lite/page/total_page/total_page.dart';
@@ -34,8 +34,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoApp(
       debugShowCheckedModeBanner: false,
-      home: ScoreSharePage(),
-      // home: RoomPage(),
+      // home: ScoreSharePage(),
+      home: RoomPage(),
+
       theme: AppTheme.fallback,
       routes: {
         '/logo' : (_) => LogoPage(),

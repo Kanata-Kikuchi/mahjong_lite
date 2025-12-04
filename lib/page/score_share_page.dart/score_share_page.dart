@@ -7,7 +7,7 @@ import 'package:mahjong_lite/layout/score_box.dart';
 import 'package:mahjong_lite/notifier/game_notifier.dart';
 import 'package:mahjong_lite/notifier/game_set_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
-import 'package:mahjong_lite/page/score_share_page.dart/extra_round.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/extra_round/extra_round.dart';
 import 'package:mahjong_lite/page/score_share_page.dart/input_round/input_round.dart';
 import 'package:mahjong_lite/page/score_share_page.dart/finish_game/finish_game.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
@@ -54,6 +54,7 @@ class ScoreSharePage extends ConsumerWidget {
                       height: h / 3 - 20,
                       zikaze: zikaze[players[2].zikaze],
                       name: players[2].name,
+                      
                       score: players[2].score,
                       host: players[2].zikaze == 0
                     ),

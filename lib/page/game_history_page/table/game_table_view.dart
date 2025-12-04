@@ -6,14 +6,19 @@ import 'package:mahjong_lite/notifier/game_score_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
-class GameTable extends ConsumerWidget {
-  const GameTable({super.key});
+class GameTableView extends ConsumerWidget {
+  const GameTableView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
+    /*
+      横軸 : 着順
+      縦軸 : 各試合
+    */
+
     final gameList = ref.watch(gameScoreProvider);
-    final name = ref.read(playerProvider.notifier);
+    final scoreList = ref.watch(gameScoreProvider.notifier).score();
 
     Widget gameContent(List<Game> gameList, int i) {
       if(gameList.length == i + 1) {
@@ -89,11 +94,11 @@ class GameTable extends ConsumerWidget {
                   textBaseline: TextBaseline.alphabetic,
                   children: [
                     Text(
-                      name.name(initial: gameList[i].score1st!.$1),
+                      gameList[i].score1st!.$1,
                       style: MahjongTextStyle.tableSel,
                     ),
                     Text(
-                      gameList[i].score1st!.$2,
+                      '  ${scoreList[i][3].toString()}点',
                       style: MahjongTextStyle.tableAnotation,
                     ),
                   ],
@@ -106,11 +111,11 @@ class GameTable extends ConsumerWidget {
                   textBaseline: TextBaseline.alphabetic,
                   children: [
                     Text(
-                      name.name(initial: gameList[i].score2nd!.$1),
+                      gameList[i].score2nd!.$1,
                       style: MahjongTextStyle.tableSel,
                     ),
                     Text(
-                      gameList[i].score2nd!.$2,
+                      '  ${scoreList[i][2].toString()}点',
                       style: MahjongTextStyle.tableAnotation,
                     ),
                   ],
@@ -123,11 +128,11 @@ class GameTable extends ConsumerWidget {
                   textBaseline: TextBaseline.alphabetic,
                   children: [
                     Text(
-                      name.name(initial: gameList[i].score3rd!.$1),
+                      gameList[i].score3rd!.$1,
                       style: MahjongTextStyle.tableSel,
                     ),
                     Text(
-                      gameList[i].score3rd!.$2,
+                      '  ${scoreList[i][1].toString()}点',
                       style: MahjongTextStyle.tableAnotation,
                     ),
                   ],
@@ -140,11 +145,11 @@ class GameTable extends ConsumerWidget {
                   textBaseline: TextBaseline.alphabetic,
                   children: [
                     Text(
-                      name.name(initial: gameList[i].score4th!.$1),
+                      gameList[i].score4th!.$1,
                       style: MahjongTextStyle.tableSel,
                     ),
                     Text(
-                      gameList[i].score4th!.$2,
+                      '  ${scoreList[i][0].toString()}点',
                       style: MahjongTextStyle.tableAnotation,
                     ),
                   ],

@@ -5,19 +5,19 @@ import 'package:mahjong_lite/layout/button/enable_btn.dart';
 import 'package:mahjong_lite/layout/button/tab_btn.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/notifier/agari_notifier.dart';
-import 'package:mahjong_lite/page/round_content_page/revise/popup/revise_ron.dart';
-import 'package:mahjong_lite/page/round_content_page/revise/popup/revise_ryukyoku.dart';
-import 'package:mahjong_lite/page/round_content_page/revise/popup/revise_tsumo.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/content/popup_ron.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/content/popup_ryuukyoku.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/content/popup_tsumo.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
-class ReviseDialog extends ConsumerStatefulWidget {
-  const ReviseDialog({super.key});
+class AgariDialog extends ConsumerStatefulWidget {
+  const AgariDialog({super.key});
 
   @override
-  ConsumerState<ReviseDialog> createState() => _ReviseDialogState();
+  ConsumerState<AgariDialog> createState() => _AgariDialogState();
 }
 
-class _ReviseDialogState extends ConsumerState<ReviseDialog> {
+class _AgariDialogState extends ConsumerState<AgariDialog> {
 
   int _selected = 0;
   bool _enable = false;
@@ -73,7 +73,7 @@ class _ReviseDialogState extends ConsumerState<ReviseDialog> {
                         label: '  流局  ',
                         selected: _selected == 2,
                         onTap: () => setState(() {
-                          _enable = false;
+                          _enable = true;
                           _selected = 2;
                           agari.reset();
                           agari.flag(AgariFlag.ryukyou);
@@ -85,9 +85,9 @@ class _ReviseDialogState extends ConsumerState<ReviseDialog> {
                 ColumnDivider(),
                 Expanded(
                   child: () {
-                    if (_selected == 0) {return ReviseRon(check: _check);}
-                    else if (_selected == 1) {return ReviseTsumo(check: _check);}
-                    else {return ReviseRyukyoku(check: _check);}
+                    if (_selected == 0) {return PopupRon(check: _check);}
+                    else if (_selected == 1) {return PopupTsumo(check: _check);}
+                    else {return PopupRyuukyoku();}
                   }(),
                 ),
                 ColumnDivider(),
@@ -97,9 +97,8 @@ class _ReviseDialogState extends ConsumerState<ReviseDialog> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       EnableBtn(
-                        label: '変更',
+                        label: '完了',
                         enabled: _enable,
-                        red: true,
                         onTap: () {
                           Navigator.pop(context, true);
                           setState(() => _enable = false);

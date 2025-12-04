@@ -10,6 +10,13 @@ class PlayerNotifier extends Notifier<List<Player>> {
       Player(name: 'Dさん', initial: 3, zikaze: 3, score: 25000)
     ];
 
+  List<String> name = [
+    'Aさん',
+    'Bさん',
+    'Cさん',
+    'Dさん'
+  ];
+
   @override
   List<Player> build() {
     return [
@@ -184,10 +191,6 @@ class PlayerNotifier extends Notifier<List<Player>> {
     ];
   }
 
-  String name({required int initial}) { // 名前を途中で変えない前提.
-    return state.firstWhere((w) => w.initial == initial).name;
-  }
-
   void reset() {
     state = [
       state[0].copyWith(zikaze: 0, score: 25000),
@@ -195,6 +198,10 @@ class PlayerNotifier extends Notifier<List<Player>> {
       state[2].copyWith(zikaze: 2, score: 25000),
       state[3].copyWith(zikaze: 3, score: 25000)
     ];
+  }
+
+  List<String> initialName() {
+    return name;
   }
 
   void revise() {

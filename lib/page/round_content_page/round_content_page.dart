@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mahjong_lite/layout/button/back_btn.dart';
-import 'package:mahjong_lite/page/round_content_page/round_table_view.dart';
+import 'package:mahjong_lite/page/round_content_page/table/round_table_view.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/layout/layout_page.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';

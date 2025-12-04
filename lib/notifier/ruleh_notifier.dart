@@ -10,13 +10,23 @@ class RuleNotifier extends Notifier<Rule> {
 
   @override
   Rule build() {
+    // return Rule(
+    //   name: '',
+    //   uma: Uma.none,
+    //   oka: Oka.none25000,
+    //   tobi: Tobi.none,
+    //   syanyu: Syanyu.none,
+    //   agariyame: Agariyame.ari,
+    //   id: abc123
+    // );
     return Rule(
-      name: '',
-      uma: Uma.none,
-      oka: Oka.none25000,
-      tobi: Tobi.none,
-      syanyu: Syanyu.none,
-      agariyame: Agariyame.ari
+      name: null,
+      uma: null,
+      oka: null,
+      tobi: null,
+      syanyu: null,
+      agariyame: null,
+      id: null
     );
   }
 
@@ -42,6 +52,36 @@ class RuleNotifier extends Notifier<Rule> {
 
   void agariyame(Agariyame? agariyame) {
     state = state.copyWith(agariyame: agariyame);
+  }
+
+  void id(String? id) {
+    state = state.copyWith(id: id);
+  }
+
+  void reset() {
+    state = Rule(
+      name: state.name, // 画面切り替えでもそのまま.
+      uma: null,
+      oka: null,
+      tobi: null,
+      syanyu: null,
+      agariyame: null,
+      id: null
+    );
+  }
+
+  bool checkChild() {
+    return state.name != null
+        && state.id != null;
+  }
+
+  bool checkHost() {
+    return state.name != null
+        && state.uma != null
+        && state.oka != null
+        && state.tobi != null
+        && state.syanyu != null
+        && state.agariyame != null;
   }
 
 }
