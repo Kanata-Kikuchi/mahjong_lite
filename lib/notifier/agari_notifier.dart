@@ -48,7 +48,7 @@ class AgariNotifier extends Notifier<Agari> {
 
   void reset() {
     state = Agari(
-      flag: null,
+      flag: AgariFlag.ron,
       reach: [false, false, false, false],
       tenpai: [false, false, false, false],
       houju: null,

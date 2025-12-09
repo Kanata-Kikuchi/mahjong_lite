@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
-import 'package:mahjong_lite/layout/popup/popup_content.dart';
-import 'package:mahjong_lite/notifier/game_score_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
@@ -20,7 +17,7 @@ class _NextGameContentState extends ConsumerState<NextGameContent> {
   Widget build(BuildContext context) {
 
     final player = ref.read(playerProvider.notifier);
-    final name = ref.read(playerProvider).map((m) => m.name).toList();
+    final name = ref.read(playerProvider).map((m) => m.name!).toList();
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 100),

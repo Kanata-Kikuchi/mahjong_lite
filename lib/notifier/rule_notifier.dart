@@ -10,24 +10,24 @@ class RuleNotifier extends Notifier<Rule> {
 
   @override
   Rule build() {
-    // return Rule(
-    //   name: '',
-    //   uma: Uma.none,
-    //   oka: Oka.none25000,
-    //   tobi: Tobi.none,
-    //   syanyu: Syanyu.none,
-    //   agariyame: Agariyame.ari,
-    //   id: abc123
-    // );
-    return Rule(
-      name: null,
-      uma: null,
-      oka: null,
-      tobi: null,
-      syanyu: null,
-      agariyame: null,
-      id: null
+    return Rule( // debug用.
+      name: '',
+      uma: Uma.none,
+      oka: Oka.none25000,
+      tobi: Tobi.none,
+      syanyu: Syanyu.ari,
+      agariyame: Agariyame.ari,
+      id: 'abc123'
     );
+    // return Rule(
+    //   name: null,
+    //   uma: null,
+    //   oka: null,
+    //   tobi: null,
+    //   syanyu: null,
+    //   agariyame: null,
+    //   id: null
+    // );
   }
 
   void name(String name) {
@@ -61,6 +61,32 @@ class RuleNotifier extends Notifier<Rule> {
   void reset() {
     state = Rule(
       name: state.name, // 画面切り替えでもそのまま.
+      uma: null,
+      oka: null,
+      tobi: null,
+      syanyu: null,
+      agariyame: null,
+      id: null
+    );
+  }
+
+  void debug() {
+    print('''
+    state = Rule(
+      name: ${state.name},
+      uma: ${state.uma?.label},
+      oka: ${state.oka?.label},
+      tobi: ${state.tobi?.label},
+      syanyu: ${state.syanyu?.label},
+      agariyame: ${state.agariyame?.label},
+      id: ${state.id}
+    )
+    ''');
+  }
+
+  void revise() {
+    state = Rule(
+      name: null,
       uma: null,
       oka: null,
       tobi: null,

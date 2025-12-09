@@ -6,6 +6,7 @@ class EnableBtn extends StatelessWidget {
     required this.label,
     required this.enabled,
     required this.onTap,
+    this.bold,
     this.red,
     super.key,
   });
@@ -13,6 +14,7 @@ class EnableBtn extends StatelessWidget {
   final String label;
   final bool enabled;
   final VoidCallback onTap;
+  final bool? bold;
   final bool? red;
 
   @override
@@ -24,9 +26,17 @@ class EnableBtn extends StatelessWidget {
         style: (){
           if (enabled) {
             if (red ?? false) {
-              return MahjongTextStyle.buttonBack;
+              if (bold ?? false) {
+                return MahjongTextStyle.buttonBackBold;
+              } else {
+                return MahjongTextStyle.buttonBack;
+              }
             } else {
-              return MahjongTextStyle.buttonNext;
+              if (bold ?? false) {
+                return MahjongTextStyle.buttonNextBold;
+              } else {
+                return MahjongTextStyle.buttonNext;
+              }
             }
           } else {
             return MahjongTextStyle.buttonEnable;

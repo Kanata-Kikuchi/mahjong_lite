@@ -5,6 +5,8 @@ import 'package:mahjong_lite/layout/layout_page.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 import 'package:mahjong_lite/page/total_page/table/total_table_view.dart';
 
+final double btnPaddingHorizontal = 30;
+
 class TotalPage extends StatelessWidget {
   const TotalPage({super.key});
 
@@ -14,25 +16,21 @@ class TotalPage extends StatelessWidget {
       child: LayoutPage(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final w = constraints.maxWidth;
             final h = constraints.maxHeight;
 
             return Column(
               children: [
-                Row(
-                  children: [
-                    SizedBox(width: 50),
-                    SizedBox(
-                      height: h / 8,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          '集計',
-                          style: MahjongTextStyle.title,
-                        )
+                SizedBox( // ヘッダー.
+                  height: h / 8,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 30),
+                      Text(
+                        '集計',
+                        style: MahjongTextStyle.tabBlack,
                       )
-                    ),
-                  ],
+                    ]
+                  )
                 ),
                 ColumnDivider(),
                 Expanded(
@@ -40,28 +38,17 @@ class TotalPage extends StatelessWidget {
                 ),
                 ColumnDivider(),
                 SizedBox( // フッター.
-                  height: h / 18,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      SizedBox(
-                        width: w / 4,
-                        child: Align( // 親のSizedBoxいっぱいに押せないように.
-                          alignment: Alignment.centerLeft,
-                          child: BackBtn(
-                            label: '試合履歴',
-                            onTap: () => Navigator.pop(context),
-                            blue: true,
-                          ),
-                        )
-                      ),
-                      SizedBox(width: w / 3),
-                      SizedBox(width: w / 4)
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 15)
+                  height: h / 8,
+                  width: double.infinity,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: btnPaddingHorizontal),
+                    child: BackBtn(
+                      label: '試合履歴',
+                      onTap: () => Navigator.pop(context),
+                      blue: true,
+                    ),
+                  )
+                )
               ],
             );
           },

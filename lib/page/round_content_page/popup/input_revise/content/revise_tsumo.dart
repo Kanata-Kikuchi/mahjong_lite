@@ -12,12 +12,25 @@ import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 import 'package:mahjong_lite/layout/popup/select_sheet.dart';
 
+/*
+  <-space-> <---label---> <----------input----------> <-space->
+  <-space-> <---label---> <-space->　<-----input-----> <-space->
+*/
+
+final double leftSpace = 20;
+final double labelBoxWidth = 50;
+final double labelInputSpace = 40;
+final double inputBoxWidth = 120;
+final double rightSpace = 40;
+
 class ReviseTsumo extends ConsumerStatefulWidget {
   const ReviseTsumo({
+    required this.commentController,
     required this.check,
     super.key
   });
 
+  final TextEditingController commentController;
   final Function(bool) check;
 
   @override
@@ -64,7 +77,10 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
                 ref.read(agariProvider.notifier).reach(list);
               })
             ),
-            Text(label[0]),
+            Text(
+              label[0],
+              style: MahjongTextStyle.tableLabel,
+            ),
           ],
         ),
         const SizedBox.shrink(),
@@ -77,7 +93,10 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
                 ref.read(agariProvider.notifier).reach(list);
               })
             ),
-            Text(label[1]),
+            Text(
+              label[1],
+              style: MahjongTextStyle.tableLabel,
+            ),
           ],
         ),
         const SizedBox.shrink(),
@@ -90,7 +109,10 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
                 ref.read(agariProvider.notifier).reach(list);
               })
             ),
-            Text(label[2]),
+            Text(
+              label[2],
+              style: MahjongTextStyle.tableLabel,
+            ),
           ],
         ),
         const SizedBox.shrink(),
@@ -103,7 +125,10 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
                 ref.read(agariProvider.notifier).reach(list);
               })
             ),
-            Text(label[3])
+            Text(
+              label[3],
+              style: MahjongTextStyle.tableLabel,
+            )
           ],
         )
       ],
@@ -127,7 +152,10 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
             children: [
               CupertinoRadio(value: 0),
               const SizedBox(width: 14),
-              Text(label[0]),
+              Text(
+                label[0],
+                style: MahjongTextStyle.tableLabel,
+              ),
             ],
           ),
           const SizedBox(width: 14),
@@ -135,7 +163,10 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
             children: [
               CupertinoRadio(value: 1),
               const SizedBox(width: 14),
-              Text(label[1]),
+              Text(
+                label[1],
+                style: MahjongTextStyle.tableLabel,
+              ),
             ],
           ),
           const SizedBox(width: 14),
@@ -143,7 +174,10 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
             children: [
               CupertinoRadio(value: 2),
               const SizedBox(width: 14),
-              Text(label[2]),
+              Text(
+                label[2],
+                style: MahjongTextStyle.tableLabel,
+              ),
             ],
           ),
           const SizedBox(width: 14),
@@ -151,7 +185,10 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
             children: [
               CupertinoRadio(value: 3),
               const SizedBox(width: 14),
-              Text(label[3])
+              Text(
+                label[3],
+                style: MahjongTextStyle.tableLabel,
+              )
             ],
           )
         ],
@@ -232,21 +269,22 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
 
     final playerName = ref
         .read(playerProvider)
-        .map((m) => m.name)
+        .map((m) => m.name!)
         .toList();
 
     final text = ref.read(reviseCommentProvider.notifier);
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 50),
+      padding: EdgeInsets.symmetric(horizontal: 40),
       child: Column(
         children: [
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(width: leftSpace),
                 SizedBox(
-                  width: 100,
+                  width: labelBoxWidth,
                   child: Center(
                     child: Text(
                       'リーチ',
@@ -259,7 +297,8 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
                     label: playerName,
                     list: listReach
                   )
-                )
+                ),
+                SizedBox(width: rightSpace)
               ],
             )
           ),
@@ -267,8 +306,9 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
           Expanded(
             child: Row(
               children: [
+                SizedBox(width: leftSpace),
                 SizedBox(
-                  width: 100,
+                  width: labelBoxWidth,
                   child: Center(
                     child: Text(
                       '和了',
@@ -287,7 +327,8 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
                       _enableCheck();
                     })
                   ),
-                )
+                ),
+                SizedBox(width: rightSpace)
               ],
             )
           ),
@@ -295,8 +336,9 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
           Expanded(
             child: Row(
               children: [
+                SizedBox(width: leftSpace),
                 SizedBox(
-                  width: 100,
+                  width: labelBoxWidth,
                   child: Center(
                     child: Text(
                       '点数',
@@ -312,7 +354,7 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
                         title: '飜',
                         choices: _hanSkipFlag ? hanSkipList : hanList,
                         placeholder: '  飜',
-                        half: true,
+                        inputBoxWidth: inputBoxWidth,
                         onChanged: (value) => setState(() {
 
                           value == hanList[0]
@@ -329,7 +371,7 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
                         title: '符',
                         choices: _huSkipFlag ? huSkipList : huList,
                         placeholder: '  符',
-                        half: true,
+                        inputBoxWidth: inputBoxWidth,
                         onChanged: (value) => setState(() {
 
                           value == huList[0] || value == huList[1]
@@ -344,7 +386,8 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
                       )
                     ],
                   )
-                )
+                ),
+                SizedBox(width: rightSpace)
               ],
             )
           ),
@@ -352,8 +395,9 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
           Expanded(
             child: Row(
               children: [
+                SizedBox(width: leftSpace),
                 SizedBox(
-                  width: 100,
+                  width: labelBoxWidth,
                   child: Center(
                     child: Text(
                       'コメント',
@@ -361,8 +405,21 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
                     )
                   ),
                 ),
+                SizedBox(width: labelInputSpace),
                 Expanded(
                   child: CupertinoTextField(
+                    controller: widget.commentController,
+                    placeholder: '修正理由を書いてください',
+                    decoration: BoxDecoration(
+                      color: CupertinoColors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: CupertinoColors.systemGrey3,
+                        width: 1,
+                      ),
+                    ),
+                    style: MahjongTextStyle.choiceBlue,
+                    placeholderStyle: MahjongTextStyle.choiceOpa,
                     onChanged: (value) {
                       setState(() {
                         if (value.isEmpty) {
@@ -378,7 +435,8 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
                       _enableCheck();
                     },
                   )
-                )
+                ),
+                SizedBox(width: rightSpace)
               ],
             )
           )

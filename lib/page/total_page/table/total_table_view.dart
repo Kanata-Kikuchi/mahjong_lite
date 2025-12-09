@@ -4,7 +4,6 @@ import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/model/game_model.dart';
 import 'package:mahjong_lite/notifier/game_score_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
-import 'package:mahjong_lite/page/total_page/popup/total_dialog.dart';
 import 'package:mahjong_lite/page/total_page/popup/total_popup.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
@@ -17,12 +16,15 @@ class TotalTableView extends ConsumerWidget {
     final initialName = ref.read(playerProvider.notifier).initialName();
     final gameList = ref.watch(gameScoreProvider.notifier).sortName(initialName: initialName);
     final buf = ref.read(gameScoreProvider.notifier).sumScore(); // List(name, sumScore).
-    final sumScore = [
-      buf.firstWhere((w) => w.$1 == initialName[0]).$2,
-      buf.firstWhere((w) => w.$1 == initialName[1]).$2,
-      buf.firstWhere((w) => w.$1 == initialName[2]).$2,
-      buf.firstWhere((w) => w.$1 == initialName[3]).$2
-    ];
+    List<String> sumScore = [];
+    if (buf.isNotEmpty) {
+      sumScore = [
+        buf.firstWhere((w) => w.$1 == initialName[0]).$2,
+        buf.firstWhere((w) => w.$1 == initialName[1]).$2,
+        buf.firstWhere((w) => w.$1 == initialName[2]).$2,
+        buf.firstWhere((w) => w.$1 == initialName[3]).$2
+      ];
+    }
 
     Widget gameContent(List<Game> gameList, int i) {
       if(gameList.length == i + 1) {
@@ -42,7 +44,7 @@ class TotalTableView extends ConsumerWidget {
                       style: MahjongTextStyle.tableLabel,
                     ),
                     Text(
-                      '  ',
+                      '',
                       style: MahjongTextStyle.tableAnotation,
                     )
                   ],
@@ -59,7 +61,7 @@ class TotalTableView extends ConsumerWidget {
                 )
               ),
               Expanded(
-                flex: 3,
+                flex: 1,
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: SizedBox.shrink()
@@ -93,30 +95,38 @@ class TotalTableView extends ConsumerWidget {
               ),
               Expanded(
                 flex: 4,
-                child: Text(
-                  gameList[i].score1st!.$3,
-                  style: MahjongTextStyle.tableSel,
+                child: Center(
+                  child: Text(
+                    gameList[i].score1st!.$3,
+                    style: MahjongTextStyle.tableSel,
+                  )
                 )
               ),
               Expanded(
                 flex: 4,
-                child: Text(
-                  gameList[i].score2nd!.$3,
-                  style: MahjongTextStyle.tableSel,
+                child: Center(
+                  child: Text(
+                    gameList[i].score2nd!.$3,
+                    style: MahjongTextStyle.tableSel,
+                  )
                 )
               ),
               Expanded(
                 flex: 4,
-                child: Text(
-                  gameList[i].score3rd!.$3,
-                  style: MahjongTextStyle.tableSel,
+                child: Center(
+                  child: Text(
+                    gameList[i].score3rd!.$3,
+                    style: MahjongTextStyle.tableSel,
+                  )
                 )
               ),
               Expanded(
                 flex: 4,
-                child: Text(
-                  gameList[i].score4th!.$3,
-                  style: MahjongTextStyle.tableSel,
+                child: Center(
+                  child: Text(
+                    gameList[i].score4th!.$3,
+                    style: MahjongTextStyle.tableSel,
+                  )
                 )
               ),
               Expanded(
@@ -133,7 +143,7 @@ class TotalTableView extends ConsumerWidget {
     }
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 80, vertical: 20),
+      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -147,31 +157,39 @@ class TotalTableView extends ConsumerWidget {
                 ),
                 Expanded(
                   flex: 4,
-                  child: Text(
-                    initialName[0],
-
-                  ),
+                  child: Center(
+                    child: Text(
+                      initialName[0],
+                      style: MahjongTextStyle.tableLabel,
+                    )
+                  )
                 ),
                 Expanded(
                   flex: 4,
-                  child: Text(
-                    initialName[1],
-
-                  ),
+                  child: Center(
+                    child: Text(
+                      initialName[1],
+                      style: MahjongTextStyle.tableLabel,
+                    )
+                  )
                 ),
                 Expanded(
                   flex: 4,
-                  child: Text(
-                    initialName[2],
-
-                  ),
+                  child: Center(
+                    child: Text(
+                      initialName[2],
+                      style: MahjongTextStyle.tableLabel,
+                    )
+                  )
                 ),
                 Expanded(
                   flex: 4,
-                  child: Text(
-                    initialName[3],
-
-                  ),
+                  child: Center(
+                    child: Text(
+                      initialName[3],
+                      style: MahjongTextStyle.tableLabel,
+                    )
+                  )
                 ),
                 Expanded(
                   flex: 1,
@@ -181,7 +199,6 @@ class TotalTableView extends ConsumerWidget {
             ),
           ),
           ColumnDivider(),
-          SizedBox(),
           Expanded(
             flex: 8,
             child: ListView.separated(
@@ -190,10 +207,12 @@ class TotalTableView extends ConsumerWidget {
               separatorBuilder: (context, i) => ColumnDivider(),
             )
           ),
+          ColumnDivider(),
+          SizedBox(height: 4),
           Expanded(
             flex: 1,
             child: Padding(
-              padding: EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
+              padding: EdgeInsetsGeometry.symmetric(horizontal: 25),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
@@ -206,7 +225,7 @@ class TotalTableView extends ConsumerWidget {
                       style: MahjongTextStyle.tableLabel,
                     )
                   ),
-                  if (gameList.length == 1)
+                  if (sumScore.isEmpty)
                     ...[
                       Expanded(
                         flex: 17,
@@ -217,30 +236,38 @@ class TotalTableView extends ConsumerWidget {
                     ...[
                       Expanded(
                         flex: 4,
-                        child: Text(
-                          sumScore[0],
-                          style: MahjongTextStyle.tableSel,
+                        child: Center(
+                          child: Text(
+                            sumScore[0],
+                            style: MahjongTextStyle.tableSel,
+                          )
                         )
                       ),
                       Expanded(
                         flex: 4,
-                        child: Text(
-                          sumScore[1],
-                          style: MahjongTextStyle.tableSel,
+                        child: Center(
+                          child: Text(
+                            sumScore[1],
+                            style: MahjongTextStyle.tableSel,
+                          )
                         )
                       ),
                       Expanded(
                         flex: 4,
-                        child: Text(
-                          sumScore[2],
-                          style: MahjongTextStyle.tableSel,
+                        child: Center(
+                          child: Text(
+                            sumScore[2],
+                            style: MahjongTextStyle.tableSel,
+                          )
                         )
                       ),
                       Expanded(
                         flex: 4,
-                        child: Text(
-                          sumScore[3],
-                          style: MahjongTextStyle.tableSel,
+                        child: Center(
+                          child: Text(
+                            sumScore[3],
+                            style: MahjongTextStyle.tableSel,
+                          )
                         )
                       ),
                       Expanded(

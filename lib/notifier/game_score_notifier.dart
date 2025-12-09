@@ -1,23 +1,40 @@
 import 'dart:math';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/data/rule/oka_enum.dart';
 import 'package:mahjong_lite/data/rule/uma_enum.dart';
 import 'package:mahjong_lite/model/game_model.dart';
-import 'package:mahjong_lite/model/player_model.dart';
 
 class GameScoreNotifier extends Notifier<List<Game>> {
+
+  /*
+  Game(
+    game: String,
+    time: int,
+    score1st: (String, int, String)?,
+    score2nd: (String, int, String)?,
+    score3rd: (String, int, String)?,
+    score4th: (String, int, String)?,
+  )
+  */
 
   List<Game> memory = [
     Game(
       game: '第1試合',
       time: 0,
-      // score1st (name, initial, score.toString)
     )
   ];
 
   List<List<(String, int)>> sum = []; // (name, score).
+  // List<List<(String, int)>> sum = [
+  //   [('kanata', 20),
+  //   ('A', 10),
+  //   ('B', -10),
+  //   ('C', -20)]
+  // ]; // debug用. 
 
   List<List<int>> scoreMemory = [];
+  // List<List<int>> scoreMemory = [[35000, 30000, 20000, 15000]]; // debug用.
 
   @override
   build() => [
@@ -26,6 +43,42 @@ class GameScoreNotifier extends Notifier<List<Game>> {
       time: 0,
     )
   ];
+  // build() => [ // debug用.
+  //   Game(
+  //     game: '第1試合',
+  //     time: 0,
+  //     score1st: ('kanata', 0, '+20'),
+  //     score2nd: ('A', 1, '+10'),
+  //     score3rd: ('B', 2, '-10'),
+  //     score4th: ('C', 3, '-20')
+  //   ),
+  //   Game(
+  //     game: '第2試合',
+  //     time: 0,
+  //   )
+  // ];
+
+  void gameScoreSet({
+    required List<Map<String, dynamic>> gameScore
+  }) {
+    List<Game> buf = [];
+
+    for (final row in gameScore) {
+      buf = [
+        ...buf,
+        Game(
+          game: row['game'],
+          time: row['time'],
+          score1st: row['score1st'],
+          score2nd: row['score2nd'],
+          score3rd: row['score3rd'],
+          score4th: row['score4th']
+        )
+      ];
+    }
+
+    state = buf;
+  }
 
   void set({
     required String game,
@@ -116,50 +169,6 @@ class GameScoreNotifier extends Notifier<List<Game>> {
 
   }
 
-  // List<Game> sortInitial() { // イニシャル順の点数リスト.
-
-  //   if (state.length == 1) {
-  //     // print('sortInitial()/if / state.length: ${state.length}');
-  //     return state;
-  //   } else {
-  //     final without = [...state]..removeLast();
-  //     final last = [...state].removeLast();
-  //     List<Game> result = [];
-
-  //     for (int i = 0; i < without.length; i++) {
-
-  //       final buf = [
-  //         without[i].score1st,
-  //         without[i].score2nd,
-  //         without[i].score3rd,
-  //         without[i].score4th
-  //       ];
-
-  //       buf.sort((a, b) => a!.$2.compareTo(b!.$2));
-
-  //       result = [
-  //         ...result,
-  //         Game(
-  //           game: without[i].game,
-  //           time: without[i].time,
-  //           score1st: buf[0],
-  //           score2nd: buf[1],
-  //           score3rd: buf[2],
-  //           score4th: buf[3]
-  //         )
-  //       ];
-  //     }
-
-  //     // print('sortInitial()/else / state.length: ${state.length}');
-
-  //     return [
-  //       ...result,
-  //       last
-  //     ];
-  //   }
-
-  // }
-
   List<Game> sortName({ // total_table_view用.
     required List<String> initialName
   }) {
@@ -221,7 +230,7 @@ class GameScoreNotifier extends Notifier<List<Game>> {
   }
 
   List<List<int>> score() {
-    print('score() / state.length: ${state.length}');
+    // print('score() / state.length: ${state.length}');
     return scoreMemory;
   }
 
@@ -229,6 +238,7 @@ class GameScoreNotifier extends Notifier<List<Game>> {
     // print('sumScore() / state.length: ${state.length}');
 
     List<(String, String)> result = [];
+    List<(String, int)> sortScore = [];
 
     List<(String, int)> buf = [];
     for (final game in sum) {
@@ -238,21 +248,24 @@ class GameScoreNotifier extends Notifier<List<Game>> {
     final nameSet = buf.map((m) => m.$1).toSet();
     for (final name in nameSet) {
       final sum = buf.where((w) => w.$1 == name).map((m) => m.$2).fold(0, (a, b) => a + b);
+      sortScore = [...sortScore, (name, sum)];
+    }
 
+    sortScore.sort((a,b) => b.$2.compareTo(a.$2));
+
+    result = sortScore.map((m) {
       String total;
-      if (sum > 0) {
-        total = '+${sum}pt';
-      } else if (sum < 0) {
-        total = '▲${-sum}pt';
+      if (m.$2 > 0) {
+        total = '+${m.$2}pt';
+      } else if (m.$2 < 0) {
+        total = '▲${-m.$2}pt';
       } else {
         total = '0pt';
       }
-      
-      result = [...result, (name, total)];
-    }
+      return (m.$1, total);
+    }).toList();
 
     return result;
-
   }
 
   void reset() {

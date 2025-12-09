@@ -1,146 +1,182 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/layout/button/cancel_btn.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/layout/layout_page.dart';
+import 'package:mahjong_lite/notifier/player_notifier.dart';
+import 'package:mahjong_lite/notifier/rule_notifier.dart';
+import 'package:mahjong_lite/socket/socket_enable_join_provider.dart';
+import 'package:mahjong_lite/socket/socket_game_start_provider.dart';
+import 'package:mahjong_lite/socket/socket_playerid_provider.dart';
+import 'package:mahjong_lite/socket/socket_provider.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
-class RoomChild extends StatelessWidget {
+class RoomChild extends ConsumerStatefulWidget {
   const RoomChild({super.key});
 
-  final String rooId = 'abc123';
+  @override
+  ConsumerState<RoomChild> createState() => _RoomChildState();
+}
 
-  final String hostName = "Aさん";
-
-  final String childNameb = 'Bさん';
-
-  final String childNamec = 'Cさん';
-
-  final String childNamed = 'Dさん';
+class _RoomChildState extends ConsumerState<RoomChild> {
 
   @override
   Widget build(BuildContext context) {
+
+    ref.listen(socketGameStartProvider, (prev, next) {
+      if (next == true) {
+        Navigator.pushNamedAndRemoveUntil(context, '/share', (route) => false);
+      }
+    });
+
+    ref.listen(socketEnableJoinProvider, (prev, next) {
+      if (next == false) {
+        Navigator.pop(context);
+      }
+    });
+
+    final roomId = ref.read(ruleProvider).id;
+    final name = ref.read(playerProvider).map((m) => m.name).toList();
+
+    void exitRoom() {
+      final channel = ref.read(socketProvider);
+      final roomId = ref.read(ruleProvider).id;
+      final playerId = ref.read(socketPlayerIdProvider);
+
+      final msg = {
+        'type': 'exit_room',
+        'payload': {
+          'roomId': roomId,
+          'playerId': playerId,
+        }
+      };
+
+      channel.sink.add(jsonEncode(msg));
+    }
+
     return CupertinoPageScaffold(
       child: Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 35, horizontal: 55),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final w = constraints.maxWidth;
-              final h = constraints.maxHeight;
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final w = constraints.maxWidth;
+            final h = constraints.maxHeight;
 
-              return LayoutPage( // 背景のポップ.
-                width: w / 2,
-                height: h,
-                child:Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox( // タブボタン.
-                      height: 60,
+            return LayoutPage( // 背景のポップ.
+              width: w / 2,
+              height: h,
+              child:Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox( // タブボタン.
+                    height: h / 8,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(),
+                        Text(
+                          'ルームID : $roomId',
+                          style: MahjongTextStyle.tabBlack
+                        ),
+                        Text(
+                          '東 : ${name[0]}',
+                          style: MahjongTextStyle.tabAnnotation
+                        )
+                      ],
+                    )
+                  ),
+                  ColumnDivider(),
+                  /* -------------------------------------------------------------------- */
+                  Expanded( // ボディ部分.
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 100),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          SizedBox(),
-                          Text(
-                            'ルームID : $rooId',
-                            style: MahjongTextStyle.tabBlack
+                          Row( // 南.
+                            children: [
+                              Text(
+                                '南',
+                                style: MahjongTextStyle.choiceLabelL,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      name[1] ?? '',
+                                      style: MahjongTextStyle.choiceLabel,
+                                    ),
+                                    ColumnDivider()
+                                  ],
+                                ),
+                              )
+                            ],
                           ),
-                          Text(
-                            '東 : $hostName',
-                            style: MahjongTextStyle.tabAnnotation
-                          )
+                          const SizedBox(),
+                          Row( // 西.
+                            children: [
+                              Text(
+                                '西',
+                                style: MahjongTextStyle.choiceLabelL,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      name[2] ?? '',
+                                      style: MahjongTextStyle.choiceLabel,
+                                    ),
+                                    ColumnDivider()
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(),
+                          Row( // 北.
+                            children: [
+                              Text(
+                                '北',
+                                style: MahjongTextStyle.choiceLabelL,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      name[3] ?? '',
+                                      style: MahjongTextStyle.choiceLabel,
+                                    ),
+                                    ColumnDivider()
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ],
-                      )
-                    ),
-                    ColumnDivider(),
-                    /* -------------------------------------------------------------------- */
-                    Expanded( // ボディ部分.
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 100),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Row( // 南.
-                              children: [
-                                Text(
-                                  '南',
-                                  style: MahjongTextStyle.choiceLabelL,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        childNameb,
-                                        style: MahjongTextStyle.choiceLabelL,
-                                      ),
-                                      ColumnDivider()
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                            const SizedBox(),
-                            Row( // 西.
-                              children: [
-                                Text(
-                                  '西',
-                                  style: MahjongTextStyle.choiceLabelL,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        childNamec,
-                                        style: MahjongTextStyle.choiceLabelL,
-                                      ),
-                                      ColumnDivider()
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                            const SizedBox(),
-                            Row( // 北.
-                              children: [
-                                Text(
-                                  '北',
-                                  style: MahjongTextStyle.choiceLabelL,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        childNamed,
-                                        style: MahjongTextStyle.choiceLabelL,
-                                      ),
-                                      ColumnDivider()
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      )
-                    ),
-                    ColumnDivider(),
-                    /* -------------------------------------------------------------------- */
-                    SizedBox( // フットボタン.
-                      height: 60,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CancelBtn(
-                            label: '退出',
-                            onTap: () => Navigator.pop(context),
-                          )
-                        ],
-                      )
-                    ),
-                  ],
-                ),
-              );
-            }
-          )
+                      ),
+                    )
+                  ),
+                  ColumnDivider(),
+                  /* -------------------------------------------------------------------- */
+                  SizedBox( // フットボタン.
+                    height: h / 8,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        CancelBtn(
+                          label: '退出',
+                          onTap: () {
+                            exitRoom();
+                            Navigator.pop(context);
+                          },
+                        )
+                      ],
+                    )
+                  ),
+                ],
+              ),
+            );
+          }
         )
       )
     );

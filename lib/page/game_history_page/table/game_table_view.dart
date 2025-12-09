@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/model/game_model.dart';
 import 'package:mahjong_lite/notifier/game_score_notifier.dart';
-import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class GameTableView extends ConsumerWidget {
@@ -38,7 +37,7 @@ class GameTableView extends ConsumerWidget {
                       style: MahjongTextStyle.tableLabel,
                     ),
                     Text(
-                      '  ',
+                      '',
                       style: MahjongTextStyle.tableAnotation,
                     )
                   ],
@@ -55,7 +54,7 @@ class GameTableView extends ConsumerWidget {
                 )
               ),
               Expanded(
-                flex: 3,
+                flex: 1,
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: SizedBox.shrink()
@@ -89,82 +88,96 @@ class GameTableView extends ConsumerWidget {
               ),
               Expanded(
                 flex: 4,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    Text(
-                      gameList[i].score1st!.$1,
-                      style: MahjongTextStyle.tableSel,
-                    ),
-                    Text(
-                      '  ${scoreList[i][3].toString()}点',
-                      style: MahjongTextStyle.tableAnotation,
-                    ),
-                  ],
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      Text(
+                        gameList[i].score1st!.$1,
+                        style: MahjongTextStyle.tableSel,
+                      ),
+                      Text(
+                        '  ${scoreList[i][3].toString()}点',
+                        style: MahjongTextStyle.tableAnotation,
+                      ),
+                    ],
+                  )
                 )
               ),
               Expanded(
                 flex: 4,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    Text(
-                      gameList[i].score2nd!.$1,
-                      style: MahjongTextStyle.tableSel,
-                    ),
-                    Text(
-                      '  ${scoreList[i][2].toString()}点',
-                      style: MahjongTextStyle.tableAnotation,
-                    ),
-                  ],
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      Text(
+                        gameList[i].score2nd!.$1,
+                        style: MahjongTextStyle.tableSel,
+                      ),
+                      Text(
+                        '  ${scoreList[i][2].toString()}点',
+                        style: MahjongTextStyle.tableAnotation,
+                      ),
+                    ],
+                  )
                 )
               ),
               Expanded(
                 flex: 4,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    Text(
-                      gameList[i].score3rd!.$1,
-                      style: MahjongTextStyle.tableSel,
-                    ),
-                    Text(
-                      '  ${scoreList[i][1].toString()}点',
-                      style: MahjongTextStyle.tableAnotation,
-                    ),
-                  ],
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      Text(
+                        gameList[i].score3rd!.$1,
+                        style: MahjongTextStyle.tableSel,
+                      ),
+                      Text(
+                        '  ${scoreList[i][1].toString()}点',
+                        style: MahjongTextStyle.tableAnotation,
+                      ),
+                    ],
+                  )
                 )
               ),
               Expanded(
                 flex: 4,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    Text(
-                      gameList[i].score4th!.$1,
-                      style: MahjongTextStyle.tableSel,
-                    ),
-                    Text(
-                      '  ${scoreList[i][0].toString()}点',
-                      style: MahjongTextStyle.tableAnotation,
-                    ),
-                  ],
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      Text(
+                        gameList[i].score4th!.$1,
+                        style: MahjongTextStyle.tableSel,
+                      ),
+                      Text(
+                        '  ${scoreList[i][0].toString()}点',
+                        style: MahjongTextStyle.tableAnotation,
+                      ),
+                    ],
+                  )
                 )
               ),
               Expanded(
                 flex: 1,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Icon(
-                    CupertinoIcons.right_chevron,
-                    color: CupertinoColors.activeBlue,
-                    size: 17,
-                  )
-                )
+                child: SizedBox.shrink(),
+                /* ここに押すと試合の点数推移が表示されるグラフを作りたい */
+                // child: Align(
+                //   alignment: Alignment.centerRight,
+                //   child: Icon(
+                //     CupertinoIcons.right_chevron,
+                //     color: CupertinoColors.activeBlue,
+                //     size: 17,
+                //   )
+                // )
               )
             ]
           )
@@ -173,7 +186,7 @@ class GameTableView extends ConsumerWidget {
     }
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 80, vertical: 20),
+      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -187,19 +200,39 @@ class GameTableView extends ConsumerWidget {
                 ),
                 Expanded(
                   flex: 4,
-                  child: Text('１着'),
+                  child: Center(
+                    child: Text(
+                      '1st',
+                      style: MahjongTextStyle.tableSel,
+                    )
+                  )
                 ),
                 Expanded(
                   flex: 4,
-                  child: Text('２着'),
+                  child: Center(
+                    child: Text(
+                      '2nd',
+                      style: MahjongTextStyle.tableSel,
+                    )
+                  )
                 ),
                 Expanded(
                   flex: 4,
-                  child: Text('３着'),
+                  child: Center(
+                    child: Text(
+                      '3rd',
+                      style: MahjongTextStyle.tableSel,
+                    )
+                  )
                 ),
                 Expanded(
                   flex: 4,
-                  child: Text('４着'),
+                  child: Center(
+                    child: Text(
+                      '4th',
+                      style: MahjongTextStyle.tableSel,
+                    )
+                  )
                 ),
                 Expanded(
                   flex: 1,
@@ -209,7 +242,6 @@ class GameTableView extends ConsumerWidget {
             ),
           ),
           ColumnDivider(),
-          SizedBox(),
           Expanded(
             child: ListView.separated(
               itemCount: gameList.length,

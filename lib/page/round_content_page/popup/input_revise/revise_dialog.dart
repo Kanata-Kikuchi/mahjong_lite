@@ -5,9 +5,9 @@ import 'package:mahjong_lite/layout/button/enable_btn.dart';
 import 'package:mahjong_lite/layout/button/tab_btn.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/notifier/agari_notifier.dart';
-import 'package:mahjong_lite/page/round_content_page/popup/inpu_revise/content/revise_ron.dart';
-import 'package:mahjong_lite/page/round_content_page/popup/inpu_revise/content/revise_ryukyoku.dart';
-import 'package:mahjong_lite/page/round_content_page/popup/inpu_revise/content/revise_tsumo.dart';
+import 'package:mahjong_lite/page/round_content_page/popup/input_revise/content/revise_ron.dart';
+import 'package:mahjong_lite/page/round_content_page/popup/input_revise/content/revise_ryukyoku.dart';
+import 'package:mahjong_lite/page/round_content_page/popup/input_revise/content/revise_tsumo.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class ReviseDialog extends ConsumerStatefulWidget {
@@ -22,8 +22,16 @@ class _ReviseDialogState extends ConsumerState<ReviseDialog> {
   int _selected = 0;
   bool _enable = false;
 
+  final commentController = TextEditingController();
+
   void _check(bool enable) {
     setState(() => _enable = enable);
+  }
+
+  @override
+  void dispose() {
+    commentController.dispose();
+    super.dispose();
   }
 
   @override
@@ -31,18 +39,18 @@ class _ReviseDialogState extends ConsumerState<ReviseDialog> {
 
     final agari = ref.read(agariProvider.notifier);
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 200, vertical: 50),
-      child: Container(
-        decoration: BoxDecoration(
-          color: CupertinoColors.white,
-          borderRadius: BorderRadius.circular(24)
-        ),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final h = constraints.maxHeight;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final h = constraints.maxHeight;
 
-            return Column(
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 100, vertical: 20),
+          child: Container(
+            decoration: BoxDecoration(
+              color: CupertinoColors.white,
+              borderRadius: BorderRadius.circular(24)
+            ),
+            child: Column(
               children: [
                 SizedBox(
                   height: h / 6,
@@ -73,7 +81,11 @@ class _ReviseDialogState extends ConsumerState<ReviseDialog> {
                         label: '  流局  ',
                         selected: _selected == 2,
                         onTap: () => setState(() {
-                          _enable = false;
+                          if (commentController.text.isEmpty) {
+                            _enable = false;
+                          } else {
+                            _enable = true;
+                          }
                           _selected = 2;
                           agari.reset();
                           agari.flag(AgariFlag.ryukyou);
@@ -85,14 +97,14 @@ class _ReviseDialogState extends ConsumerState<ReviseDialog> {
                 ColumnDivider(),
                 Expanded(
                   child: () {
-                    if (_selected == 0) {return ReviseRon(check: _check);}
-                    else if (_selected == 1) {return ReviseTsumo(check: _check);}
-                    else {return ReviseRyukyoku(check: _check);}
+                    if (_selected == 0) {return ReviseRon(check: _check, commentController: commentController);}
+                    else if (_selected == 1) {return ReviseTsumo(check: _check, commentController: commentController);}
+                    else {return ReviseRyukyoku(check: _check, commentController: commentController);}
                   }(),
                 ),
                 ColumnDivider(),
                 SizedBox(
-                  height: h / 8,
+                  height: h / 6,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -120,10 +132,10 @@ class _ReviseDialogState extends ConsumerState<ReviseDialog> {
                   ),
                 )
               ]
-            );
-          },
-        )
-      )
+            )
+          )
+        );
+      },
     );
   }
 }

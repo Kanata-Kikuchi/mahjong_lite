@@ -7,17 +7,26 @@ class ReachNotifier extends Notifier<int> {
   @override
   build() => 0;
 
+  void reachSet({
+    required int reach
+  }) {
+    state = reach;
+  }
+
   void add({
     required int add,
     bool? revise = false
   }) {
-
     if (revise != true) {memory = state;}
     state = state + add;
-    
   }
 
   void reset() {
+    state = 0;
+    memory = 0;
+  }
+
+  void agari() {
     state = 0;
   }
 

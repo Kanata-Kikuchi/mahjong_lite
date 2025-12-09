@@ -1,17 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/data/han_map.dart';
-import 'package:mahjong_lite/data/hu_tsumo_map.dart';
-import 'package:mahjong_lite/data/tsumo_child_score.dart';
-import 'package:mahjong_lite/data/tsumo_host_score.dart';
+import 'package:mahjong_lite/data/hu_ron_map.dart';
+import 'package:mahjong_lite/data/ron_child_score.dart';
+import 'package:mahjong_lite/data/ron_host_score.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/notifier/agari_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 import 'package:mahjong_lite/layout/popup/select_sheet.dart';
 
-class PopupTsumo extends ConsumerStatefulWidget {
-  const PopupTsumo({
+/*
+  <-space-> <---label---> <----------input----------> <-space->
+*/
+
+final double leftSpace = 20;
+final double labelBoxWidth = 50;
+final double inputBoxWidth = 120;
+final double rightSpace = 40;
+
+class PopupRon extends ConsumerStatefulWidget {
+  const PopupRon({
     required this.check,
     super.key
   });
@@ -19,12 +28,12 @@ class PopupTsumo extends ConsumerStatefulWidget {
   final Function(bool) check;
 
   @override
-  ConsumerState<PopupTsumo> createState() => _PopupTsumoState();
+  ConsumerState<PopupRon> createState() => _PopupRonState();
 }
 
-class _PopupTsumoState extends ConsumerState<PopupTsumo> {
+class _PopupRonState extends ConsumerState<PopupRon> {
 
-  int? houjuu;
+  int? houju;
   int? agari;
   int? han;
   int? hu;
@@ -32,8 +41,8 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
   bool _huSkipFlag = false;
   final List<String> hanList = hanMap.keys.toList();
   final List<String> hanSkipList = hanMap.keys.skip(1).toList();
-  final List<String> huList = huTsumoMap.keys.toList();
-  final List<String> huSkipList = huTsumoMap.keys.skip(2).toList();
+  final List<String> huList = huRonMap.keys.toList();
+  final List<String> huSkipList = huRonMap.keys.skip(1).toList();
 
   final List<bool> listReach = [
     false,
@@ -60,7 +69,10 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
                 ref.read(agariProvider.notifier).reach(list);
               })
             ),
-            Text(label[0]),
+            Text(
+              label[0],
+              style: MahjongTextStyle.tableLabel,
+            ),
           ],
         ),
         const SizedBox.shrink(),
@@ -73,7 +85,10 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
                 ref.read(agariProvider.notifier).reach(list);
               })
             ),
-            Text(label[1]),
+            Text(
+              label[1],
+              style: MahjongTextStyle.tableLabel,
+            ),
           ],
         ),
         const SizedBox.shrink(),
@@ -86,7 +101,10 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
                 ref.read(agariProvider.notifier).reach(list);
               })
             ),
-            Text(label[2]),
+            Text(
+              label[2],
+              style: MahjongTextStyle.tableLabel,
+            ),
           ],
         ),
         const SizedBox.shrink(),
@@ -99,7 +117,10 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
                 ref.read(agariProvider.notifier).reach(list);
               })
             ),
-            Text(label[3])
+            Text(
+              label[3],
+              style: MahjongTextStyle.tableLabel,
+            )
           ],
         )
       ],
@@ -123,7 +144,10 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
             children: [
               CupertinoRadio(value: 0),
               const SizedBox(width: 14),
-              Text(label[0]),
+              Text(
+                label[0],
+                style: MahjongTextStyle.tableLabel,
+              ),
             ],
           ),
           const SizedBox(width: 14),
@@ -131,7 +155,10 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
             children: [
               CupertinoRadio(value: 1),
               const SizedBox(width: 14),
-              Text(label[1]),
+              Text(
+                label[1],
+                style: MahjongTextStyle.tableLabel,
+              ),
             ],
           ),
           const SizedBox(width: 14),
@@ -139,7 +166,10 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
             children: [
               CupertinoRadio(value: 2),
               const SizedBox(width: 14),
-              Text(label[2]),
+              Text(
+                label[2],
+                style: MahjongTextStyle.tableLabel,
+              ),
             ],
           ),
           const SizedBox(width: 14),
@@ -147,7 +177,10 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
             children: [
               CupertinoRadio(value: 3),
               const SizedBox(width: 14),
-              Text(label[3])
+              Text(
+                label[3],
+                style: MahjongTextStyle.tableLabel,
+              )
             ],
           )
         ],
@@ -155,7 +188,8 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
     );
   }
 
-  void _calculateScore() { // ツモ.
+  void _calculateScore() { // ロン.
+
     if (han != null && hu != null && agari != null) {
 
       final p = ref.read(playerProvider) // 親のイニシャルを取る.
@@ -163,63 +197,49 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
           .initial;
 
       if(agari == p) { // 親なら.
-        int? score = keyHostTsumo[hu]?[han];
+        int? score = keyRonHost[hu]?[han];
 
-        if (score == null) { // 後で３倍.
+        if (score == null) { // keyRonHostになければ.
           if (han! < 6) {
-            score = 4000;
-          } else if (han! < 8) {
-            score = 6000;
-          } else if (han! < 11) {
-            score = 8000;
-          } else if (han! < 13) {
             score = 12000;
+          } else if (han! < 8) {
+            score = 18000;
+          } else if (han! < 11) {
+            score = 24000;
+          } else if (han! < 13) {
+            score = 36000;
           } else {
-            score = 16000;
+            score = 48000;
           }
         }
 
         ref.read(agariProvider.notifier).score(score);
+        _enableCheck();
       } else if (agari != p) { // 子なら.
-        int? hostScore = keyChildTsumo[hu]?[han]?.$2;
-        int? childScore = keyChildTsumo[hu]?[han]?.$1;
-
-        if (hostScore == null) {
+        int? score = keyRonChild[hu]?[han];
+        
+        if (score == null) {
           if (han! < 6) {
-            hostScore = 4000;
+            score = 8000;
           } else if (han! < 8) {
-            hostScore = 6000;
+            score = 12000;
           } else if (han! < 11) {
-            hostScore = 8000;
+            score = 16000;
           } else if (han! < 13) {
-            hostScore = 12000;
+            score = 24000;
           } else {
-            hostScore = 16000;
+            score = 32000;
           }
         }
-
-        if (childScore == null) {
-          if (han! < 6) {
-            childScore = 2000;
-          } else if (han! < 8) {
-            childScore = 3000;
-          } else if (han! < 11) {
-            childScore = 4000;
-          } else if (han! < 13) {
-            childScore = 6000;
-          } else {
-            childScore = 8000;
-          }
-        }
-
-        ref.read(agariProvider.notifier).score(hostScore);
-        ref.read(agariProvider.notifier).childScore(childScore);
+        ref.read(agariProvider.notifier).score(score);
+        _enableCheck();
       }
     }
+
   }
 
   void _enableCheck() {
-    final enable = ref.read(agariProvider.notifier).checkTsumo();
+    final enable = ref.read(agariProvider.notifier).checkRon();
     widget.check(enable);
   }
 
@@ -228,19 +248,20 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
 
     final playerName = ref
         .read(playerProvider)
-        .map((m) => m.name)
+        .map((m) => m.name!)
         .toList();
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 50),
+      padding: EdgeInsets.symmetric(horizontal: 40),
       child: Column(
         children: [
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(width: leftSpace),
                 SizedBox(
-                  width: 100,
+                  width: labelBoxWidth,
                   child: Center(
                     child: Text(
                       'リーチ',
@@ -253,7 +274,8 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
                     label: playerName,
                     list: listReach
                   )
-                )
+                ),
+                SizedBox(width: rightSpace)
               ],
             )
           ),
@@ -261,8 +283,42 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
           Expanded(
             child: Row(
               children: [
+                SizedBox(width: leftSpace),
                 SizedBox(
-                  width: 100,
+                  width: labelBoxWidth,
+                  child: Center(
+                    child: Text(
+                      '放銃',
+                      style: MahjongTextStyle.tableLabel,
+                    )
+                  ),
+                ),
+                Expanded(
+                  child: _radioBtn(
+                    label: playerName,
+                    value: houju,
+                    onChanged: (value) {
+                      if (value != agari) { // 放銃と和了を排他に.
+                        setState(() {
+                          houju = value;
+                          ref.read(agariProvider.notifier).houju(value);
+                          _enableCheck();
+                        });
+                      }
+                    }
+                  ),
+                ),
+                SizedBox(width: rightSpace)
+              ],
+            )
+          ),
+          ColumnDivider(),
+          Expanded(
+            child: Row(
+              children: [
+                SizedBox(width: leftSpace),
+                SizedBox(
+                  width: labelBoxWidth,
                   child: Center(
                     child: Text(
                       '和了',
@@ -274,14 +330,22 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
                   child: _radioBtn(
                     label: playerName,
                     value: agari,
-                    onChanged: (value) => setState(() {
-                      agari = value;
-                      ref.read(agariProvider.notifier).agari(value);
-                      _calculateScore();
-                      _enableCheck();
-                    })
+                    onChanged: (value) {
+                      if (value != houju) { // 放銃と和了を排他に.
+                        setState(() {
+                          agari = value;
+                          // final a = agari == null
+                          //     ? agari
+                          //     : agari! + kyoku;
+                          ref.read(agariProvider.notifier).agari(value);
+                          _calculateScore();
+                          _enableCheck();
+                        });
+                      }
+                    }
                   ),
-                )
+                ),
+                SizedBox(width: rightSpace)
               ],
             )
           ),
@@ -289,8 +353,9 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
           Expanded(
             child: Row(
               children: [
+                SizedBox(width: leftSpace),
                 SizedBox(
-                  width: 100,
+                  width: labelBoxWidth,
                   child: Center(
                     child: Text(
                       '点数',
@@ -306,7 +371,7 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
                         title: '飜',
                         choices: _hanSkipFlag ? hanSkipList : hanList,
                         placeholder: '  飜',
-                        half: true,
+                        inputBoxWidth: inputBoxWidth,
                         onChanged: (value) => setState(() {
 
                           value == hanList[0]
@@ -315,7 +380,6 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
 
                           han = hanMap[value];
                           _calculateScore();
-                          _enableCheck();
 
                         }),
                       ),
@@ -323,22 +387,21 @@ class _PopupTsumoState extends ConsumerState<PopupTsumo> {
                         title: '符',
                         choices: _huSkipFlag ? huSkipList : huList,
                         placeholder: '  符',
-                        half: true,
+                        inputBoxWidth: inputBoxWidth,
                         onChanged: (value) => setState(() {
 
-                          value == huList[0] || value == huList[1]
+                          value == huList[0]
                               ? _hanSkipFlag = true
                               : _hanSkipFlag = false;
-
-                          hu = huTsumoMap[value];
+                              
+                          hu = huRonMap[value];
                           _calculateScore();
-                          _enableCheck();
-
                         }),
                       )
                     ],
                   )
-                )
+                ),
+                SizedBox(width: rightSpace)
               ],
             )
           )

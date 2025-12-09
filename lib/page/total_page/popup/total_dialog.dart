@@ -11,7 +11,7 @@ class TotalDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 
     return PopupContent(
-      title: '集計',
+      title: '合計',
       anotation: '',
       body: TotalContent(),
       footer: Center(

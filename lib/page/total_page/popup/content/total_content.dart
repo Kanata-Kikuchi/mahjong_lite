@@ -4,6 +4,13 @@ import 'package:mahjong_lite/notifier/game_score_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
+final order = [
+  '1st',
+  '2nd',
+  '3rd',
+  '4th'
+];
+
 class TotalContent extends ConsumerWidget {
   const TotalContent({super.key});
 
@@ -15,14 +22,7 @@ class TotalContent extends ConsumerWidget {
       縦軸 : 各試合
     */
 
-    final initialName = ref.read(playerProvider.notifier).initialName();
-    final buf = ref.read(gameScoreProvider.notifier).sumScore();
-    final sumScore = [ // (name, score).
-      buf.firstWhere((w) => w.$1 == initialName[0]),
-      buf.firstWhere((w) => w.$1 == initialName[1]),
-      buf.firstWhere((w) => w.$1 == initialName[2]),
-      buf.firstWhere((w) => w.$1 == initialName[3])
-    ];
+    final sumScore = ref.read(gameScoreProvider.notifier).sumScore();
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -31,18 +31,43 @@ class TotalContent extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Expanded(
-              flex: 1,
-              child: Text(
-                sumScore[i].$1,
-                style: MahjongTextStyle.choiceLabelL,
+              flex: 2,
+              child: SizedBox.shrink(),
+            ),
+            Expanded(
+              flex: 2,
+              child: Center(
+                child: Text(
+                  order[i],
+                  style: MahjongTextStyle.choiceLabelL,
+                )
               )
             ),
             Expanded(
-              flex: 1,
-              child: Text(
-                sumScore[i].$2,
-                style: MahjongTextStyle.choiceLabelL,
+              flex: 2,
+              child: Center(
+                child: Text(
+                  sumScore[i].$1,
+                  style: MahjongTextStyle.choiceLabelL,
+                )
               )
+            ),
+            Expanded(
+              flex: 3,
+              child: SizedBox.shrink(),
+            ),
+            Expanded(
+              flex: 2,
+              child: Center(
+                child: Text(
+                  sumScore[i].$2,
+                  style: MahjongTextStyle.choiceLabelL,
+                )
+              )
+            ),
+            Expanded(
+              flex: 3,
+              child: SizedBox.shrink(),
             )
           ],
         );

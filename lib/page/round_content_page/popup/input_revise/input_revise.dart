@@ -2,18 +2,18 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/data/agari_flag_enum.dart';
+import 'package:mahjong_lite/data/rule/agariyame_enum.dart';
 import 'package:mahjong_lite/data/rule/syanyu_enum.dart';
-import 'package:mahjong_lite/model/player_model.dart';
+import 'package:mahjong_lite/data/rule/tobi_enum.dart';
 import 'package:mahjong_lite/notifier/agari_notifier.dart';
-import 'package:mahjong_lite/notifier/game_notifier.dart';
-import 'package:mahjong_lite/notifier/game_score_notifier.dart';
 import 'package:mahjong_lite/notifier/game_set_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/notifier/reach_notifier.dart';
 import 'package:mahjong_lite/notifier/round_notifier.dart';
 import 'package:mahjong_lite/notifier/round_table_notifier.dart';
-import 'package:mahjong_lite/notifier/ruleh_notifier.dart';
-import 'package:mahjong_lite/page/round_content_page/popup/inpu_revise/revise_dialog.dart';
+import 'package:mahjong_lite/notifier/rule_notifier.dart';
+import 'package:mahjong_lite/page/round_content_page/popup/input_revise/revise_dialog.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/agari_yane_dialog/agari_yame_dialog.dart';
 
 class InputRevise extends ConsumerWidget {
   const InputRevise({
@@ -29,10 +29,19 @@ class InputRevise extends ConsumerWidget {
     );
   }
 
+  Future<bool?> agariYamePopup(BuildContext context) {
+    return showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return AgariYameDialog();
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final syanyu = ref.watch(ruleProvider).syanyu;
+    final rule = ref.read(ruleProvider);
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -40,7 +49,6 @@ class InputRevise extends ConsumerWidget {
         final result = await revisePopup(context);   // ポップアップが閉じるまで止まる
 
         if (result == true) { // ポップアップで完了を押されたら.
-
         /*---------------------------------------------------------------------------------
           reviseするなら
             ⓵　Playerを新しく入力された値で更新（zikaze と score）
@@ -48,16 +56,10 @@ class InputRevise extends ConsumerWidget {
             ⓷　Roundも変更内容によっては変わる可能性がある（親じゃなくて子がアガリだったとか）
             ⓸　round_table_view に渡す RoundTable も変更
         ---------------------------------------------------------------------------------*/
+        final gameSet = ref.read(gameSetProvider.notifier);
+        gameSet.reset(); // 終局が何4局に変わる可能性があるから.
 
-        // ⓵ : PlayerNotifier 内で memory として最終変更前の値を保持  <void revise() => state = memory;>.
-
-        // List<Player> memory = [
-        //   Player(name: 'Aさん', initial: 0, zikaze: 0, score: 25000),
-        //   Player(name: 'Bさん', initial: 1, zikaze: 1, score: 25000),
-        //   Player(name: 'Cさん', initial: 2, zikaze: 2, score: 25000),
-        //   Player(name: 'Dさん', initial: 3, zikaze: 3, score: 25000)
-        // ];
-
+        final agari = ref.read(agariProvider.notifier);
         final a = ref.read(agariProvider); // reviseポップアップで変更された内容を持ってる.
         ref.read(playerProvider.notifier).revise(); // <void revise() => state = memory;>.
         (int, int) roundMemory = ref.read(roundProvider.notifier).revise(); // <(int, int) revise() => return memory;>
@@ -106,10 +108,10 @@ class InputRevise extends ConsumerWidget {
 
           if (a.agari == host) { // 親が和了.
             round.honba(revise: true);
-            reach.reset();
+            reach.agari();
           } else if (a.agari != null) { // 親以外が和了.
             round.childAgari(revise: true);
-            reach.reset();
+            reach.agari();
             player.progress();
           } else { // 流局なら.
             if (a.tenpai[host]) { // 親が聴牌なら.
@@ -123,7 +125,7 @@ class InputRevise extends ConsumerWidget {
           final roundTable = ref.read(roundTableProvider.notifier);
           final rNext = ref.read(roundProvider);
           final scoreList = ref.read(playerProvider)
-              .map((m) => (m.initial, m.score))
+              .map((m) => (m.initial, m.score!))
               .toList();
           
           roundTable.revise(
@@ -139,39 +141,77 @@ class InputRevise extends ConsumerWidget {
             }
           }();
 
-          final gameSet = ref.read(gameSetProvider.notifier);
+          final p = ref.read(playerProvider);
+          final hako = p.any((a) => a.score! < 0);
 
-          if (roundMemory.$1 == 7 && !continueHost) { // 南4局.
-            if (syanyu == Syanyu.ari) {
-              final top = scoreList.map((m) => m.$2).reduce(max);
-              if (top > 30000) {
-                gameSet.finish();
-              }
-            } else if (syanyu == Syanyu.none) {
-              gameSet.finish();
-            } else {
-              throw Exception('imput_round.dart/syanyu');
-            }
-          } else if (roundMemory.$1 == 11 && !continueHost) { // 西4局.
+          if (rule.tobi == Tobi.ari && hako) { // 飛んだら.
+            print('飛び');
+            player.finish();
+            round.finish();
             gameSet.finish();
           }
 
-        
+          if (roundMemory.$1 == 7) { // 南4局.
+            print('南4局');
+            final top = scoreList.map((m) => m.$2).reduce(max);
 
-              
+            if (!continueHost) { // 親以外がアガリなら.
+              print('親以外がアガリ');
+              if (rule.syanyu == Syanyu.ari) {
+                print('西入あり');
+                if (top > 30000) {
+                  print('top > 30000');
+                  player.finish();
+                  round.finish();
+                  gameSet.finish();
+                }
+              } else if (rule.syanyu == Syanyu.none) {
+                print('西入なし');
+                player.finish();
+                round.finish();
+                gameSet.finish();
+              }
+            } else if (a.flag != AgariFlag.ryukyou && rule.agariyame == Agariyame.ari) { // ツモかロンでアガリ止め.
+              if (!context.mounted) {return;}
+              if (rule.syanyu == Syanyu.ari && top <= 30000) {return;}
 
+              final bool? resultYame = await agariYamePopup(context);
+              if (resultYame == true) {
+                print('アガリ止め');
+                round.finish();
+                gameSet.finish();
+              }
+            }
+          } else if (roundMemory.$1 == 11) { // 西4局.
+            print('西4局');
+            final top = scoreList.map((m) => m.$2).reduce(max);
 
-          // // print('r: $rNow, ne: $rNext');
-          // // final pnz = ref.read(playerProvider).map((m) => (m.name, m.zikaze.toString())).toList();
-          // // print('${pnz[0].$1}: ${pnz[0].$2}, ${pnz[1].$1}: ${pnz[1].$2}, ${pnz[2].$1}: ${pnz[2].$2}, ${pnz[3].$1}: ${pnz[3].$2}');
-          // debugPrintAgari(ref.read(agariProvider));
+            if (!continueHost) {
+              print('親以外がアガリ');
+              player.finish();
+              round.finish();
+              gameSet.finish();
+            } else if (a.flag != AgariFlag.ryukyou && rule.agariyame == Agariyame.ari) {
+              if (!context.mounted) {return;}
+              if (rule.syanyu == Syanyu.ari && top <= 30000) {return;}
+
+              final bool? resultYame = await agariYamePopup(context);
+              if (resultYame == true) {
+                print('アガリ止め');
+                round.finish();
+                gameSet.finish();
+              }
+            }
+          }
+
+          agari.reset();
         }
       },
 
       child: Icon(
         CupertinoIcons.right_chevron,
         color: CupertinoColors.activeBlue,
-        size: 17,
+        size: 13,
       )
     );
   }

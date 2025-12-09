@@ -32,13 +32,13 @@ class ExtraRound extends ConsumerWidget {
       children: [
         Row( // リーチ棒.
           children: [
-            const SizedBox(width: 25), // どうにかする.
+            // const SizedBox(width: 25), // どうにかする.
             Expanded(
-              child: _dot(size: 14, color: CupertinoColors.systemRed)
+              child: _dot(size: 7, color: CupertinoColors.systemRed)
             ),
             Expanded(
               child: Text(
-                '×   $reach',
+                '×      $reach',
                 style: MahjongTextStyle.scoreAnotation
               )
             )
@@ -47,24 +47,23 @@ class ExtraRound extends ConsumerWidget {
         const SizedBox(height: 25),
         Row( // 本場.
           children: [
-            const SizedBox(width: 25), // どうにかする.
             Expanded(
               child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(4, (_) => _dot(size: 8, color: CupertinoColors.black))
+                    children: List.generate(4, (_) => _dot(size: 4, color: CupertinoColors.black))
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(4, (_) => _dot(size: 8, color: CupertinoColors.black))
+                    children: List.generate(4, (_) => _dot(size: 4, color: CupertinoColors.black))
                   )
                 ],
               )
             ),
             Expanded(
               child: Text(
-                '×   $honba',
+                '×      $honba',
                 style: MahjongTextStyle.scoreAnotation
               )
             )

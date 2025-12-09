@@ -5,6 +5,12 @@ class GameSetNotifier extends Notifier<bool> {
   @override
   build() => false;
 
+  void gameSetSet({
+    required bool gameSet
+  }) {
+    state = gameSet;
+  }
+
   void finish() {
     state = true;
   }

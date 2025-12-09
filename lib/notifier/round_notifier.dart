@@ -7,43 +7,48 @@ class RoundNotifier extends Notifier<(int, int)> {
   @override
   build() => (0, 0);
 
+  void finish() {
+    state = memory;
+  }
+
+  void roundSet({
+    required int kyoku,
+    required int honba
+  }) {
+    state = (kyoku, honba);
+  }
+
   void honba({ // 親が聴牌 or 親がアガリ.
     bool? revise = false
   }) {
-
     if (revise != true) {
       memory = state;
       state = (state.$1, state.$2 + 1);
     } else {
       state = (memory.$1, memory.$2 + 1);
     }
-
   }
 
   void hostNoten({ // 親がノーテン.
     bool? revise = false
   }) {
-
     if (revise != true) {
       memory = state;
       state = (state.$1 + 1, state.$2 + 1);
     } else {
       state = (memory.$1 + 1, memory.$2 + 1);
     }
-    
   }
 
   void childAgari({ // 子がアガリ.
     bool? revise = false
   }) {
-    
     if (revise != true) {
       memory = state;
       state = (state.$1 + 1, 0);
     } else {
       state = (memory.$1 + 1, 0);
     }
-
   }
 
   (int, int) revise() {
@@ -52,6 +57,7 @@ class RoundNotifier extends Notifier<(int, int)> {
 
   void reset() {
     state = (0, 0);
+    memory = (0, 0);
   }
 
 }

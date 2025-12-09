@@ -1,12 +1,15 @@
 import 'package:flutter/cupertino.dart';
+import 'package:mahjong_lite/page/room_page/host/content_host.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
+
+final double inputBoxHeight = 30;
 
 class SelectSheet extends StatefulWidget {
   const SelectSheet({
     required this.title,
     required this.choices,
     required this.placeholder,
-    this.half,
+    required this.inputBoxWidth,
     required this.onChanged,
     super.key
   });
@@ -14,7 +17,7 @@ class SelectSheet extends StatefulWidget {
   final String title;
   final List<String> choices;
   final String placeholder;
-  final bool? half;
+  final double inputBoxWidth;
   final ValueChanged<String?> onChanged;
 
   @override
@@ -34,16 +37,25 @@ class _SelectSheetState extends State<SelectSheet> {
           context: context,
           builder: (context) {
             return CupertinoActionSheet(
-              title: Text(widget.title),
+              title: Text(
+                widget.title,
+                style: MahjongTextStyle.sheetLabel
+              ),
               actions: widget.choices.map((m) {
                 return CupertinoActionSheetAction(
                   onPressed: () => Navigator.pop(context, m),
-                  child: Text(m)
+                  child: Text(
+                    m,
+                    style: MahjongTextStyle.sheetChoiceBlue,
+                  )
                 );
               }).toList(),
               cancelButton: CupertinoActionSheetAction(
                 onPressed: () => Navigator.pop(context),
-                child: Text("キャンセル")
+                child: Text(
+                  "キャンセル",
+                  style: MahjongTextStyle.sheetButtonCancel,
+                )
               ),
             );
           },
@@ -51,14 +63,13 @@ class _SelectSheetState extends State<SelectSheet> {
 
         if (result != null) {
           setState(() => _value = result);
+          widget.onChanged(_value);
         }
-
-        widget.onChanged(_value);
 
       },
       child: Container(
-        width: widget.half == null ? 400 : 100,
-        height: 40,
+        width: widget.inputBoxWidth,
+        height: inputBoxHeight,
         decoration: BoxDecoration(
           color: CupertinoColors.white,
           borderRadius: BorderRadius.circular(8),

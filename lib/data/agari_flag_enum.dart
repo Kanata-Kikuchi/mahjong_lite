@@ -1,5 +1,5 @@
 enum AgariFlag {
   ron,
   tsumo,
-  ryukyou
+  ryukyou;
 }

@@ -5,9 +5,9 @@ import 'package:mahjong_lite/layout/button/enable_btn.dart';
 import 'package:mahjong_lite/layout/button/tab_btn.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/notifier/agari_notifier.dart';
-import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/content/popup_ron.dart';
-import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/content/popup_ryuukyoku.dart';
-import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/content/popup_tsumo.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/agari_dialog/content/popup_ron.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/agari_dialog/content/popup_ryuukyoku.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/agari_dialog/content/popup_tsumo.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class AgariDialog extends ConsumerStatefulWidget {
@@ -31,18 +31,18 @@ class _AgariDialogState extends ConsumerState<AgariDialog> {
 
     final agari = ref.read(agariProvider.notifier);
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 200, vertical: 50),
-      child: Container(
-        decoration: BoxDecoration(
-          color: CupertinoColors.white,
-          borderRadius: BorderRadius.circular(24)
-        ),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final h = constraints.maxHeight;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final h = constraints.maxHeight;
 
-            return Column(
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 100,vertical: 20),
+          child: Container(
+            decoration: BoxDecoration(
+              color: CupertinoColors.white,
+              borderRadius: BorderRadius.circular(24)
+            ),
+            child: Column(
               children: [
                 SizedBox(
                   height: h / 6,
@@ -92,7 +92,7 @@ class _AgariDialogState extends ConsumerState<AgariDialog> {
                 ),
                 ColumnDivider(),
                 SizedBox(
-                  height: h / 8,
+                  height: h / 6,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -119,10 +119,10 @@ class _AgariDialogState extends ConsumerState<AgariDialog> {
                   ),
                 )
               ]
-            );
-          },
-        )
-      )
+            )
+          )
+        );
+      },
     );
   }
 }

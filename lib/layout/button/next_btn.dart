@@ -28,7 +28,7 @@ class NextBtn extends StatelessWidget {
           const Icon(
             CupertinoIcons.right_chevron,
             color: CupertinoColors.activeBlue,
-            size: 17,
+            size: 13,
           )
         ],
       )

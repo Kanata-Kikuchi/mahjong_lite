@@ -31,9 +31,9 @@ class ScoreBox extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 30,vertical: 15),
+        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 6),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -53,8 +53,7 @@ class ScoreBox extends StatelessWidget {
             Text(
               score.toString(),
               style: MahjongTextStyle.score,
-            ),
-            const SizedBox()
+            )
           ],
         )
       )

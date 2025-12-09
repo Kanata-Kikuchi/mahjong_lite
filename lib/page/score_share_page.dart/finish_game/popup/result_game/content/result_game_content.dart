@@ -4,64 +4,87 @@ import 'package:mahjong_lite/notifier/game_score_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 final order = [
-  '1着',
-  '2着',
-  '3着',
-  '4着'
+  '1st',
+  '2nd',
+  '3rd',
+  '4th'
 ];
 
+// final name = [
+//   'Asjajsaf',
+//   'ahjsfk',
+//   'jhas',
+//   'ff'
+// ];
+
+// final score = [
+//   '+20',
+//   '+10',
+//   '-10',
+//   '-20'
+// ];
+
 class ResultGameContent extends ConsumerWidget {
-  const ResultGameContent({super.key});
+  const ResultGameContent({
+    required this.resultNameList,
+    required this.resultScoreList,
+    super.key
+  });
+
+  final List<String> resultNameList;
+  final List<String> resultScoreList;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-    final sortList = ref.watch(gameScoreProvider);
-
-    if (sortList.length == 1) {
-      
-      return SizedBox.shrink();
-       /* 
-       ポップアップを閉じた瞬間にsortListが減るため一瞬エラーが出るから
-       <sortList.length == 1> この条件でエラー回避のために
-       <SizedBox.shrink()> を用意。UIには表示されるものではない。
-       */
-      
-    } else {
-
-      final name = [
-        sortList[sortList.length - 2].score1st!.$1,
-        sortList[sortList.length - 2].score2nd!.$1,
-        sortList[sortList.length - 2].score3rd!.$1,
-        sortList[sortList.length - 2].score4th!.$1
-      ];
-
-      final score = [
-        sortList[sortList.length - 2].score1st!.$3,
-        sortList[sortList.length - 2].score2nd!.$3,
-        sortList[sortList.length - 2].score3rd!.$3,
-        sortList[sortList.length - 2].score4th!.$3
-      ];
-      
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: List.generate(4, (i) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                '${order[i]}  ${name[i]}',
-                style: MahjongTextStyle.choiceLabelL,
-              ),
-              Text(
-                score[i],
-                style: MahjongTextStyle.choiceLabelL,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: List.generate(4, (i) {
+        return Row(
+          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(
+              flex: 2,
+              child: SizedBox.shrink(),
+            ),
+            Expanded(
+              flex: 2,
+              child: Center(
+                child: Text(
+                  order[i],
+                  style: MahjongTextStyle.choiceLabelL,
+                )
               )
-            ],
-          );
-        })
-      );
+            ),
+            Expanded(
+              flex: 2,
+              child: Center(
+                child: Text(
+                  resultNameList[i],
+                  style: MahjongTextStyle.choiceLabelL,
+                )
+              )
+            ),
+            Expanded(
+              flex: 3,
+              child: SizedBox.shrink(),
+            ),
+            Expanded(
+              flex: 2,
+              child: Center(
+                child: Text(
+                  resultScoreList[i],
+                  style: MahjongTextStyle.choiceLabelL,
+                )
+              )
+            ),
+            Expanded(
+              flex: 3,
+              child: SizedBox.shrink(),
+            )
+          ],
+        );
+      })
+    );
 
-    }
   }
 }

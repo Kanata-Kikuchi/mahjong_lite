@@ -17,7 +17,7 @@ class CancelBtn extends StatelessWidget {
       onPressed: onTap,
       child: Text(
         label,
-        style: MahjongTextStyle.buttonBack
+        style: MahjongTextStyle.buttonBackBold
       ),
     );
   }

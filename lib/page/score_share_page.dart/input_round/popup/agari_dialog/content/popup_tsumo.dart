@@ -1,19 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/data/han_map.dart';
-import 'package:mahjong_lite/data/hu_ron_map.dart';
-import 'package:mahjong_lite/data/ron_child_score.dart';
-import 'package:mahjong_lite/data/ron_host_score.dart';
+import 'package:mahjong_lite/data/hu_tsumo_map.dart';
+import 'package:mahjong_lite/data/tsumo_child_score.dart';
+import 'package:mahjong_lite/data/tsumo_host_score.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/notifier/agari_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
-import 'package:mahjong_lite/notifier/revise_comment_notifier.dart';
-import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 import 'package:mahjong_lite/layout/popup/select_sheet.dart';
 
-class ReviseRon extends ConsumerStatefulWidget {
-  const ReviseRon({
+/*
+  <-space-> <---label---> <----------input----------> <-space->
+*/
+
+final double leftSpace = 20;
+final double labelBoxWidth = 50;
+final double inputBoxWidth = 120;
+final double rightSpace = 40;
+
+class PopupTsumo extends ConsumerStatefulWidget {
+  const PopupTsumo({
     required this.check,
     super.key
   });
@@ -21,12 +28,12 @@ class ReviseRon extends ConsumerStatefulWidget {
   final Function(bool) check;
 
   @override
-  ConsumerState<ReviseRon> createState() => _ReviseRonState();
+  ConsumerState<PopupTsumo> createState() => _PopupTsumoState();
 }
 
-class _ReviseRonState extends ConsumerState<ReviseRon> {
+class _PopupTsumoState extends ConsumerState<PopupTsumo> {
 
-  int? houju;
+  int? houjuu;
   int? agari;
   int? han;
   int? hu;
@@ -34,10 +41,8 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
   bool _huSkipFlag = false;
   final List<String> hanList = hanMap.keys.toList();
   final List<String> hanSkipList = hanMap.keys.skip(1).toList();
-  final List<String> huList = huRonMap.keys.toList();
-  final List<String> huSkipList = huRonMap.keys.skip(1).toList();
-
-  bool _textFlag = false;
+  final List<String> huList = huTsumoMap.keys.toList();
+  final List<String> huSkipList = huTsumoMap.keys.skip(2).toList();
 
   final List<bool> listReach = [
     false,
@@ -64,7 +69,10 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
                 ref.read(agariProvider.notifier).reach(list);
               })
             ),
-            Text(label[0]),
+            Text(
+              label[0],
+              style: MahjongTextStyle.tableLabel,
+            ),
           ],
         ),
         const SizedBox.shrink(),
@@ -77,7 +85,10 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
                 ref.read(agariProvider.notifier).reach(list);
               })
             ),
-            Text(label[1]),
+            Text(
+              label[1],
+              style: MahjongTextStyle.tableLabel,
+            ),
           ],
         ),
         const SizedBox.shrink(),
@@ -90,7 +101,10 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
                 ref.read(agariProvider.notifier).reach(list);
               })
             ),
-            Text(label[2]),
+            Text(
+              label[2],
+              style: MahjongTextStyle.tableLabel,
+            ),
           ],
         ),
         const SizedBox.shrink(),
@@ -103,7 +117,10 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
                 ref.read(agariProvider.notifier).reach(list);
               })
             ),
-            Text(label[3])
+            Text(
+              label[3],
+              style: MahjongTextStyle.tableLabel,
+            )
           ],
         )
       ],
@@ -127,7 +144,10 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
             children: [
               CupertinoRadio(value: 0),
               const SizedBox(width: 14),
-              Text(label[0]),
+              Text(
+                label[0],
+                style: MahjongTextStyle.tableLabel,
+              ),
             ],
           ),
           const SizedBox(width: 14),
@@ -135,7 +155,10 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
             children: [
               CupertinoRadio(value: 1),
               const SizedBox(width: 14),
-              Text(label[1]),
+              Text(
+                label[1],
+                style: MahjongTextStyle.tableLabel,
+              ),
             ],
           ),
           const SizedBox(width: 14),
@@ -143,7 +166,10 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
             children: [
               CupertinoRadio(value: 2),
               const SizedBox(width: 14),
-              Text(label[2]),
+              Text(
+                label[2],
+                style: MahjongTextStyle.tableLabel,
+              ),
             ],
           ),
           const SizedBox(width: 14),
@@ -151,7 +177,10 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
             children: [
               CupertinoRadio(value: 3),
               const SizedBox(width: 14),
-              Text(label[3])
+              Text(
+                label[3],
+                style: MahjongTextStyle.tableLabel,
+              )
             ],
           )
         ],
@@ -159,8 +188,7 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
     );
   }
 
-  void _calculateScore() { // ロン.
-
+  void _calculateScore() { // ツモ.
     if (han != null && hu != null && agari != null) {
 
       final p = ref.read(playerProvider) // 親のイニシャルを取る.
@@ -168,50 +196,64 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
           .initial;
 
       if(agari == p) { // 親なら.
-        int? score = keyRonHost[hu]?[han];
+        int? score = keyHostTsumo[hu]?[han];
 
-        if (score == null) { // keyRonHostになければ.
+        if (score == null) { // 後で３倍.
           if (han! < 6) {
-            score = 12000;
+            score = 4000;
           } else if (han! < 8) {
-            score = 18000;
+            score = 6000;
           } else if (han! < 11) {
-            score = 24000;
-          } else if (han! < 13) {
-            score = 36000;
-          } else {
-            score = 48000;
-          }
-        }
-
-        ref.read(agariProvider.notifier).score(score);
-        _enableCheck();
-      } else if (agari != p) { // 子なら.
-        int? score = keyRonChild[hu]?[han];
-        
-        if (score == null) {
-          if (han! < 6) {
             score = 8000;
-          } else if (han! < 8) {
-            score = 12000;
-          } else if (han! < 11) {
-            score = 16000;
           } else if (han! < 13) {
-            score = 24000;
+            score = 12000;
           } else {
-            score = 32000;
+            score = 16000;
           }
         }
+
         ref.read(agariProvider.notifier).score(score);
-        _enableCheck();
+      } else if (agari != p) { // 子なら.
+        int? hostScore = keyChildTsumo[hu]?[han]?.$2;
+        int? childScore = keyChildTsumo[hu]?[han]?.$1;
+
+        if (hostScore == null) {
+          if (han! < 6) {
+            hostScore = 4000;
+          } else if (han! < 8) {
+            hostScore = 6000;
+          } else if (han! < 11) {
+            hostScore = 8000;
+          } else if (han! < 13) {
+            hostScore = 12000;
+          } else {
+            hostScore = 16000;
+          }
+        }
+
+        if (childScore == null) {
+          if (han! < 6) {
+            childScore = 2000;
+          } else if (han! < 8) {
+            childScore = 3000;
+          } else if (han! < 11) {
+            childScore = 4000;
+          } else if (han! < 13) {
+            childScore = 6000;
+          } else {
+            childScore = 8000;
+          }
+        }
+
+        ref.read(agariProvider.notifier).score(hostScore);
+        ref.read(agariProvider.notifier).childScore(childScore);
       }
     }
-
   }
 
   void _enableCheck() {
-    final enable = ref.read(agariProvider.notifier).checkRon();
-    widget.check(enable && _textFlag);
+    final enable = ref.read(agariProvider.notifier).checkTsumo();
+    widget.check(enable);
   }
 
   @override
@@ -219,21 +261,20 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
 
     final playerName = ref
         .read(playerProvider)
-        .map((m) => m.name)
+        .map((m) => m.name!)
         .toList();
 
-    final text = ref.read(reviseCommentProvider.notifier);
-
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 50),
+      padding: EdgeInsets.symmetric(horizontal: 40),
       child: Column(
         children: [
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(width: leftSpace),
                 SizedBox(
-                  width: 100,
+                  width: labelBoxWidth,
                   child: Center(
                     child: Text(
                       'リーチ',
@@ -246,38 +287,8 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
                     label: playerName,
                     list: listReach
                   )
-                )
-              ],
-            )
-          ),
-          ColumnDivider(),
-          Expanded(
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 100,
-                  child: Center(
-                    child: Text(
-                      '放銃',
-                      style: MahjongTextStyle.tableLabel,
-                    )
-                  ),
                 ),
-                Expanded(
-                  child: _radioBtn(
-                    label: playerName,
-                    value: houju,
-                    onChanged: (value) {
-                      if (value != agari) { // 放銃と和了を排他に.
-                        setState(() {
-                          houju = value;
-                          ref.read(agariProvider.notifier).houju(value);
-                          _enableCheck();
-                        });
-                      }
-                    }
-                  ),
-                )
+                SizedBox(width: rightSpace)
               ],
             )
           ),
@@ -285,8 +296,9 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
           Expanded(
             child: Row(
               children: [
+                SizedBox(width: leftSpace),
                 SizedBox(
-                  width: 100,
+                  width: labelBoxWidth,
                   child: Center(
                     child: Text(
                       '和了',
@@ -298,18 +310,15 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
                   child: _radioBtn(
                     label: playerName,
                     value: agari,
-                    onChanged: (value) {
-                      if (value != houju) { // 放銃と和了を排他に.
-                        setState(() {
-                          agari = value;
-                          ref.read(agariProvider.notifier).agari(value);
-                          _calculateScore();
-                          _enableCheck();
-                        });
-                      }
-                    }
+                    onChanged: (value) => setState(() {
+                      agari = value;
+                      ref.read(agariProvider.notifier).agari(value);
+                      _calculateScore();
+                      _enableCheck();
+                    })
                   ),
-                )
+                ),
+                SizedBox(width: rightSpace)
               ],
             )
           ),
@@ -317,8 +326,9 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
           Expanded(
             child: Row(
               children: [
+                SizedBox(width: leftSpace),
                 SizedBox(
-                  width: 100,
+                  width: labelBoxWidth,
                   child: Center(
                     child: Text(
                       '点数',
@@ -334,7 +344,7 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
                         title: '飜',
                         choices: _hanSkipFlag ? hanSkipList : hanList,
                         placeholder: '  飜',
-                        half: true,
+                        inputBoxWidth: inputBoxWidth,
                         onChanged: (value) => setState(() {
 
                           value == hanList[0]
@@ -343,6 +353,7 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
 
                           han = hanMap[value];
                           _calculateScore();
+                          _enableCheck();
 
                         }),
                       ),
@@ -350,54 +361,23 @@ class _ReviseRonState extends ConsumerState<ReviseRon> {
                         title: '符',
                         choices: _huSkipFlag ? huSkipList : huList,
                         placeholder: '  符',
-                        half: true,
+                        inputBoxWidth: inputBoxWidth,
                         onChanged: (value) => setState(() {
 
-                          value == huList[0]
+                          value == huList[0] || value == huList[1]
                               ? _hanSkipFlag = true
                               : _hanSkipFlag = false;
-                              
-                          hu = huRonMap[value];
+
+                          hu = huTsumoMap[value];
                           _calculateScore();
+                          _enableCheck();
+
                         }),
                       )
                     ],
                   )
-                )
-              ],
-            )
-          ),
-          ColumnDivider(),
-          Expanded(
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 100,
-                  child: Center(
-                    child: Text(
-                      'コメント',
-                      style: MahjongTextStyle.tableLabel,
-                    )
-                  ),
                 ),
-                Expanded(
-                  child: CupertinoTextField(
-                    onChanged: (value) {
-                      setState(() {
-                        if (value.isEmpty) {
-                          _textFlag = false;
-                        } else {
-                          _textFlag = true;
-                        }
-                      });
-                      text.set(
-                        index: ref.read(roundTableProvider.notifier).reviseIndex(),
-                        text: value
-                      );
-                      _enableCheck();
-                    },
-                  )
-                )
+                SizedBox(width: rightSpace)
               ],
             )
           )

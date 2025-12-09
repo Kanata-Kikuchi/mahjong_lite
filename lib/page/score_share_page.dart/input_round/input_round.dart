@@ -3,18 +3,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/data/agari_flag_enum.dart';
 import 'package:mahjong_lite/data/kyoku_map.dart';
+import 'package:mahjong_lite/data/rule/agariyame_enum.dart';
 import 'package:mahjong_lite/data/rule/syanyu_enum.dart';
+import 'package:mahjong_lite/data/rule/tobi_enum.dart';
+import 'package:mahjong_lite/layout/popup/popup_content.dart';
 import 'package:mahjong_lite/notifier/agari_notifier.dart';
-import 'package:mahjong_lite/notifier/game_notifier.dart';
-import 'package:mahjong_lite/notifier/game_score_notifier.dart';
 import 'package:mahjong_lite/notifier/game_set_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/notifier/reach_notifier.dart';
 import 'package:mahjong_lite/notifier/round_notifier.dart';
 import 'package:mahjong_lite/notifier/round_table_notifier.dart';
-import 'package:mahjong_lite/notifier/ruleh_notifier.dart';
-import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/agari_dialog.dart';
-import 'package:mahjong_lite/debug/debug_print_agari.dart';
+import 'package:mahjong_lite/notifier/rule_notifier.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/agari_dialog/agari_dialog.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/agari_yane_dialog/agari_yame_dialog.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class InputRound extends ConsumerWidget {
@@ -31,12 +32,21 @@ class InputRound extends ConsumerWidget {
     );
   }
 
+  Future<bool?> agariYamePopup(BuildContext context) {
+    return showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return AgariYameDialog();
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final round = ref.watch(roundProvider);
-    final syanyu = ref.watch(ruleProvider).syanyu;
-    final gameSet = ref.watch(gameSetProvider.notifier);
+    final rule = ref.read(ruleProvider);
+    final round = ref.read(roundProvider);
+    final gameSet = ref.read(gameSetProvider.notifier);
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -44,6 +54,7 @@ class InputRound extends ConsumerWidget {
         final result = await agariPopup(context);   // ← ポップアップが閉じるまで止まる
 
         if (result == true) { // ポップアップで完了を押されたら.
+          final agari = ref.read(agariProvider.notifier);
           final round = ref.read(roundProvider.notifier);
           final player = ref.read(playerProvider.notifier);
           final reach = ref.read(reachProvider.notifier);
@@ -90,10 +101,10 @@ class InputRound extends ConsumerWidget {
 
           if (a.agari == host) { // 親が和了.
             round.honba();
-            reach.reset();
+            reach.agari();
           } else if (a.agari != null) { // 親以外が和了.
             round.childAgari();
-            reach.reset();
+            reach.agari();
             player.progress();
           } else { // 流局なら.
             if (a.tenpai[host]) { // 親が聴牌なら.
@@ -106,7 +117,7 @@ class InputRound extends ConsumerWidget {
 
           final rNext = ref.read(roundProvider); // resetとかした後に.
           final scoreList = ref.read(playerProvider)
-              .map((m) => (m.initial, m.score))
+              .map((m) => (m.initial, m.score!))
               .toList();
               
           roundTable.add(
@@ -123,33 +134,70 @@ class InputRound extends ConsumerWidget {
             }
           }();
 
-          if (rNow.$1 == 7 && !continueHost) { // 南4局.
+          final p = ref.read(playerProvider);
+          final hako = p.any((a) => a.score! < 0);
+
+          if (rule.tobi == Tobi.ari && hako) { // 飛んだら.
+            print('飛び');
             player.finish();
-            if (syanyu == Syanyu.ari) {
-              final top = scoreList.map((m) => m.$2).reduce(max);
-              if (top > 30000) {
-                gameSet.finish();
-              }
-            } else if (syanyu == Syanyu.none) {
-              gameSet.finish();
-            } else {
-              throw Exception('imput_round.dart/syanyu');
-            }
-          } else if (rNow.$1 == 11 && !continueHost) { // 西4局.
-            player.finish();
+            round.finish();
             gameSet.finish();
           }
 
-          // print('round: $rNow, gemaSet: ${ref.read(gameSetProvider)}');
+          if (rNow.$1 == 7) { // 南4局.
+            print('南4局');
+            final top = scoreList.map((m) => m.$2).reduce(max);
 
-          // ref.read(agariProvider.notifier).record();
+            if (!continueHost) { // 親以外がアガリなら.
+              print('親以外がアガリ');
+              if (rule.syanyu == Syanyu.ari) {
+                print('西入あり');
+                if (top > 30000) {
+                  print('top > 30000');
+                  player.finish();
+                  round.finish();
+                  gameSet.finish();
+                }
+              } else if (rule.syanyu == Syanyu.none) {
+                print('西入なし');
+                player.finish();
+                round.finish();
+                gameSet.finish();
+              }
+            } else if (a.flag != AgariFlag.ryukyou && rule.agariyame == Agariyame.ari) { // ツモかロンでアガリ止め.
+              if (!context.mounted) {return;}
+              if (rule.syanyu == Syanyu.ari && top <= 30000) {return;}
 
-          // ref.read(agariProvider.notifier).reset();
+              final bool? resultYame = await agariYamePopup(context);
+              if (resultYame == true) {
+                print('アガリ止め');
+                round.finish();
+                gameSet.finish();
+              }
+            }
+          } else if (rNow.$1 == 11) { // 西4局.
+            print('西4局');
+            final top = scoreList.map((m) => m.$2).reduce(max);
 
-          // print('r: $rNow, ne: $rNext');
-          // final pnz = ref.read(playerProvider).map((m) => (m.name, m.zikaze.toString())).toList();
-          // print('${pnz[0].$1}: ${pnz[0].$2}, ${pnz[1].$1}: ${pnz[1].$2}, ${pnz[2].$1}: ${pnz[2].$2}, ${pnz[3].$1}: ${pnz[3].$2}');
-          // debugPrintAgari(ref.read(agariProvider));
+            if (!continueHost) {
+              print('親以外がアガリ');
+              player.finish();
+              round.finish();
+              gameSet.finish();
+            } else if (a.flag != AgariFlag.ryukyou && rule.agariyame == Agariyame.ari) {
+              if (!context.mounted) {return;}
+              if (rule.syanyu == Syanyu.ari && top <= 30000) {return;}
+
+              final bool? resultYame = await agariYamePopup(context);
+              if (resultYame == true) {
+                print('アガリ止め');
+                round.finish();
+                gameSet.finish();
+              }
+            }
+          }
+
+          agari.reset();
         }
       },
 
@@ -164,7 +212,7 @@ class InputRound extends ConsumerWidget {
           const Icon(
             CupertinoIcons.right_chevron,
             color: CupertinoColors.activeBlue,
-            size: 50,
+            size: 30,
           )
         ],
       )

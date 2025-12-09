@@ -5,13 +5,15 @@ class BackBtn extends StatelessWidget {
   const BackBtn({
     required this.label,
     required this.onTap,
-    this.blue = false,
+    this.blue,
+    this.bold,
     super.key
   });
 
   final String label;
   final void Function() onTap;
-  final bool blue;
+  final bool? blue;
+  final bool? bold;
 
   @override
   Widget build(BuildContext context) {
@@ -27,17 +29,19 @@ class BackBtn extends StatelessWidget {
             quarterTurns: 90,
               child: Icon(
               CupertinoIcons.right_chevron,
-              color: blue
+              color: blue ?? false
                   ? CupertinoColors.activeBlue
                   : CupertinoColors.systemRed,
-              size: 17,
+              size: 13,
             )
           ),
-          Text( // ラウンド表記.
+          Text(
             label,
-            style: blue
+            style: blue ?? false
                 ? MahjongTextStyle.buttonNext
-                : MahjongTextStyle.buttonBack
+                : bold ?? false
+                    ? MahjongTextStyle.buttonBackBold
+                    : MahjongTextStyle.buttonBack
           )
         ],
       )

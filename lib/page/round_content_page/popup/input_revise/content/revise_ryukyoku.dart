@@ -7,12 +7,25 @@ import 'package:mahjong_lite/notifier/revise_comment_notifier.dart';
 import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
+/*
+  <-space-> <---label---> <----------input----------> <-space->
+  <-space-> <---label---> <-space->　<-----input-----> <-space->
+*/
+
+final double leftSpace = 20;
+final double labelBoxWidth = 50;
+final double labelInputSpace = 40;
+final double inputBoxWidth = 80;
+final double rightSpace = 40;
+
 class ReviseRyukyoku extends ConsumerStatefulWidget {
   const ReviseRyukyoku({
+    required this.commentController,
     required this.check,
     super.key
   });
 
+  final TextEditingController commentController;
   final Function(bool) check;
 
   @override
@@ -62,7 +75,10 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
                 linkList(0);
               })
             ),
-            Text(label[0]),
+            Text(
+              label[0],
+              style: MahjongTextStyle.tableLabel,
+            ),
           ],
         ),
         const SizedBox.shrink(),
@@ -76,7 +92,10 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
                 linkList(1);
               })
             ),
-            Text(label[1]),
+            Text(
+              label[1],
+              style: MahjongTextStyle.tableLabel,
+            ),
           ],
         ),
         const SizedBox.shrink(),
@@ -90,7 +109,10 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
                 linkList(2);
               })
             ),
-            Text(label[2]),
+            Text(
+              label[2],
+              style: MahjongTextStyle.tableLabel,
+            ),
           ],
         ),
         const SizedBox.shrink(),
@@ -104,7 +126,10 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
                 linkList(3);
               })
             ),
-            Text(label[3])
+            Text(
+              label[3],
+              style: MahjongTextStyle.tableLabel,
+            )
           ],
         )
       ],
@@ -128,7 +153,10 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
                 ref.read(agariProvider.notifier).tenpai(listTenpai);
               })
             ),
-            Text(label[0]),
+            Text(
+              label[0],
+              style: MahjongTextStyle.tableLabel,
+            ),
           ],
         ),
         const SizedBox.shrink(),
@@ -141,7 +169,10 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
                 ref.read(agariProvider.notifier).tenpai(listTenpai);
               })
             ),
-            Text(label[1]),
+            Text(
+              label[1],
+              style: MahjongTextStyle.tableLabel,
+            ),
           ],
         ),
         const SizedBox.shrink(),
@@ -154,7 +185,10 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
                 ref.read(agariProvider.notifier).tenpai(listTenpai);
               })
             ),
-            Text(label[2]),
+            Text(
+              label[2],
+              style: MahjongTextStyle.tableLabel,
+            ),
           ],
         ),
         const SizedBox.shrink(),
@@ -167,7 +201,10 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
                 ref.read(agariProvider.notifier).tenpai(listTenpai);
               })
             ),
-            Text(label[3])
+            Text(
+              label[3],
+              style: MahjongTextStyle.tableLabel,
+            )
           ],
         )
       ],
@@ -183,21 +220,22 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
 
     final playerName = ref
         .read(playerProvider)
-        .map((m) => m.name)
+        .map((m) => m.name!)
         .toList();
 
     final text = ref.read(reviseCommentProvider.notifier);
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 50),
+      padding: EdgeInsets.symmetric(horizontal: 40),
       child: Column(
         children: [
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(width: leftSpace),
                 SizedBox(
-                  width: 100,
+                  width: labelBoxWidth,
                   child: Center(
                     child: Text(
                       'リーチ',
@@ -209,7 +247,8 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
                   child: _reachCheckBtn(
                     label: playerName,
                   )
-                )
+                ),
+                SizedBox(width: rightSpace)
               ],
             )
           ),
@@ -218,8 +257,9 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(width: leftSpace),
                 SizedBox(
-                  width: 100,
+                  width: labelBoxWidth,
                   child: Center(
                     child: Text(
                       '聴牌',
@@ -231,7 +271,8 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
                   child: _tenpaiCheckBtn(
                     label: playerName,
                   )
-                )
+                ),
+                SizedBox(width: rightSpace)
               ],
             )
           ),
@@ -239,8 +280,9 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
           Expanded(
             child: Row(
               children: [
+                SizedBox(width: leftSpace),
                 SizedBox(
-                  width: 100,
+                  width: labelBoxWidth,
                   child: Center(
                     child: Text(
                       'コメント',
@@ -248,8 +290,21 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
                     )
                   ),
                 ),
+                SizedBox(width: labelInputSpace),
                 Expanded(
                   child: CupertinoTextField(
+                    controller: widget.commentController,
+                    placeholder: '修正理由を書いてください',
+                    decoration: BoxDecoration(
+                      color: CupertinoColors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: CupertinoColors.systemGrey3,
+                        width: 1,
+                      ),
+                    ),
+                    style: MahjongTextStyle.choiceBlue,
+                    placeholderStyle: MahjongTextStyle.choiceOpa,
                     onChanged: (value) {
                       setState(() {
                         if (value.isEmpty) {
@@ -262,11 +317,11 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
                         index: ref.read(roundTableProvider.notifier).reviseIndex(),
                         text: value
                       );
-                      // print('resivre_ryukyoku/index: ${ref.read(roundTableProvider.notifier).reviseIndex()}');
                       _enableCheck();
                     },
                   )
-                )
+                ),
+                SizedBox(width: rightSpace)
               ],
             )
           )
