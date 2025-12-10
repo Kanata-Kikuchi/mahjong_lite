@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/data/rule/oka_enum.dart';
 import 'package:mahjong_lite/data/rule/uma_enum.dart';
@@ -26,15 +25,8 @@ class GameScoreNotifier extends Notifier<List<Game>> {
   ];
 
   List<List<(String, int)>> sum = []; // (name, score).
-  // List<List<(String, int)>> sum = [
-  //   [('kanata', 20),
-  //   ('A', 10),
-  //   ('B', -10),
-  //   ('C', -20)]
-  // ]; // debug用. 
 
   List<List<int>> scoreMemory = [];
-  // List<List<int>> scoreMemory = [[35000, 30000, 20000, 15000]]; // debug用.
 
   @override
   build() => [
@@ -43,20 +35,53 @@ class GameScoreNotifier extends Notifier<List<Game>> {
       time: 0,
     )
   ];
-  // build() => [ // debug用.
-  //   Game(
-  //     game: '第1試合',
-  //     time: 0,
-  //     score1st: ('kanata', 0, '+20'),
-  //     score2nd: ('A', 1, '+10'),
-  //     score3rd: ('B', 2, '-10'),
-  //     score4th: ('C', 3, '-20')
-  //   ),
-  //   Game(
-  //     game: '第2試合',
-  //     time: 0,
-  //   )
-  // ];
+
+  void debugMode() {
+    memory = [
+      Game(
+        game: '第1試合',
+        time: 0,
+        score1st: ('debug_D', 3, '+20pt'),
+        score2nd: ('debug_A', 0, '+10pt'),
+        score3rd: ('debug_C', 2, '▲10pt'),
+        score4th: ('debug_B', 1, '▲20pt')
+      ),
+      Game(
+        game: '第2試合',
+        time: 0,
+      )
+    ];
+    sum = [
+      [('debug_B', -20), ('debug_C', -10), ('debug_A', 10), ('debug_D', 20)],
+      [('debug_D', -35), ('debug_B', -15), ('debug_A', 15), ('debug_C', 35)]
+    ];
+    scoreMemory = [
+      [45000, 35000, 15000, 5000],
+      [60000, 40000, 10000, -10000]
+    ];
+    state = [
+      Game(
+        game: '第1試合',
+        time: 0,
+        score1st: ('debug_D', 3, '+20pt'),
+        score2nd: ('debug_A', 0, '+10pt'),
+        score3rd: ('debug_C', 2, '▲10pt'),
+        score4th: ('debug_B', 1, '▲20pt')
+      ),
+      Game(
+        game: '第2試合',
+        time: 0,
+        score1st: ('debug_C', 2, '+35pt'),
+        score2nd: ('debug_A', 0, '+15pt'),
+        score3rd: ('debug_B', 1, '▲15pt'),
+        score4th: ('debug_D', 3, '▲35pt')
+      ),
+      Game(
+        game: '第3試合',
+        time: 0,
+      )
+    ];
+  }
 
   void gameScoreSet({
     required List<Map<String, dynamic>> gameScore
@@ -64,17 +89,27 @@ class GameScoreNotifier extends Notifier<List<Game>> {
     List<Game> buf = [];
 
     for (final row in gameScore) {
-      buf = [
-        ...buf,
-        Game(
-          game: row['game'],
-          time: row['time'],
-          score1st: row['score1st'],
-          score2nd: row['score2nd'],
-          score3rd: row['score3rd'],
-          score4th: row['score4th']
-        )
-      ];
+      if (row['score1st'] == null && row['score2nd'] == null && row['score3rd'] == null && row['score4th'] == null) {
+        buf = [
+          ...buf,
+          Game(
+            game: row['game'],
+            time: row['time']
+          )
+        ];
+      } else {
+        buf = [
+          ...buf,
+          Game(
+            game: row['game'],
+            time: row['time'],
+            score1st: (row['score1st']['name'], row['initial'], row['score']),
+            score2nd: (row['score2nd']['name'], row['initial'], row['score']),
+            score3rd: (row['score3rd']['name'], row['initial'], row['score']),
+            score4th: (row['score4th']['name'], row['initial'], row['score'])
+          )
+        ];
+      }
     }
 
     state = buf;
@@ -95,8 +130,15 @@ class GameScoreNotifier extends Notifier<List<Game>> {
 
     final top = score.map((m) => m.$3).reduce(max); // 1位の点数.
     final topInitial = score.firstWhere((w) => w.$3 == top).$2; // 1位のイニシャル.
-    final sort = [...score]..sort((a, b) => a.$3.compareTo(b.$3));
-    final scoreSort = sort.map((m) => (m.$1, m.$2, (m.$3 / 1000).round())).toList();
+    final sort = [...score]..sort((a, b) {
+      final cmp = a.$3.compareTo(b.$3);
+      if (cmp != 0) {
+        return cmp;
+      } else { // 同点なら起家順に.
+        return b.$2.compareTo(a.$2);
+      }
+    }); // 点数でソート.
+    final scoreSort = sort.map((m) => (m.$1, m.$2, (m.$3 / 1000).round())).toList(); // ソートした点数を1000で割って四捨五入.
     late int base;
 
     final umaOutside = (){

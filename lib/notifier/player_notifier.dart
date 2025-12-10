@@ -20,29 +20,44 @@ class PlayerNotifier extends Notifier<List<Player>> {
     Player(playerId: null, name: null, initial: 3, zikaze: 3, score: null)
   ];
 
-  List<String> initialNameList = [ // debug用、本来は初期値null.
-    'kanata',
-    'A',
-    'B',
-    'C'
+  List<String?> initialNameList = [
+    null,
+    null,
+    null,
+    null
   ];
 
-  // int? initialScore;
-  int? initialScore = 25000; // debug用.
+  int? initialScore;
 
   @override
   List<Player> build() {
-    // return [
-    //   Player(playerId: null, name: null, initial: 0, zikaze: 0, score: null),
-    //   Player(playerId: null, name: null, initial: 1, zikaze: 1, score: null),
-    //   Player(playerId: null, name: null, initial: 2, zikaze: 2, score: null),
-    //   Player(playerId: null, name: null, initial: 3, zikaze: 3, score: null)
-    // ];
-    return [ // debug用.
-      Player(playerId: null, name: 'kanata', initial: 0, zikaze: 0, score: 25000),
-      Player(playerId: null, name: 'A', initial: 1, zikaze: 1, score: 25000),
-      Player(playerId: null, name: 'B', initial: 2, zikaze: 2, score: 25000),
-      Player(playerId: null, name: 'C', initial: 3, zikaze: 3, score: 25000)
+    return [
+      Player(playerId: null, name: null, initial: 0, zikaze: 0, score: null),
+      Player(playerId: null, name: null, initial: 1, zikaze: 1, score: null),
+      Player(playerId: null, name: null, initial: 2, zikaze: 2, score: null),
+      Player(playerId: null, name: null, initial: 3, zikaze: 3, score: null)
+    ];
+  }
+
+  void debugMode() {
+    memory = [
+      Player(playerId: '123aaa', name: 'debug_A', initial: 0, zikaze: 2, score: 12700),
+      Player(playerId: '123bbb', name: 'debug_B', initial: 1, zikaze: 3, score: 37000),
+      Player(playerId: '123ccc', name: 'debug_C', initial: 2, zikaze: 0, score: 26200),
+      Player(playerId: '123ddd', name: 'debug_D', initial: 3, zikaze: 1, score: 24100)
+    ];
+    initialNameList = [
+      'debug_A',
+      'debug_B',
+      'debug_C',
+      'debug_D'
+    ];
+    initialScore = 25000;
+    state = [
+      Player(playerId: '123aaa', name: 'debug_A', initial: 0, zikaze: 1, score: 11700),
+      Player(playerId: '123bbb', name: 'debug_B', initial: 1, zikaze: 2, score: 37000),
+      Player(playerId: '123ccc', name: 'debug_C', initial: 2, zikaze: 3, score: 26200),
+      Player(playerId: '123ddd', name: 'debug_D', initial: 3, zikaze: 0, score: 23100)
     ];
   }
 
@@ -264,7 +279,12 @@ class PlayerNotifier extends Notifier<List<Player>> {
   }
 
   List<String> initialName() {
-    return initialNameList;
+    return [
+      initialNameList[0]!,
+      initialNameList[1]!,
+      initialNameList[2]!,
+      initialNameList[3]!
+    ];
   }
 
   int initScore() {

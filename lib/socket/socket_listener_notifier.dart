@@ -3,14 +3,98 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/data/rule/oka_enum.dart';
 import 'package:mahjong_lite/data/seat_enum.dart';
+import 'package:mahjong_lite/notifier/game_notifier.dart';
+import 'package:mahjong_lite/notifier/game_score_notifier.dart';
+import 'package:mahjong_lite/notifier/game_set_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
+import 'package:mahjong_lite/notifier/reach_notifier.dart';
+import 'package:mahjong_lite/notifier/revise_comment_notifier.dart';
+import 'package:mahjong_lite/notifier/round_notifier.dart';
+import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/notifier/rule_notifier.dart';
 import 'package:mahjong_lite/socket/socket_enable_join_provider.dart';
 import 'package:mahjong_lite/socket/socket_game_start_provider.dart';
+import 'package:mahjong_lite/socket/socket_initiative_provider.dart';
 import 'package:mahjong_lite/socket/socket_playerid_provider.dart';
 import 'package:mahjong_lite/socket/socket_provider.dart';
 import 'package:mahjong_lite/socket/socket_roomid_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+/*
+  < Flutterからの送信 >
+    create_room :
+      room_page.dart/socketCreateRoom()
+      'ルームを作る'を押下したときに発火し、入力した名前とルールを送る
+
+    join_room :
+      room_page.dart/socketJoinRoom()
+      'ルームに入る'を押下したときに発火し、入力した名前とルームIDを送る
+
+    start_game :
+      room_host.dart/startGame()
+      'ゲーム開始'を押下したときに発火し、ルームIDを送る
+
+    remove_room :
+      room_host.dart/removeRoom()
+      'ルーム削除'を押下したときに発火し、ルームIDを送る
+
+    exit_room :
+      room_child.dart/exitRoom()
+      '退出'を押下したときに発火し、ルームIDとプレイヤーIDを送る
+
+    input_round :
+      score_share_page.dart/soketInputRound()
+      点数入力のポップアップにおいて'完了'を押下したときに発火し、
+      ルームIDとラウンド、リーチ、第何試合、ゲームセットフラグ、局履歴、試合履歴、点数状況を送る
+
+    initiative_check :
+      finish_game.dart/initiativeCheck()
+      親決めのポップアップにおいて'完了'を押下したときに発火し、新しい席順になったプレイヤーIDを送る
+*/
+
+/*
+  < Nodejsからの受信 >
+    ~ ルーム関連 ~
+    room_state :
+      server.js/broadcastRoomState()
+      サーバー内に保存したルームデータをもとに該当するルームの入室者にルーム情報を送る
+
+    room_created :
+      server.js/createRoom()
+      'create_room'を受けてルームIDとプレイヤーIDを発行し、サーバー内にルームデータを保存
+      broadcastRoomState()を実行する。
+
+    delete_room :
+      server.js/removeRoom()
+      'remove_room'を受けてサーバー内に保存したルームデータを削除する
+
+    success_join :
+      server.js/joinRoom()
+      'join_room'を受けて入室順に[nan, sya, pei]を割り当て、プレイヤーIDを発行し、サーバー内にルームデータを保存
+      setId()とbroadcastRoomState()を実行する。
+
+    unknwon_room :
+      server.js/joinRoom()
+      'join_room'を受けてサーバー内にルームデータに該当するルームが存在しない
+
+    pullout_player :
+      server.js/pulloutPlayer()
+      'exit_room'を受けてサーバー内にルームデータから該当するプレイヤーを削除し整理する
+
+    game_start :
+      server.js/startGame()
+      'start_game'を受けて入室者にブロードキャストする
+
+    set_id :
+      server.js/setId()
+      createRoom()とjoinRoom()で実行され、発行したルームIDとプレイヤーIDを送る
+
+    ~ ゲーム関連 ~
+    game_state :
+      server.js/broadcastGameState()
+      'input_round'を受けてinputRound()が実行され、その中で実行される親以外へのブロードキャスト
+      ルームIDとラウンド、リーチ、第何試合、ゲームセットフラグ、局履歴、試合履歴、点数状況を送る
+*/
 
 class SocketListenerNotifier extends Notifier<void> {
 
@@ -29,6 +113,7 @@ class SocketListenerNotifier extends Notifier<void> {
         case 'room_created':
           print('type: room_created を受信');
           ref.read(ruleProvider.notifier).id(payload['roomId']);
+          ref.read(initiativeProvider.notifier).state = true; // 主導権true.
 
           final player = ref.read(playerProvider.notifier);
           final rule = ref.read(ruleProvider);
@@ -84,6 +169,7 @@ class SocketListenerNotifier extends Notifier<void> {
 
         case 'success_join':
           print('type: success_join を受信');
+          ref.read(initiativeProvider.notifier).state = false; // 主導権false.
           ref.read(socketEnableJoinProvider.notifier).state = true;
           break;
 
@@ -125,6 +211,38 @@ class SocketListenerNotifier extends Notifier<void> {
           });
 
           ref.read(socketEnableJoinProvider.notifier).state = false;
+          break;
+
+        case 'game_state':
+          print('type: game_state を受信');
+          ref.read(roundProvider.notifier).roundSet(kyoku: payload['round']['kyoku'], honba: payload['round']['honab']);
+          ref.read(reachProvider.notifier).reachSet(reach: payload['reach']);
+          ref.read(gameSetProvider.notifier).gameSetSet(gameSet: payload['gameSet']);
+          ref.read(roundTableProvider.notifier).roundTableSet(roundTable: payload['roundTable']);
+          ref.read(reviseCommentProvider.notifier).reviseCommentSet(comment: payload['comment']);
+          ref.read(playerProvider.notifier).playerSet(player: payload['score']);
+          break;
+
+        case 'game_finish':
+          final playerId = ref.read(socketPlayerIdProvider);
+          
+          if (payload['players'][0]['playerId'] == playerId) {
+            ref.read(initiativeProvider.notifier).state = true;
+          } else {
+            ref.read(initiativeProvider.notifier).state = false;
+          }
+
+          ref.read(gameScoreProvider.notifier).gameScoreSet(gameScore: payload['gameScore']);
+
+          /*-------------------------- リセット群 --------------------------*/
+          ref.read(playerProvider.notifier).reset(); // 自風と点数.
+          ref.read(reachProvider.notifier).reset(); // リーチ棒.
+          ref.read(roundProvider.notifier).reset(); // 局と本場.
+          ref.read(roundTableProvider.notifier).reset(); // 局内容.
+          ref.read(gameSetProvider.notifier).reset(); // 試合終了フラグ.
+          ref.read(reviseCommentProvider.notifier).reset(); // 修正コメント.
+          /*----------------------------------------------------------------*/
+          ref.read(gameProvider.notifier).progress(); // 試合を進める.
           break;
 
         case 'error':

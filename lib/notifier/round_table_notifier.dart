@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/data/kyoku_map.dart';
 import 'package:mahjong_lite/model/round_table.dart';
@@ -28,23 +26,96 @@ class RoundTableNotifier extends Notifier<List<RoundTable>> {
     ];
   }
 
+  void debugMode() {
+    state = [
+      RoundTable(
+        kyoku: '東1局',
+        honba: '0本場',
+        p0: 25000,
+        p1: 25000,
+        p2: 30200,
+        p3: 19800
+      ),
+      RoundTable(
+        kyoku: '東2局',
+        honba: '0本場',
+        p0: 23000,
+        p1: 21000,
+        p2: 38200,
+        p3: 17800,
+        revise: true
+      ),
+      RoundTable(
+        kyoku: '東2局',
+        honba: '0本場',
+        p0: 21000,
+        p1: 37000,
+        p2: 26200,
+        p3: 15800
+      ),
+      RoundTable(
+        kyoku: '東2局',
+        honba: '1本場',
+        p0: 12700,
+        p1: 37000,
+        p2: 26200,
+        p3: 24100
+      ),
+      RoundTable(
+        kyoku: '東3局',
+        honba: '0本場',
+        p0: 11700,
+        p1: 37000,
+        p2: 26200,
+        p3: 23100
+      ),
+      RoundTable(
+        kyoku: '東3局',
+        honba: '0本場'
+      )
+    ];
+  }
+
   void roundTableSet({
     required List<Map<String, dynamic>> roundTable
   }) {
     List<RoundTable> buf = [];
     
     for (final row in roundTable) {
-      buf = [
-        ...buf,
-        RoundTable(
-          kyoku: row['kyoku'],
-          honba: row['honba'],
-          p0: row['p0'],
-          p1: row['p1'],
-          p2: row['p2'],
-          p3: row['p3']
-        )
-      ];
+      if (row['revise'] == true) {
+        buf = [
+          ...buf,
+          RoundTable(
+            kyoku: row['kyoku'],
+            honba: row['honba'],
+            p0: row['p0'],
+            p1: row['p1'],
+            p2: row['p2'],
+            p3: row['p3'],
+            revise: row['revise']
+          )
+        ];
+      } else if (row['p0'] == null && row['p1'] == null && row['p2'] == null && row['p3'] == null) {
+        buf = [
+          ...buf,
+          RoundTable(
+            kyoku: row['kyoku'],
+            honba: row['honba']
+          )
+        ];
+      } else {
+        buf = [
+          ...buf,
+          RoundTable(
+            kyoku: row['kyoku'],
+            honba: row['honba'],
+            p0: row['p0'],
+            p1: row['p1'],
+            p2: row['p2'],
+            p3: row['p3']
+          )
+        ];
+      }
     }
 
     state = buf;

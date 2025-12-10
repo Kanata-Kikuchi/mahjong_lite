@@ -64,8 +64,8 @@ class MyApp extends ConsumerWidget {
     return CupertinoApp(
       debugShowCheckedModeBanner: false,
       // home: FinishGame(),
-      home: ScoreSharePage(),
-      // home: RoomPage(),
+      // home: ScoreSharePage(),
+      home: RoomPage(),
       // home: homeWidget,
 
       theme: AppTheme.fallback,

@@ -7,6 +7,7 @@ import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/page/round_content_page/popup/input_revise/input_revise.dart';
 import 'package:mahjong_lite/page/round_content_page/popup/show_comment/show_comment.dart';
+import 'package:mahjong_lite/socket/socket_initiative_provider.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class RoundTableView extends ConsumerWidget {
@@ -27,6 +28,7 @@ class RoundTableView extends ConsumerWidget {
     final diff = ref.read(roundTableProvider.notifier).diffrenceScore(initialScore: initialScore);
     final name = ref.watch(playerProvider).map((m) => m.name!).toList();
     final gameSet = ref.watch(gameSetProvider);
+    final initiative = ref.watch(initiativeProvider);
 
     final diffString = diff.map((m) => m.map((d) {
         if (d > 0) {
@@ -146,9 +148,7 @@ class RoundTableView extends ConsumerWidget {
                     flex: 1,
                     child: Align(
                       alignment: Alignment.centerRight,
-                      child: i == list.length - 2
-                          ? InputRevise() // 修正ポップアップ.
-                          : SizedBox.shrink()
+                      child: SizedBox.shrink()
                     )
                   )
                 ]
@@ -163,7 +163,7 @@ class RoundTableView extends ConsumerWidget {
                     flex: 1,
                     child: Align(
                       alignment: Alignment.centerRight,
-                      child: ShowComment(index:i)
+                      child: ShowComment(index:i) // 修正内容のポップアップ.
                     )
                   )
                 ],
@@ -242,7 +242,7 @@ class RoundTableView extends ConsumerWidget {
                 flex: 1,
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: i == list.length - 2
+                  child: i == list.length - 2 && initiative // 主導権.
                       ? InputRevise() // 修正ポップアップ.
                       : SizedBox.shrink()
                 )

@@ -10,24 +10,27 @@ class RuleNotifier extends Notifier<Rule> {
 
   @override
   Rule build() {
-    return Rule( // debug用.
-      name: '',
+    return Rule(
+      name: null,
+      uma: null,
+      oka: null,
+      tobi: null,
+      syanyu: null,
+      agariyame: null,
+      id: null
+    );
+  }
+
+  void debugMode() {
+    state = Rule(
+      name: 'debug_A',
       uma: Uma.none,
       oka: Oka.none25000,
       tobi: Tobi.none,
       syanyu: Syanyu.ari,
       agariyame: Agariyame.ari,
-      id: 'abc123'
+      id: 'debug'
     );
-    // return Rule(
-    //   name: null,
-    //   uma: null,
-    //   oka: null,
-    //   tobi: null,
-    //   syanyu: null,
-    //   agariyame: null,
-    //   id: null
-    // );
   }
 
   void name(String name) {

@@ -7,6 +7,10 @@ class ReachNotifier extends Notifier<int> {
   @override
   build() => 0;
 
+  void debugMode() {
+    state = 2;
+  }
+
   void reachSet({
     required int reach
   }) {

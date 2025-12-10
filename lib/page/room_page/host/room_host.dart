@@ -20,7 +20,7 @@ class RoomHost extends ConsumerStatefulWidget {
   ConsumerState<RoomHost> createState() => _RoomHostState();
 }
 
-bool _enable = true;
+bool _enable = false;
 
 class _RoomHostState extends ConsumerState<RoomHost> {
 
@@ -219,10 +219,10 @@ class _RoomHostState extends ConsumerState<RoomHost> {
                           label: 'ゲーム開始',
                           enabled: _enable,
                           onTap: () {
-                            // startGame();
-                            ref.read(ruleProvider.notifier).debug();
-                            ref.read(playerProvider.notifier).debug();
-                            Navigator.pushNamedAndRemoveUntil(context, '/share', (route) => false); // debug用.
+                            startGame();
+                            // ref.read(ruleProvider.notifier).debug();
+                            // ref.read(playerProvider.notifier).debug();
+                            // Navigator.pushNamedAndRemoveUntil(context, '/share', (route) => false); // debug用.
                           },
                         )
                       ],

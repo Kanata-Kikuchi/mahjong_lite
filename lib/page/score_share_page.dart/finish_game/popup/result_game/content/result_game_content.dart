@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mahjong_lite/notifier/game_score_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 final order = [
@@ -9,20 +8,6 @@ final order = [
   '3rd',
   '4th'
 ];
-
-// final name = [
-//   'Asjajsaf',
-//   'ahjsfk',
-//   'jhas',
-//   'ff'
-// ];
-
-// final score = [
-//   '+20',
-//   '+10',
-//   '-10',
-//   '-20'
-// ];
 
 class ResultGameContent extends ConsumerWidget {
   const ResultGameContent({

@@ -1,10 +1,18 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mahjong_lite/debug/debug_provider.dart';
 import 'package:mahjong_lite/layout/button/enable_btn.dart';
 import 'package:mahjong_lite/layout/button/tab_btn.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/layout/layout_page.dart';
+import 'package:mahjong_lite/notifier/game_notifier.dart';
+import 'package:mahjong_lite/notifier/game_score_notifier.dart';
+import 'package:mahjong_lite/notifier/player_notifier.dart';
+import 'package:mahjong_lite/notifier/reach_notifier.dart';
+import 'package:mahjong_lite/notifier/revise_comment_notifier.dart';
+import 'package:mahjong_lite/notifier/round_notifier.dart';
+import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/notifier/rule_notifier.dart';
 import 'package:mahjong_lite/page/room_page/child/content_child.dart';
 import 'package:mahjong_lite/page/room_page/host/content_host.dart';
@@ -33,6 +41,19 @@ class _RoomPageState extends ConsumerState<RoomPage> {
 
   final nameController = TextEditingController();
   final roomIDController = TextEditingController();
+
+  void debugMode() {
+    ref.read(debugProvider.notifier).state = true;
+    ref.read(gameProvider.notifier).debugMode(); // 3
+    ref.read(ruleProvider.notifier).debugMode();
+    ref.read(playerProvider.notifier).debugMode();
+    ref.read(gameScoreProvider.notifier).debugMode();
+    ref.read(roundProvider.notifier).debugMode(); // (2,1)
+    ref.read(reachProvider.notifier).debugMode(); // 2
+    ref.read(roundTableProvider.notifier).debugMode();
+    ref.read(reviseCommentProvider.notifier).debugMode();
+    Navigator.pushNamed(context, '/share');
+  }
 
   void _check(bool enable) {
     setState(() => _enable = enable);
@@ -164,8 +185,12 @@ class _RoomPageState extends ConsumerState<RoomPage> {
                             enabled: _enable,
                             bold: true,
                             onTap: () {
-                              Navigator.pushNamed(context, '/room_child'); // debug用.
-                              // socketJoinRoom(nameController.text);
+                              // Navigator.pushNamed(context, '/room_child'); // debug用.
+                              if (nameController.text == 'debug' && roomIDController.text == 'debug') {
+                                debugMode();
+                              } else {
+                                socketJoinRoom(nameController.text);
+                              }
                             }
                           )
                   ),

@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mahjong_lite/debug/debug_provider.dart';
 import 'package:mahjong_lite/notifier/game_notifier.dart';
 import 'package:mahjong_lite/notifier/game_score_notifier.dart';
 import 'package:mahjong_lite/notifier/game_set_notifier.dart';
@@ -11,6 +13,7 @@ import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/notifier/rule_notifier.dart';
 import 'package:mahjong_lite/page/score_share_page.dart/finish_game/popup/next_game/next_game_dialog.dart';
 import 'package:mahjong_lite/page/score_share_page.dart/finish_game/popup/result_game/result_game_dialog.dart';
+import 'package:mahjong_lite/socket/socket_provider.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class FinishGame extends ConsumerWidget {
@@ -45,6 +48,58 @@ class FinishGame extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    void initiativeCheck() {
+      final channel = ref.read(socketProvider);
+
+      final roomId = ref.read(ruleProvider).id;
+      final gameScore = ref.read(gameScoreProvider);
+      final players = ref.read(playerProvider); // この時点ですでに東南西北の順番.
+
+      final msg = {
+        'type': 'initiative_check',
+        'payload': {
+          'roomId': roomId, // String?.
+          'gameScore': gameScore.map((m) => {
+            'game': m.game, // String.
+            'time': m.time, // int.
+            'score1st': m.score1st == null // (String, int, String)?.
+                ? null
+                : {
+                    'name': m.score1st!.$1, // String.
+                    'initial': m.score1st!.$2, // int.
+                    'score': m.score1st!.$3, // String.
+                  },
+            'score2nd': m.score2nd == null // (String, int, String)?.
+                ? null
+                : {
+                    'name': m.score2nd!.$1, // String.
+                    'initial': m.score2nd!.$2, // int.
+                    'score': m.score2nd!.$3, // String.
+                  },
+            'score3rd': m.score3rd == null // (String, int, String)?.
+                ? null
+                : {
+                    'name': m.score3rd!.$1, // String.
+                    'initial': m.score3rd!.$2, // int.
+                    'score': m.score3rd!.$3, // String.
+                  },
+            'score4th': m.score4th == null // (String, int, String)?.
+                ? null
+                : {
+                    'name': m.score4th!.$1, // String.
+                    'initial': m.score4th!.$2, // int.
+                    'score': m.score4th!.$3, // String.
+                  },
+          }).toList(),
+          'players': players.map((m) => {
+            'playerId': m.playerId, // String?.
+          }).toList()
+        }
+      };
+
+      channel.sink.add(jsonEncode(msg));
+    }
 
     return GestureDetector( // 終局を押したら.
       behavior: HitTestBehavior.opaque,
@@ -116,16 +171,28 @@ class FinishGame extends ConsumerWidget {
 
         if (resultNext == true) { // 親決め(next_game_content)のポップアップで完了が押されたら.
 
-          /*-------------------------- リセット群 --------------------------*/
-          ref.read(playerProvider.notifier).reset(); // 自風と点数.
-          ref.read(reachProvider.notifier).reset(); // リーチ棒.
-          ref.read(roundProvider.notifier).reset(); // 局と本場.
-          ref.read(roundTableProvider.notifier).reset(); // 局内容.
-          ref.read(gameSetProvider.notifier).reset(); // 試合終了フラグ.
-          ref.read(reviseCommentProvider.notifier).reset(); // 修正コメント.
-          /*----------------------------------------------------------------*/
+          // /*-------------------------- リセット群 --------------------------*/
+          // ref.read(playerProvider.notifier).reset(); // 自風と点数.
+          // ref.read(reachProvider.notifier).reset(); // リーチ棒.
+          // ref.read(roundProvider.notifier).reset(); // 局と本場.
+          // ref.read(roundTableProvider.notifier).reset(); // 局内容.
+          // ref.read(gameSetProvider.notifier).reset(); // 試合終了フラグ.
+          // ref.read(reviseCommentProvider.notifier).reset(); // 修正コメント.
+          // /*----------------------------------------------------------------*/
 
-          ref.read(gameProvider.notifier).progress(); // 試合を進める.
+          // ref.read(gameProvider.notifier).progress(); // 試合を進める.
+          initiativeCheck();
+          if (ref.read(debugProvider)) {
+            /*-------------------------- リセット群 --------------------------*/
+            ref.read(playerProvider.notifier).reset(); // 自風と点数.
+            ref.read(reachProvider.notifier).reset(); // リーチ棒.
+            ref.read(roundProvider.notifier).reset(); // 局と本場.
+            ref.read(roundTableProvider.notifier).reset(); // 局内容.
+            ref.read(gameSetProvider.notifier).reset(); // 試合終了フラグ.
+            ref.read(reviseCommentProvider.notifier).reset(); // 修正コメント.
+            /*----------------------------------------------------------------*/
+            ref.read(gameProvider.notifier).progress(); // 試合を進める.
+          }
 
           ref.read(playerProvider.notifier).debug();
 

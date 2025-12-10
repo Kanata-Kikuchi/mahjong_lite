@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,16 +6,20 @@ import 'package:mahjong_lite/layout/button/next_btn.dart';
 import 'package:mahjong_lite/layout/layout_page.dart';
 import 'package:mahjong_lite/layout/score_box.dart';
 import 'package:mahjong_lite/notifier/game_notifier.dart';
-import 'package:mahjong_lite/notifier/game_score_notifier.dart';
 import 'package:mahjong_lite/notifier/game_set_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/notifier/reach_notifier.dart';
+import 'package:mahjong_lite/notifier/revise_comment_notifier.dart';
 import 'package:mahjong_lite/notifier/round_notifier.dart';
 import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/notifier/rule_notifier.dart';
 import 'package:mahjong_lite/page/score_share_page.dart/extra_round/extra_round.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/finish_game/finish_game_member.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/game_rule/game_rule.dart';
 import 'package:mahjong_lite/page/score_share_page.dart/input_round/input_round.dart';
 import 'package:mahjong_lite/page/score_share_page.dart/finish_game/finish_game.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/input_round/input_round_member.dart';
+import 'package:mahjong_lite/socket/socket_initiative_provider.dart';
 import 'package:mahjong_lite/socket/socket_provider.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
@@ -46,9 +49,9 @@ class _ScoreSharePageState extends ConsumerState<ScoreSharePage> {
     final reach = ref.read(reachProvider);
     final gameSet = ref.read(gameSetProvider);
     final roundTable = ref.read(roundTableProvider); // List<RoundTable>.
-    final gameScore = ref.read(gameScoreProvider); // List<Game>.
+    final comment = ref.read(reviseCommentProvider);
     final player = ref.read(playerProvider); // List<Player>.
-    
+
     final msg = {
       'type': 'input_round',
       'payload': {
@@ -68,38 +71,7 @@ class _ScoreSharePageState extends ConsumerState<ScoreSharePage> {
           'p3': m.p3, // int?.
           'revise': m.revise
         }).toList(),
-        'gameScore': gameScore.map((m) => {
-          'game': m.game, // String.
-          'time': m.time, // int.
-          'score1st': m.score1st == null // (String, int, String)?.
-              ? null
-              : {
-                  'name': m.score1st!.$1, // String.
-                  'score': m.score1st!.$2, // int.
-                  'rank': m.score1st!.$3, // String.
-                },
-          'score2nd': m.score2nd == null // (String, int, String)?.
-              ? null
-              : {
-                  'name': m.score2nd!.$1, // String.
-                  'score': m.score2nd!.$2, // int.
-                  'rank': m.score2nd!.$3, // String.
-                },
-          'score3rd': m.score3rd == null // (String, int, String)?.
-              ? null
-              : {
-                  'name': m.score3rd!.$1, // String.
-                  'score': m.score3rd!.$2, // int.
-                  'rank': m.score3rd!.$3, // String.
-                },
-          'score4th': m.score4th == null // (String, int, String)?.
-              ? null
-              : {
-                  'name': m.score4th!.$1, // String.
-                  'score': m.score4th!.$2, // int.
-                  'rank': m.score4th!.$3, // String.
-                },
-        }).toList(),
+        'comment': comment, // Map<int, String>.
         'score': player.map((m) => {
           'initial': m.initial, // int.
           'zikaze': m.zikaze, // int.
@@ -115,8 +87,8 @@ class _ScoreSharePageState extends ConsumerState<ScoreSharePage> {
   Widget build(BuildContext context) {
 
     final players = ref.watch(playerProvider);
-    final game = ref.watch(gameProvider.notifier);
     final gameSet = ref.watch(gameSetProvider);
+    final initiative = ref.watch(initiativeProvider);
 
     return CupertinoPageScaffold(
       child: LayoutPage(
@@ -133,9 +105,13 @@ class _ScoreSharePageState extends ConsumerState<ScoreSharePage> {
                   children: [
                     SizedBox( // ロン・ツモ・流局入力.
                       width: w / 4,
-                      child: gameSet
-                          ? FinishGame()
-                          : InputRound()
+                      child: gameSet // ゲームセットフラグ.
+                          ? initiative // 主導権.
+                            ? FinishGame()
+                            : FinishGameMember()
+                          : initiative // 主導権.
+                            ? InputRound()
+                            : InputRoundMember()
                     ),
                     ScoreBox( // top.
                       width: w / 3,
@@ -162,10 +138,7 @@ class _ScoreSharePageState extends ConsumerState<ScoreSharePage> {
                       score: players[3].score!,
                       host: players[3].zikaze == 0
                     ),
-                    Text( // ゲーム数表記.
-                      game.string(),
-                      style: MahjongTextStyle.scoreAnotation
-                    ),
+                    GameRule(), // ゲーム数表記.
                     ScoreBox( // right.
                       width: w / 3,
                       height: h / 3 - 10,
@@ -182,21 +155,23 @@ class _ScoreSharePageState extends ConsumerState<ScoreSharePage> {
                   children: [
                     SizedBox( // ルーム消去.
                       width: w / 4,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: bottomBtnPadding),
-                        child: BackBtn(
-                          label: 'ルーム消去',
-                          bold: true,
-                          onTap: () {
-                            Navigator.pushNamed(context, '/room'); // debug用.
-                            /*
-                            final pref = await SharedPreferences.getInstance();
-                            await pref.remove('playerId');
-                            await pref.remove('roomId');
-                            */
-                          }
-                        )
-                      )
+                      child: initiative // 主導権.
+                          ? Padding(
+                            padding: EdgeInsets.symmetric(vertical: bottomBtnPadding),
+                            child: BackBtn(
+                              label: 'ルーム消去',
+                              bold: true,
+                              onTap: () {
+                                Navigator.pushNamed(context, '/room'); // debug用.
+                                /*
+                                final pref = await SharedPreferences.getInstance();
+                                await pref.remove('playerId');
+                                await pref.remove('roomId');
+                                */
+                              }
+                            )
+                          )
+                          : SizedBox.shrink()
                     ),
                     ScoreBox( // bottom.
                       width: w / 3,
