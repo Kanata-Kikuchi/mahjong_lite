@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:mahjong_lite/page/room_page/host/content_host.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 final double inputBoxHeight = 30;

@@ -94,7 +94,7 @@ class _ReviseDialogState extends ConsumerState<ReviseDialog> {
                     ]
                   ),
                 ),
-                ColumnDivider(),
+                const ColumnDivider(),
                 Expanded(
                   child: () {
                     if (_selected == 0) {return ReviseRon(check: _check, commentController: commentController);}
@@ -102,7 +102,7 @@ class _ReviseDialogState extends ConsumerState<ReviseDialog> {
                     else {return ReviseRyukyoku(check: _check, commentController: commentController);}
                   }(),
                 ),
-                ColumnDivider(),
+                const ColumnDivider(),
                 SizedBox(
                   height: h / 6,
                   child: Row(

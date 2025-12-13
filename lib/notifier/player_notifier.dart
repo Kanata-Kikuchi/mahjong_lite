@@ -89,7 +89,7 @@ class PlayerNotifier extends Notifier<List<Player>> {
   void newSeatSet({
     required List<dynamic> newSeat
   }) {
-    print(state);
+    // print(state);
     final ids = newSeat.whereType<String>().toList();
 
     final byId = {
@@ -351,16 +351,16 @@ class PlayerNotifier extends Notifier<List<Player>> {
     state = memory;
   }
 
-  void debug() {
-    print('''
-    state = [
-      Player(playerId: ${state[0].playerId}, name: ${state[0].name}, initial: ${state[0].initial}, zikaze: ${state[0].zikaze}, score: ${state[0].score}),
-      Player(playerId: ${state[1].playerId}, name: ${state[1].name}, initial: ${state[1].initial}, zikaze: ${state[1].zikaze}, score: ${state[1].score}),
-      Player(playerId: ${state[2].playerId}, name: ${state[2].name}, initial: ${state[2].initial}, zikaze: ${state[2].zikaze}, score: ${state[2].score}),
-      Player(playerId: ${state[3].playerId}, name: ${state[3].name}, initial: ${state[3].initial}, zikaze: ${state[3].zikaze}, score: ${state[3].score})
-    ];
-''');
-  }
+//   void debug() {
+//     print('''
+//     state = [
+//       Player(playerId: ${state[0].playerId}, name: ${state[0].name}, initial: ${state[0].initial}, zikaze: ${state[0].zikaze}, score: ${state[0].score}),
+//       Player(playerId: ${state[1].playerId}, name: ${state[1].name}, initial: ${state[1].initial}, zikaze: ${state[1].zikaze}, score: ${state[1].score}),
+//       Player(playerId: ${state[2].playerId}, name: ${state[2].name}, initial: ${state[2].initial}, zikaze: ${state[2].zikaze}, score: ${state[2].score}),
+//       Player(playerId: ${state[3].playerId}, name: ${state[3].name}, initial: ${state[3].initial}, zikaze: ${state[3].zikaze}, score: ${state[3].score})
+//     ];
+// ''');
+//   }
 
 }
 

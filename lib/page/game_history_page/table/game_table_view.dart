@@ -48,13 +48,13 @@ class GameTableView extends ConsumerWidget {
                 flex: 16,
                 child: Align(
                   alignment: Alignment.center,
-                  child: Text(
+                  child: const Text(
                     '試合中',
                     style: MahjongTextStyle.tableSel,
                   )
                 )
               ),
-              Expanded(
+              const Expanded(
                 flex: 1,
                 child: Align(
                   alignment: Alignment.centerRight,
@@ -167,7 +167,7 @@ class GameTableView extends ConsumerWidget {
                   )
                 )
               ),
-              Expanded(
+              const Expanded(
                 flex: 1,
                 child: Align(
                   alignment: Alignment.centerRight,
@@ -187,7 +187,7 @@ class GameTableView extends ConsumerWidget {
         children: [
           Padding(
             padding: EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
-            child:Row(
+            child: const Row(
               children: [
                 Expanded(
                   flex: 3,
@@ -241,7 +241,7 @@ class GameTableView extends ConsumerWidget {
             child: ListView.separated(
               itemCount: gameList.length,
               itemBuilder: (context, i) => gameContent(gameList, i),
-              separatorBuilder: (context, i) => ColumnDivider(),
+              separatorBuilder: (context, i) => const ColumnDivider(),
             )
           )
         ],

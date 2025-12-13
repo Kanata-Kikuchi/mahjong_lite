@@ -150,7 +150,7 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
           const SizedBox(width: 14),
           Row(
             children: [
-              CupertinoRadio(value: 0),
+              const CupertinoRadio(value: 0),
               const SizedBox(width: 14),
               Text(
                 label[0],
@@ -161,7 +161,7 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
           const SizedBox(width: 14),
           Row(
             children: [
-              CupertinoRadio(value: 1),
+              const CupertinoRadio(value: 1),
               const SizedBox(width: 14),
               Text(
                 label[1],
@@ -172,7 +172,7 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
           const SizedBox(width: 14),
           Row(
             children: [
-              CupertinoRadio(value: 2),
+              const CupertinoRadio(value: 2),
               const SizedBox(width: 14),
               Text(
                 label[2],
@@ -183,7 +183,7 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
           const SizedBox(width: 14),
           Row(
             children: [
-              CupertinoRadio(value: 3),
+              const CupertinoRadio(value: 3),
               const SizedBox(width: 14),
               Text(
                 label[3],
@@ -285,7 +285,7 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
                 SizedBox(width: leftSpace),
                 SizedBox(
                   width: labelBoxWidth,
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       'リーチ',
                       style: MahjongTextStyle.tableLabel,
@@ -302,14 +302,14 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
               ],
             )
           ),
-          ColumnDivider(),
+          const ColumnDivider(),
           Expanded(
             child: Row(
               children: [
                 SizedBox(width: leftSpace),
                 SizedBox(
                   width: labelBoxWidth,
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       '和了',
                       style: MahjongTextStyle.tableLabel,
@@ -332,14 +332,14 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
               ],
             )
           ),
-          ColumnDivider(),
+          const ColumnDivider(),
           Expanded(
             child: Row(
               children: [
                 SizedBox(width: leftSpace),
                 SizedBox(
                   width: labelBoxWidth,
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       '点数',
                       style: MahjongTextStyle.tableLabel,
@@ -391,14 +391,14 @@ class _ReviseTsumoState extends ConsumerState<ReviseTsumo> {
               ],
             )
           ),
-          ColumnDivider(),
+          const ColumnDivider(),
           Expanded(
             child: Row(
               children: [
                 SizedBox(width: leftSpace),
                 SizedBox(
                   width: labelBoxWidth,
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       'コメント',
                       style: MahjongTextStyle.tableLabel,

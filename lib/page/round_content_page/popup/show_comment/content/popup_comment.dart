@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/layout/popup/popup_content.dart';
-
 import 'package:mahjong_lite/notifier/revise_comment_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
@@ -31,7 +30,7 @@ class PopupComment extends ConsumerWidget {
         )
       ),
       footer: CupertinoButton(
-        child: Text(
+        child: const Text(
           '戻る',
           style: MahjongTextStyle.buttonCancel,
         ),

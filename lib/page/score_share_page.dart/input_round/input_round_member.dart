@@ -20,7 +20,7 @@ class InputRoundMember extends ConsumerWidget {
           '${kyokuMap[round.$1]} ${(round.$1) % 4 + 1} 局',
           style: MahjongTextStyle.roundTitle,
         ),
-        SizedBox.shrink()
+        const SizedBox.shrink()
       ],
     );
   }

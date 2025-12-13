@@ -27,7 +27,7 @@ class ResultGameContent extends ConsumerWidget {
         return Row(
           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Expanded(
+            const Expanded(
               flex: 2,
               child: SizedBox.shrink(),
             ),
@@ -49,7 +49,7 @@ class ResultGameContent extends ConsumerWidget {
                 )
               )
             ),
-            Expanded(
+            const Expanded(
               flex: 3,
               child: SizedBox.shrink(),
             ),
@@ -62,7 +62,7 @@ class ResultGameContent extends ConsumerWidget {
                 )
               )
             ),
-            Expanded(
+            const Expanded(
               flex: 3,
               child: SizedBox.shrink(),
             )

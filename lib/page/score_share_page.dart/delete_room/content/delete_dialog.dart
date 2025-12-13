@@ -11,7 +11,7 @@ class DeleteDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupContent(
       anotation: '',
-      body: Column(
+      body: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(

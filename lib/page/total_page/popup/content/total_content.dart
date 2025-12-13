@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/notifier/game_score_notifier.dart';
-import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 final order = [
@@ -30,7 +29,7 @@ class TotalContent extends ConsumerWidget {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Expanded(
+            const Expanded(
               flex: 2,
               child: SizedBox.shrink(),
             ),
@@ -52,7 +51,7 @@ class TotalContent extends ConsumerWidget {
                 )
               )
             ),
-            Expanded(
+            const Expanded(
               flex: 3,
               child: SizedBox.shrink(),
             ),
@@ -65,7 +64,7 @@ class TotalContent extends ConsumerWidget {
                 )
               )
             ),
-            Expanded(
+            const Expanded(
               flex: 3,
               child: SizedBox.shrink(),
             )

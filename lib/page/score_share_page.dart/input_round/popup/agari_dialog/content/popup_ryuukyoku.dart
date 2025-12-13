@@ -219,7 +219,7 @@ class _PopupRyuukyokuState extends ConsumerState<PopupRyuukyoku> {
                 SizedBox(
                   width: labelBoxWidth,
                   child: Center(
-                    child: Text(
+                    child: const Text(
                       'リーチ',
                       style: MahjongTextStyle.tableLabel,
                     )
@@ -234,7 +234,7 @@ class _PopupRyuukyokuState extends ConsumerState<PopupRyuukyoku> {
               ],
             )
           ),
-          ColumnDivider(),
+          const ColumnDivider(),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

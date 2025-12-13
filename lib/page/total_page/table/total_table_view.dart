@@ -29,7 +29,7 @@ class TotalTableView extends ConsumerWidget {
     Widget gameContent(List<Game> gameList, int i) {
       if(gameList.length == i + 1) {
         return Padding(
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
+          padding: const EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
@@ -50,7 +50,7 @@ class TotalTableView extends ConsumerWidget {
                   ],
                 )
               ),
-              Expanded(
+              const Expanded(
                 flex: 16,
                 child: Align(
                   alignment: Alignment.center,
@@ -60,7 +60,7 @@ class TotalTableView extends ConsumerWidget {
                   )
                 )
               ),
-              Expanded(
+              const Expanded(
                 flex: 1,
                 child: Align(
                   alignment: Alignment.centerRight,
@@ -72,7 +72,7 @@ class TotalTableView extends ConsumerWidget {
         );
       } else {
         return Padding(
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
+          padding: const EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
@@ -129,7 +129,7 @@ class TotalTableView extends ConsumerWidget {
                   )
                 )
               ),
-              Expanded(
+              const Expanded(
                 flex: 1,
                 child: Align(
                   alignment: Alignment.centerRight,
@@ -143,7 +143,7 @@ class TotalTableView extends ConsumerWidget {
     }
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -151,7 +151,7 @@ class TotalTableView extends ConsumerWidget {
             padding: EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
             child:Row(
               children: [
-                Expanded(
+                const Expanded(
                   flex: 3,
                   child: SizedBox.shrink(),
                 ),
@@ -191,34 +191,34 @@ class TotalTableView extends ConsumerWidget {
                     )
                   )
                 ),
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: SizedBox.shrink(),
                 )
               ],
             ),
           ),
-          ColumnDivider(),
+          const ColumnDivider(),
           Expanded(
             flex: 8,
             child: ListView.separated(
               itemCount: gameList.length,
               itemBuilder: (context, i) => gameContent(gameList, i),
-              separatorBuilder: (context, i) => ColumnDivider(),
+              separatorBuilder: (context, i) => const ColumnDivider(),
             )
           ),
-          ColumnDivider(),
-          SizedBox(height: 4),
+          const ColumnDivider(),
+          const SizedBox(height: 4),
           Expanded(
             flex: 1,
             child: Padding(
-              padding: EdgeInsetsGeometry.symmetric(horizontal: 25),
+              padding: const EdgeInsetsGeometry.symmetric(horizontal: 25),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Expanded(
+                  const Expanded(
                     flex: 3,
                     child: Text(
                       '合計',
@@ -227,7 +227,7 @@ class TotalTableView extends ConsumerWidget {
                   ),
                   if (sumScore.isEmpty)
                     ...[
-                      Expanded(
+                      const Expanded(
                         flex: 17,
                         child: SizedBox.shrink(),
                       )
@@ -270,7 +270,7 @@ class TotalTableView extends ConsumerWidget {
                           )
                         )
                       ),
-                      Expanded(
+                      const Expanded(
                         flex: 1,
                         child: Align(
                           alignment: Alignment.centerRight,

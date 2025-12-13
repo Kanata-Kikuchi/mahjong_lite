@@ -8,7 +8,7 @@ class PlotGame extends StatelessWidget {
     return showCupertinoDialog(
       context: context,
       builder: (context) {
-        return PlotDialog();
+        return const PlotDialog();
       }
     );
   }
@@ -18,7 +18,7 @@ class PlotGame extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => plotPopup(context),
-      child: Icon(
+      child: const Icon(
         CupertinoIcons.right_chevron,
         color: CupertinoColors.activeBlue,
         size: 13,

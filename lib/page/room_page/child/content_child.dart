@@ -49,7 +49,7 @@ class _ContentChildState extends ConsumerState<ContentChild> {
             children: [
               SizedBox(
                 width: labelBoxWidth,
-                child: Center(
+                child: const Center(
                   child: Text(
                     '名前',
                     style: MahjongTextStyle.choiceLabel,
@@ -88,7 +88,7 @@ class _ContentChildState extends ConsumerState<ContentChild> {
             children: [
               SizedBox(
                 width: labelBoxWidth,
-                child: Center(
+                child: const Center(
                   child: Text(
                     'ルームID',
                     style: MahjongTextStyle.choiceLabel,

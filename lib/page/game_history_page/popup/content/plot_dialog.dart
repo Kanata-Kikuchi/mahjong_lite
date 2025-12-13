@@ -10,7 +10,7 @@ class PlotDialog extends StatelessWidget {
     return PopupContent(
       title: '推移グラフ',
       anotation: '',
-      body: Column(
+      body: const Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Center(

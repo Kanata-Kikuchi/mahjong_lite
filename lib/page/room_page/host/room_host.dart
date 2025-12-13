@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/layout/button/cancel_btn.dart';
@@ -109,7 +108,7 @@ class _RoomHostState extends ConsumerState<RoomHost> {
             return LayoutPage( // 背景のポップ.
               width: w / 2,
               height: h,
-              child:Column(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox( // タブ.
@@ -117,7 +116,7 @@ class _RoomHostState extends ConsumerState<RoomHost> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        SizedBox(),
+                        const SizedBox(),
                         Text(
                           'ルームID : $id',
                           style: MahjongTextStyle.tabBlack
@@ -129,7 +128,7 @@ class _RoomHostState extends ConsumerState<RoomHost> {
                       ],
                     )
                   ),
-                  ColumnDivider(),
+                  const ColumnDivider(),
                   /* -------------------------------------------------------------------- */
                   Expanded( // ボディ部分.
                     child: Padding(
@@ -141,7 +140,7 @@ class _RoomHostState extends ConsumerState<RoomHost> {
                             children: [
                               SizedBox(
                                 width: space,
-                                child: Text(
+                                child: const Text(
                                   '南',
                                   style: MahjongTextStyle.choiceLabelL,
                                 ),
@@ -153,7 +152,7 @@ class _RoomHostState extends ConsumerState<RoomHost> {
                                       p[1].name ?? '',
                                       style: MahjongTextStyle.choiceLabel,
                                     ),
-                                    ColumnDivider()
+                                    const ColumnDivider()
                                   ],
                                 ),
                               )
@@ -179,7 +178,7 @@ class _RoomHostState extends ConsumerState<RoomHost> {
                             children: [
                               SizedBox(
                                 width: space,
-                                child: Text(
+                                child: const Text(
                                   '西',
                                   style: MahjongTextStyle.choiceLabelL,
                                 ),
@@ -191,7 +190,7 @@ class _RoomHostState extends ConsumerState<RoomHost> {
                                       p[2].name ?? '',
                                       style: MahjongTextStyle.choiceLabel,
                                     ),
-                                    ColumnDivider()
+                                    const ColumnDivider()
                                   ],
                                 ),
                               )
@@ -217,7 +216,7 @@ class _RoomHostState extends ConsumerState<RoomHost> {
                             children: [
                               SizedBox(
                                 width: space,
-                                child: Text(
+                                child: const Text(
                                   '北',
                                   style: MahjongTextStyle.choiceLabelL,
                                 ),
@@ -229,7 +228,7 @@ class _RoomHostState extends ConsumerState<RoomHost> {
                                       p[3].name ?? '',
                                       style: MahjongTextStyle.choiceLabel,
                                     ),
-                                    ColumnDivider()
+                                    const ColumnDivider()
                                   ],
                                 ),
                               )
@@ -239,7 +238,7 @@ class _RoomHostState extends ConsumerState<RoomHost> {
                       ),
                     )
                   ),
-                  ColumnDivider(),
+                  const ColumnDivider(),
                   /* -------------------------------------------------------------------- */
                   SizedBox( // フットボタン.
                     height: h / 8,
@@ -251,7 +250,7 @@ class _RoomHostState extends ConsumerState<RoomHost> {
                           red: true,
                           onTap: () {
                             removeRoom();
-                            Navigator.pop(context); // 調整。回線次第.
+                            Navigator.pop(context); // 調整。
                           }
                         ),
                         EnableBtn(

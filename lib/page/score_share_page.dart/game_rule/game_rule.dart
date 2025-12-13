@@ -11,7 +11,7 @@ class GameRule extends ConsumerWidget {
     return showCupertinoDialog(
       context: context,
       builder: (context) {
-        return RuleDialog();
+        return const RuleDialog();
       }
     );
   }

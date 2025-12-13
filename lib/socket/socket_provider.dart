@@ -5,7 +5,8 @@ import 'package:mahjong_lite/debug/debug_provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 // const url = 'ws://localhost:3000'; // vscode.
-const url = 'ws://10.0.2.2:3000'; // AndroidStudio.
+// const url = 'ws://10.0.2.2:3000'; // AndroidStudio.
+const url = 'wss://mahjong-lite-server.onrender.com'; // Render.
 
 enum SocketStatus {
   disconnected,
@@ -45,19 +46,19 @@ class SocketController extends Notifier<SocketStatus> {
     _channel?.sink.close();
     _channel = WebSocketChannel.connect(Uri.parse(url));
 
-    print('socket_provider.dart/connect()');
+    // print('socket_provider.dart/connect()');
     state = SocketStatus.connected;
   }
 
   Future<void> disconnect() async {
     _channel?.sink.close();
     _channel = null;
-    print('socket_provider.dart/disconnected()');
+    // print('socket_provider.dart/disconnected()');
     state = SocketStatus.disconnected;
   }
 
   Future<void> reconnect() async {
-    print('socket_provider.dart/reconnect()');
+    // print('socket_provider.dart/reconnect()');
     await disconnect();
     await connect();
   }

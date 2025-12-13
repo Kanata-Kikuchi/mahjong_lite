@@ -38,12 +38,12 @@ class SocketResumeNotifier extends Notifier<void> {
         'payload': {'roomId': roomId, 'playerId': playerId},
       });
 
-      print('socket_resume_notifier.dart/success: trySend()');
+      // print('socket_resume_notifier.dart/success: trySend()');
       _sent = true;
     }
 
     void reset() {
-      print('socket_resume_notifier.dart/reset()');
+      // print('socket_resume_notifier.dart/reset()');
       _sent = false;
     }
 

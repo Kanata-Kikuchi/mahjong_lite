@@ -136,7 +136,7 @@ class SocketListenerNotifier extends Notifier<void> {
 
         switch(type) {
           case 'room_created':
-            print('type: room_created を受信');
+            // print('type: room_created を受信');
             ref.read(ruleProvider.notifier).id(payload['roomId']);
             ref.read(initiativeProvider.notifier).state = true; // 主導権true.
 
@@ -154,7 +154,7 @@ class SocketListenerNotifier extends Notifier<void> {
             break;
 
           case 'room_state':
-            print('type: room_state を受信');
+            // print('type: room_state を受信');
             final player = ref.read(playerProvider.notifier);
             player.roomStateRest();
             
@@ -183,31 +183,31 @@ class SocketListenerNotifier extends Notifier<void> {
             break;
 
           case 'game_start':
-            print('type: game_start を受信');
+            // print('type: game_start を受信');
             ref.read(ruleProvider.notifier).ruleSet(uma: payload['rule']['uma'], oka: payload['rule']['oka'], tobi: payload['rule']['tobi'], syanyu: payload['rule']['syanyu'], agariyame: payload['rule']['agariyame']);
             ref.read(playerProvider.notifier).scoreSet(score: payload['initialScore']);
             ref.read(socketGameStartProvider.notifier).state = true; // ScoreSHarePageに遷移するためのフラグ.
 
-            print(payload['initialScore']);
-            ref.read(playerProvider.notifier).debug();
-            ref.read(ruleProvider.notifier).debug();
+            // print(payload['initialScore']);
+            // ref.read(playerProvider.notifier).debug();
+            // ref.read(ruleProvider.notifier).debug();
             break;
 
           case 'success_join':
-            print('type: success_join を受信');
+            // print('type: success_join を受信');
             ref.read(initiativeProvider.notifier).state = false; // 主導権false.
             ref.read(socketEnableJoinProvider.notifier).state = true;
             break;
 
           case 'unknown_room':
-            print('type: unknown_room を受信');
+            // print('type: unknown_room を受信');
             ref.read(socketEnableJoinProvider.notifier).state = false;
             break;
 
           case 'delete_room':
-            print('type: delete_room を受信');
+            // print('type: delete_room を受信');
             ref.read(playerProvider.notifier).revise();
-            ref.read(ruleProvider.notifier).revise(); // 調整.
+            ref.read(ruleProvider.notifier).revise(); // 調整、UX.
           
             final pref = await SharedPreferences.getInstance();
             await pref.remove('roomId');
@@ -216,12 +216,11 @@ class SocketListenerNotifier extends Notifier<void> {
             ref.read(socketRoomIdProvider.notifier).state = null;
             ref.read(socketPlayerIdProvider.notifier).state = null;
 
-            print('case/delete_rrom/もしかしたらreviseのタイミングが怪しい');
             ref.read(socketEnableJoinProvider.notifier).state = false;
             break;
 
           case 'pullout_player':
-            print('type: pullout_player を受信');
+            // print('type: pullout_player を受信');
             ref.read(playerProvider.notifier).revise();
             ref.read(ruleProvider.notifier).revise();
 
@@ -236,7 +235,7 @@ class SocketListenerNotifier extends Notifier<void> {
             break;
 
           case 'game_state':
-            print('type: game_state を受信');
+            // print('type: game_state を受信');
             ref.read(roundProvider.notifier).roundSet(kyoku: payload['round']['kyoku'], honba: payload['round']['honba']);
             ref.read(reachProvider.notifier).reachSet(reach: payload['reach']);
             ref.read(gameSetProvider.notifier).gameSetSet(gameSet: payload['gameSet']);
@@ -246,7 +245,7 @@ class SocketListenerNotifier extends Notifier<void> {
             break;
 
           case 'game_finish':
-            print('type: game_finish を受信');
+            // print('type: game_finish を受信');
             final yourId = ref.read(socketPlayerIdProvider); // 古い席順.
             ref.read(playerProvider.notifier).newSeatSet(newSeat: payload['newSeat']); // 新しい席順に.
             final hostId = ref.read(playerProvider)[0].playerId; // 新しい席順.
@@ -271,7 +270,7 @@ class SocketListenerNotifier extends Notifier<void> {
             break;
 
           case 'navi_root':
-            print('type: navi_root を受信');
+            // print('type: navi_root を受信');
 
             ref.read(socketResumeEnabledProvider.notifier).state = false;
             ref.read(socketEnableJoinProvider.notifier).state = false;
@@ -302,7 +301,7 @@ class SocketListenerNotifier extends Notifier<void> {
             break;
 
           case 'resume_result':
-            print('type: resume_result を受信');
+            // print('type: resume_result を受信');
             ref.read(socketResumeEnabledProvider.notifier).state = false;
 
             final ok = payload['ok'] == true;
@@ -413,20 +412,20 @@ class SocketListenerNotifier extends Notifier<void> {
             break;
 
           case 'error':
-            print('socket_listener_notifier/受信エラー: ${payload['message']}');
+            // print('socket_listener_notifier/受信エラー: ${payload['message']}');
             break;
 
           default:
-            print('socket_listener_notifier/switch/default');
+            // print('socket_listener_notifier/switch/default');
             break;
         }
       },
       onError: (error) {
-        print('socket_listener_notifier: stream error: $error');
+        // print('socket_listener_notifier: stream error: $error');
         ref.read(socketProvider.notifier).disconnect();
       },
       onDone: () {
-        print('socket_listener_notifier: stream done');
+        // print('socket_listener_notifier: stream done');
         ref.read(socketProvider.notifier).disconnect();
       },
       cancelOnError: true,

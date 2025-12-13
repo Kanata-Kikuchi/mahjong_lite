@@ -262,7 +262,7 @@ class _PopupRonState extends ConsumerState<PopupRon> {
                 SizedBox(width: leftSpace),
                 SizedBox(
                   width: labelBoxWidth,
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       'リーチ',
                       style: MahjongTextStyle.tableLabel,
@@ -279,14 +279,14 @@ class _PopupRonState extends ConsumerState<PopupRon> {
               ],
             )
           ),
-          ColumnDivider(),
+          const ColumnDivider(),
           Expanded(
             child: Row(
               children: [
                 SizedBox(width: leftSpace),
                 SizedBox(
                   width: labelBoxWidth,
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       '放銃',
                       style: MahjongTextStyle.tableLabel,
@@ -312,14 +312,14 @@ class _PopupRonState extends ConsumerState<PopupRon> {
               ],
             )
           ),
-          ColumnDivider(),
+          const ColumnDivider(),
           Expanded(
             child: Row(
               children: [
                 SizedBox(width: leftSpace),
                 SizedBox(
                   width: labelBoxWidth,
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       '和了',
                       style: MahjongTextStyle.tableLabel,
@@ -349,14 +349,14 @@ class _PopupRonState extends ConsumerState<PopupRon> {
               ],
             )
           ),
-          ColumnDivider(),
+          const ColumnDivider(),
           Expanded(
             child: Row(
               children: [
                 SizedBox(width: leftSpace),
                 SizedBox(
                   width: labelBoxWidth,
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       '点数',
                       style: MahjongTextStyle.tableLabel,

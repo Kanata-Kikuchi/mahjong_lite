@@ -34,7 +34,7 @@ class ResultGameDialog extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           CupertinoButton(
-            child: Text(
+            child: const Text(
               '次の試合',
               style: MahjongTextStyle.buttonNext,
             ),
@@ -43,7 +43,7 @@ class ResultGameDialog extends ConsumerWidget {
             }
           ),
           CupertinoButton(
-            child: Text(
+            child: const Text(
               'キャンセル',
               style: MahjongTextStyle.buttonCancel,
             ),

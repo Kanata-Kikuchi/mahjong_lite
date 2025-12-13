@@ -48,7 +48,7 @@ class ContentHost extends ConsumerWidget {
             children: [
               SizedBox(
                 width: labelBoxWidth,
-                child: Center(
+                child: const Center(
                   child: Text(
                     '名前',
                     style: MahjongTextStyle.choiceLabel,
@@ -87,7 +87,7 @@ class ContentHost extends ConsumerWidget {
             children: [
               SizedBox(
                 width: labelBoxWidth,
-                child: Center(
+                child: const Center(
                   child: Text(
                     'ウマ',
                     style: MahjongTextStyle.choiceLabel,
@@ -113,7 +113,7 @@ class ContentHost extends ConsumerWidget {
             children: [
               SizedBox(
                 width: labelBoxWidth,
-                child: Center(
+                child: const Center(
                   child: Text(
                     'オカ',
                     style: MahjongTextStyle.choiceLabel,
@@ -139,7 +139,7 @@ class ContentHost extends ConsumerWidget {
             children: [
               SizedBox(
                 width: labelBoxWidth,
-                child: Center(
+                child: const Center(
                   child: Text(
                     '飛び',
                     style: MahjongTextStyle.choiceLabel,  
@@ -165,7 +165,7 @@ class ContentHost extends ConsumerWidget {
             children: [
               SizedBox(
                 width: labelBoxWidth,
-                child: Center(
+                child: const Center(
                   child: Text(
                   '西入',
                     style: MahjongTextStyle.choiceLabel,
@@ -191,7 +191,7 @@ class ContentHost extends ConsumerWidget {
             children: [
               SizedBox(
                 width: labelBoxWidth,
-                child: Center(
+                child: const Center(
                   child: Text(
                     'アガリ止め',
                     style: MahjongTextStyle.choiceLabel,

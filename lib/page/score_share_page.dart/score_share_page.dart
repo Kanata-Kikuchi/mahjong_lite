@@ -1,13 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/debug/debug_provider.dart';
-import 'package:mahjong_lite/layout/button/back_btn.dart';
 import 'package:mahjong_lite/layout/button/next_btn.dart';
 import 'package:mahjong_lite/layout/layout_page.dart';
 import 'package:mahjong_lite/layout/score_box.dart';
-import 'package:mahjong_lite/model/player_model.dart';
-import 'package:mahjong_lite/notifier/game_notifier.dart';
 import 'package:mahjong_lite/notifier/game_score_notifier.dart';
 import 'package:mahjong_lite/notifier/game_set_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
@@ -27,7 +23,6 @@ import 'package:mahjong_lite/socket/flag/socket_initiative_provider.dart';
 import 'package:mahjong_lite/socket/flag/socket_navigate_root_provider.dart';
 import 'package:mahjong_lite/socket/data/socket_playerid_provider.dart';
 import 'package:mahjong_lite/socket/socket_provider.dart';
-import 'package:mahjong_lite/socket/data/socket_roomid_provider.dart';
 
 final double bottomBtnPadding = 5;
 
@@ -117,12 +112,10 @@ class _ScoreSharePageState extends ConsumerState<ScoreSharePage> {
 ) {
   final roomId = ref.read(ruleProvider).id;
   if (roomId == null) {
-    debugPrint('initiativeCheck: roomId is null -> skip send');
     return;
   }
 
   if (scoreMemory.isEmpty || sum.isEmpty) {
-    debugPrint('initiativeCheck: history empty -> skip send');
     return;
   }
 
@@ -253,7 +246,7 @@ class _ScoreSharePageState extends ConsumerState<ScoreSharePage> {
                       child: gameSet // ゲームセットフラグ.
                           ? initiative // 主導権.
                             ? FinishGame(socketInputSend: socketInputRound, socketFinishSend: initiativeCheck)
-                            : FinishGameMember()
+                            : const FinishGameMember()
                           : initiative // 主導権.
                             ? InputRound(socketInputSend: socketInputRound)
                             : InputRoundMember()
@@ -261,7 +254,7 @@ class _ScoreSharePageState extends ConsumerState<ScoreSharePage> {
                     scoreBoxPosition(width: w / 3, height: h / 3 - 10, i: 2),
                     SizedBox( // 供託・本場表記.
                       width: w / 4,
-                      child: ExtraRound(),
+                      child: const ExtraRound(),
                     ),
                   ],
                 ),
@@ -269,7 +262,7 @@ class _ScoreSharePageState extends ConsumerState<ScoreSharePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     scoreBoxPosition(width: w / 3, height: h / 3 - 10, i: 3),
-                    GameRule(), // ゲーム数表記.
+                    const GameRule(), // ゲーム数表記.
                     scoreBoxPosition(width: w / 3, height: h / 3 - 10, i: 1),
                   ],
                 ),
@@ -281,7 +274,7 @@ class _ScoreSharePageState extends ConsumerState<ScoreSharePage> {
                       width: w / 4,
                       child: initiative // 主導権.
                           ? DeleteRoom(socketRemoveSend: removeRoom)
-                          : SizedBox.shrink()
+                          : const SizedBox.shrink()
                     ),
                     scoreBoxPosition(width: w / 3, height: h / 3 - 10, i: 0),
                     SizedBox( // 局内容・試合履歴.

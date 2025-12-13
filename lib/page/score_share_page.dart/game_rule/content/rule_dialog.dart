@@ -64,7 +64,7 @@ class RuleDialog extends ConsumerWidget {
         })
       ),
       footer: CupertinoButton(
-        child: Text(
+        child: const Text(
           '戻る',
           style: MahjongTextStyle.buttonCancel,
         ),

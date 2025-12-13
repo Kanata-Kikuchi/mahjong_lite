@@ -236,7 +236,7 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
                 SizedBox(width: leftSpace),
                 SizedBox(
                   width: labelBoxWidth,
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       'リーチ',
                       style: MahjongTextStyle.tableLabel,
@@ -252,7 +252,7 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
               ],
             )
           ),
-          ColumnDivider(),
+          const ColumnDivider(),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -260,7 +260,7 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
                 SizedBox(width: leftSpace),
                 SizedBox(
                   width: labelBoxWidth,
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       '聴牌',
                       style: MahjongTextStyle.tableLabel,
@@ -276,14 +276,14 @@ class _ReviseRyukyokuState extends ConsumerState<ReviseRyukyoku> {
               ],
             )
           ),
-          ColumnDivider(),
+          const ColumnDivider(),
           Expanded(
             child: Row(
               children: [
                 SizedBox(width: leftSpace),
                 SizedBox(
                   width: labelBoxWidth,
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       'コメント',
                       style: MahjongTextStyle.tableLabel,

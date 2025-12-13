@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/layout/button/cancel_btn.dart';
@@ -91,7 +90,7 @@ class _RoomChildState extends ConsumerState<RoomChild> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        SizedBox(),
+                        const SizedBox(),
                         Text(
                           'ルームID : $roomId',
                           style: MahjongTextStyle.tabBlack
@@ -103,7 +102,7 @@ class _RoomChildState extends ConsumerState<RoomChild> {
                       ],
                     )
                   ),
-                  ColumnDivider(),
+                  const ColumnDivider(),
                   /* -------------------------------------------------------------------- */
                   Expanded( // ボディ部分.
                     child: Padding(
@@ -113,7 +112,7 @@ class _RoomChildState extends ConsumerState<RoomChild> {
                         children: [
                           Row( // 南.
                             children: [
-                              Text(
+                              const Text(
                                 '南',
                                 style: MahjongTextStyle.choiceLabelL,
                               ),
@@ -124,7 +123,7 @@ class _RoomChildState extends ConsumerState<RoomChild> {
                                       name[1] ?? '',
                                       style: MahjongTextStyle.choiceLabel,
                                     ),
-                                    ColumnDivider()
+                                    const ColumnDivider()
                                   ],
                                 ),
                               )
@@ -133,7 +132,7 @@ class _RoomChildState extends ConsumerState<RoomChild> {
                           const SizedBox(),
                           Row( // 西.
                             children: [
-                              Text(
+                              const Text(
                                 '西',
                                 style: MahjongTextStyle.choiceLabelL,
                               ),
@@ -144,7 +143,7 @@ class _RoomChildState extends ConsumerState<RoomChild> {
                                       name[2] ?? '',
                                       style: MahjongTextStyle.choiceLabel,
                                     ),
-                                    ColumnDivider()
+                                    const ColumnDivider()
                                   ],
                                 ),
                               )
@@ -153,7 +152,7 @@ class _RoomChildState extends ConsumerState<RoomChild> {
                           const SizedBox(),
                           Row( // 北.
                             children: [
-                              Text(
+                              const Text(
                                 '北',
                                 style: MahjongTextStyle.choiceLabelL,
                               ),
@@ -174,7 +173,7 @@ class _RoomChildState extends ConsumerState<RoomChild> {
                       ),
                     )
                   ),
-                  ColumnDivider(),
+                  const ColumnDivider(),
                   /* -------------------------------------------------------------------- */
                   SizedBox( // フットボタン.
                     height: h / 8,

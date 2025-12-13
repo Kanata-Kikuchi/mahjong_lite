@@ -24,7 +24,7 @@ class _DeleteRoomState extends ConsumerState<DeleteRoom> {
     return showCupertinoDialog(
       context: context,
       builder: (context) {
-        return DeleteDialog();
+        return const DeleteDialog();
       }
     );
   }

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,7 +26,7 @@ class InputRevise extends ConsumerWidget {
     return showCupertinoDialog(
       context: context,
       builder: (context) {
-        return ReviseDialog();
+        return const ReviseDialog();
       }
     );
   }
@@ -36,7 +35,7 @@ class InputRevise extends ConsumerWidget {
     return showCupertinoDialog(
       context: context,
       builder: (context) {
-        return AgariYameDialog();
+        return const AgariYameDialog();
       }
     );
   }
@@ -193,28 +192,28 @@ class InputRevise extends ConsumerWidget {
           final hako = p.any((a) => a.score! < 0);
 
           if (rule.tobi == Tobi.ari && hako) { // 飛んだら.
-            print('飛び');
+            // print('飛び');
             player.finish();
             round.finish();
             gameSet.finish();
           }
 
           if (roundMemory.$1 == 7) { // 南4局.
-            print('南4局');
+            // print('南4局');
             final top = scoreList.map((m) => m.$2).reduce(max);
 
             if (!continueHost) { // 親以外がアガリなら.
-              print('親以外がアガリ');
+              // print('親以外がアガリ');
               if (rule.syanyu == Syanyu.ari) {
-                print('西入あり');
+                // print('西入あり');
                 if (top > 30000) {
-                  print('top > 30000');
+                  // print('top > 30000');
                   player.finish();
                   round.finish();
                   gameSet.finish();
                 }
               } else if (rule.syanyu == Syanyu.none) {
-                print('西入なし');
+                // print('西入なし');
                 player.finish();
                 round.finish();
                 gameSet.finish();
@@ -225,17 +224,17 @@ class InputRevise extends ConsumerWidget {
 
               final bool? resultYame = await agariYamePopup(context);
               if (resultYame == true) {
-                print('アガリ止め');
+                // print('アガリ止め');
                 round.finish();
                 gameSet.finish();
               }
             }
           } else if (roundMemory.$1 == 11) { // 西4局.
-            print('西4局');
+            // print('西4局');
             final top = scoreList.map((m) => m.$2).reduce(max);
 
             if (!continueHost) {
-              print('親以外がアガリ');
+              // print('親以外がアガリ');
               player.finish();
               round.finish();
               gameSet.finish();
@@ -245,7 +244,7 @@ class InputRevise extends ConsumerWidget {
 
               final bool? resultYame = await agariYamePopup(context);
               if (resultYame == true) {
-                print('アガリ止め');
+                // print('アガリ止め');
                 round.finish();
                 gameSet.finish();
               }
@@ -257,7 +256,7 @@ class InputRevise extends ConsumerWidget {
         }
       },
 
-      child: Icon(
+      child: const Icon(
         CupertinoIcons.right_chevron,
         color: CupertinoColors.activeBlue,
         size: 13,

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/debug/debug_provider.dart';
@@ -13,7 +12,6 @@ import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/notifier/rule_notifier.dart';
 import 'package:mahjong_lite/page/score_share_page.dart/finish_game/popup/next_game/next_game_dialog.dart';
 import 'package:mahjong_lite/page/score_share_page.dart/finish_game/popup/result_game/result_game_dialog.dart';
-import 'package:mahjong_lite/socket/socket_provider.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class FinishGame extends ConsumerWidget {
@@ -46,7 +44,7 @@ class FinishGame extends ConsumerWidget {
     return showCupertinoDialog(
       context: context,
       builder: (context) {
-        return NextGameDialog();
+        return const NextGameDialog();
       }
     );
   }
@@ -142,7 +140,7 @@ class FinishGame extends ConsumerWidget {
         }
 
       },
-      child: Row(
+      child: const Row(
         crossAxisAlignment: CrossAxisAlignment.baseline,
         textBaseline: TextBaseline.alphabetic,
         children: [
@@ -150,7 +148,7 @@ class FinishGame extends ConsumerWidget {
             ' 終 局',
             style: MahjongTextStyle.roundTitle,
           ),
-          const Icon(
+          Icon(
             CupertinoIcons.right_chevron,
             color: CupertinoColors.activeBlue,
             size: 30,

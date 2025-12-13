@@ -26,7 +26,7 @@ class _NextGameContentState extends ConsumerState<NextGameContent> {
         children: [
           Row( // 東.
             children: [
-              Text(
+              const Text(
                 '東',
                 style: MahjongTextStyle.choiceLabelL,
               ),
@@ -37,7 +37,7 @@ class _NextGameContentState extends ConsumerState<NextGameContent> {
                       name[0],
                       style: MahjongTextStyle.choiceLabelL,
                     ),
-                    ColumnDivider()
+                    const ColumnDivider()
                   ],
                 ),
               )
@@ -50,7 +50,7 @@ class _NextGameContentState extends ConsumerState<NextGameContent> {
           ),
           Row( // 南.
             children: [
-              Text(
+              const Text(
                 '南',
                 style: MahjongTextStyle.choiceLabelL,
               ),
@@ -61,7 +61,7 @@ class _NextGameContentState extends ConsumerState<NextGameContent> {
                       name[1],
                       style: MahjongTextStyle.choiceLabelL,
                     ),
-                    ColumnDivider()
+                    const ColumnDivider()
                   ],
                 ),
               )
@@ -74,7 +74,7 @@ class _NextGameContentState extends ConsumerState<NextGameContent> {
           ),
           Row( // 西.
             children: [
-              Text(
+              const Text(
                 '西',
                 style: MahjongTextStyle.choiceLabelL,
               ),
@@ -85,7 +85,7 @@ class _NextGameContentState extends ConsumerState<NextGameContent> {
                       name[2],
                       style: MahjongTextStyle.choiceLabelL,
                     ),
-                    ColumnDivider()
+                    const ColumnDivider()
                   ],
                 ),
               )
@@ -98,7 +98,7 @@ class _NextGameContentState extends ConsumerState<NextGameContent> {
           ),
           Row( // 北.
             children: [
-              Text(
+              const Text(
                 '北',
                 style: MahjongTextStyle.choiceLabelL,
               ),
@@ -109,7 +109,7 @@ class _NextGameContentState extends ConsumerState<NextGameContent> {
                       name[3],
                       style: MahjongTextStyle.choiceLabelL,
                     ),
-                    ColumnDivider()
+                    const ColumnDivider()
                   ],
                 ),
               )

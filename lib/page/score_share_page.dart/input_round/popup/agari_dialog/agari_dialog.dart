@@ -82,7 +82,7 @@ class _AgariDialogState extends ConsumerState<AgariDialog> {
                     ]
                   ),
                 ),
-                ColumnDivider(),
+                const ColumnDivider(),
                 Expanded(
                   child: () {
                     if (_selected == 0) {return PopupRon(check: _check);}
@@ -90,7 +90,7 @@ class _AgariDialogState extends ConsumerState<AgariDialog> {
                     else {return PopupRyuukyoku();}
                   }(),
                 ),
-                ColumnDivider(),
+                const ColumnDivider(),
                 SizedBox(
                   height: h / 6,
                   child: Row(

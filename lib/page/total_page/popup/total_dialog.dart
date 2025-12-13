@@ -13,10 +13,10 @@ class TotalDialog extends ConsumerWidget {
     return PopupContent(
       title: '合計',
       anotation: '',
-      body: TotalContent(),
+      body: const TotalContent(),
       footer: Center(
         child: CupertinoButton(
-          child: Text(
+          child: const Text(
             '戻る',
             style: MahjongTextStyle.buttonNext,
           ),

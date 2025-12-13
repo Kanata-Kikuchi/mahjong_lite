@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/debug/debug_provider.dart';
@@ -17,7 +16,6 @@ import 'package:mahjong_lite/notifier/rule_notifier.dart';
 import 'package:mahjong_lite/page/room_page/child/content_child.dart';
 import 'package:mahjong_lite/page/room_page/host/content_host.dart';
 import 'package:mahjong_lite/socket/flag/socket_enable_join_provider.dart';
-import 'package:mahjong_lite/socket/socket_listener_notifier.dart';
 import 'package:mahjong_lite/socket/socket_provider.dart';
 
 class RoomPage extends ConsumerStatefulWidget {
@@ -160,7 +158,7 @@ class _RoomPageState extends ConsumerState<RoomPage> {
                       ],
                     )
                   ),
-                  ColumnDivider(),
+                  const ColumnDivider(),
                   Expanded(
                     child: _selected == 0
                         ? ContentHost(
@@ -173,7 +171,7 @@ class _RoomPageState extends ConsumerState<RoomPage> {
                             check: _check,
                             )
                   ),
-                  ColumnDivider(),
+                  const ColumnDivider(),
                   SizedBox( // フットボタン.
                     height: h / 8,
                     child: _selected == 0
@@ -183,7 +181,7 @@ class _RoomPageState extends ConsumerState<RoomPage> {
                             bold: true,
                             onTap: () {
                               socketCreateRoom(nameController.text);
-                              Navigator.pushNamed(context, '/room_host'); // 調整。回線次第.
+                              Navigator.pushNamed(context, '/room_host');
                             }
                           )
                         : EnableBtn(
@@ -193,7 +191,7 @@ class _RoomPageState extends ConsumerState<RoomPage> {
                             onTap: () {
                               // Navigator.pushNamed(context, '/room_child'); // debug用.
                               if (nameController.text == 'debug' && roomIDController.text == 'debug') {
-                                print('debugMode');
+                                // print('debugMode');
                                 debugMode();
                               } else {
                                 socketJoinRoom(nameController.text);

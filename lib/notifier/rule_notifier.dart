@@ -101,19 +101,19 @@ class RuleNotifier extends Notifier<Rule> {
     );
   }
 
-  void debug() {
-    print('''
-    state = Rule(
-      name: ${state.name},
-      uma: ${state.uma?.label},
-      oka: ${state.oka?.label},
-      tobi: ${state.tobi?.label},
-      syanyu: ${state.syanyu?.label},
-      agariyame: ${state.agariyame?.label},
-      id: ${state.id}
-    )
-    ''');
-  }
+  // void debug() {
+  //   print('''
+  //   state = Rule(
+  //     name: ${state.name},
+  //     uma: ${state.uma?.label},
+  //     oka: ${state.oka?.label},
+  //     tobi: ${state.tobi?.label},
+  //     syanyu: ${state.syanyu?.label},
+  //     agariyame: ${state.agariyame?.label},
+  //     id: ${state.id}
+  //   )
+  //   ''');
+  // }
 
   void revise() {
     state = Rule(

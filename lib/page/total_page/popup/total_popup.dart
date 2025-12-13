@@ -11,7 +11,7 @@ class TotalPopup extends ConsumerWidget {
     return showCupertinoDialog(
       context: context,
       builder: (context) {
-        return TotalDialog();
+        return const TotalDialog();
       }
     );
   }
@@ -22,7 +22,7 @@ class TotalPopup extends ConsumerWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => totalPopup(context),
-      child: Icon(
+      child: const Icon(
         CupertinoIcons.right_chevron,
         color: CupertinoColors.activeBlue,
         size: 13,

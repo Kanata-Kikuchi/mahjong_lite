@@ -23,7 +23,7 @@ class GameHistoryPage extends StatelessWidget {
               children: [
                 SizedBox( // ヘッダー.
                   height: h / 8,
-                  child: Row(
+                  child: const Row(
                     children: [
                       SizedBox(width: 30),
                       Text(
@@ -33,11 +33,11 @@ class GameHistoryPage extends StatelessWidget {
                     ]
                   )
                 ),
-                ColumnDivider(),
-                Expanded(
+                const ColumnDivider(),
+                const Expanded(
                   child: GameTableView(),
                 ),
-                ColumnDivider(),
+                const ColumnDivider(),
                 SizedBox( // フッター.
                   height: h / 8,
                   width: double.infinity,

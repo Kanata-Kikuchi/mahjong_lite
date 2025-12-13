@@ -9,7 +9,7 @@ class AgariYameDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupContent(
       anotation: '',
-      body: Center(
+      body: const Center(
         child: Text(
           'アガリ止めしますか？',
           style: MahjongTextStyle.choiceLabelL
@@ -19,7 +19,7 @@ class AgariYameDialog extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           CupertinoButton(
-            child: Text(
+            child: const Text(
               'はい',
               style: MahjongTextStyle.buttonNext,
             ),
@@ -28,7 +28,7 @@ class AgariYameDialog extends StatelessWidget {
             }
           ),
           CupertinoButton(
-            child: Text(
+            child: const Text(
               'いいえ',
               style: MahjongTextStyle.buttonCancel,
             ),

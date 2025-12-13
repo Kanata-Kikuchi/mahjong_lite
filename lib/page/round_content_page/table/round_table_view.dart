@@ -45,7 +45,7 @@ class RoundTableView extends ConsumerWidget {
 
       if (list.length == i + 1 && !gameSet) {
         return Padding(
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
+          padding: const EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
@@ -66,7 +66,7 @@ class RoundTableView extends ConsumerWidget {
                   ],
                 )
               ),
-              Expanded(
+              const Expanded(
                 flex: 16,
                 child: Align(
                   alignment: Alignment.center,
@@ -76,7 +76,7 @@ class RoundTableView extends ConsumerWidget {
                   )
                 )
               ),
-              Expanded(
+              const Expanded(
                 flex: 1,
                 child: SizedBox.shrink()
               )
@@ -85,7 +85,7 @@ class RoundTableView extends ConsumerWidget {
         );
       } else if (list[i].revise ?? false) {
         return Padding(
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
+          padding: const EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
           child: Stack(
             children: [
               Row(
@@ -173,7 +173,7 @@ class RoundTableView extends ConsumerWidget {
         );
       } else {
         return Padding(
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
+          padding: const EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 8),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
@@ -243,8 +243,8 @@ class RoundTableView extends ConsumerWidget {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: i == list.length - 2 && initiative // 主導権.
-                      ? InputRevise() // 修正ポップアップ.
-                      : SizedBox.shrink()
+                      ? const InputRevise() // 修正ポップアップ.
+                      : const SizedBox.shrink()
                 )
               )
             ]
@@ -254,7 +254,7 @@ class RoundTableView extends ConsumerWidget {
     }
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -302,14 +302,14 @@ class RoundTableView extends ConsumerWidget {
                     )
                   )
                 ),
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: SizedBox.shrink(),
                 )
               ],
             ),
           ),
-          ColumnDivider(),
+          const ColumnDivider(),
           Expanded(
             child: ListView.separated(
               itemCount: gameSet

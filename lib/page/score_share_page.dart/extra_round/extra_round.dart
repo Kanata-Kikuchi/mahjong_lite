@@ -13,7 +13,7 @@ class ExtraRound extends ConsumerWidget {
     return Container(
       width: size,
       height: size,
-      margin: EdgeInsets.all(1.5),
+      margin: const EdgeInsets.all(1.5),
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle

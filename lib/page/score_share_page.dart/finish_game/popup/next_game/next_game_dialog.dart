@@ -19,7 +19,7 @@ class NextGameDialog extends ConsumerWidget {
       body: NextGameContent(),
       footer: Center(
         child: CupertinoButton(
-          child: Text(
+          child: const Text(
             '完了',
             style: MahjongTextStyle.buttonNext,
           ),
