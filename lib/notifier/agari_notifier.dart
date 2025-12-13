@@ -18,6 +18,19 @@ class AgariNotifier extends Notifier<Agari> {
     );
   }
 
+  void fullReset() {
+    state = Agari(
+      flag: AgariFlag.ron,
+      reach: [false, false, false, false],
+      tenpai: [false, false, false, false],
+      houju: null,
+      agari: null,
+      score: null,
+      childScore: null,
+      revise: null
+    );
+  }
+
   void flag(AgariFlag flag) {
     state = state.copyWith(flag: flag);
   }

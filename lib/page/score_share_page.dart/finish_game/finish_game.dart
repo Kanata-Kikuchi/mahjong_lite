@@ -18,8 +18,13 @@ import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class FinishGame extends ConsumerWidget {
   const FinishGame({
+    required this.socketInputSend,
+    required this.socketFinishSend,
     super.key
   });
+
+  final void Function() socketInputSend;
+  final void Function(List<List<int>>, List<List<(String, int)>>) socketFinishSend;
 
   Future<bool?> resultGamePopup(BuildContext context, {
     required List<String> resultNameList,
@@ -49,58 +54,6 @@ class FinishGame extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    void initiativeCheck() {
-      final channel = ref.read(socketProvider);
-
-      final roomId = ref.read(ruleProvider).id;
-      final gameScore = ref.read(gameScoreProvider);
-      final players = ref.read(playerProvider); // この時点ですでに東南西北の順番.
-
-      final msg = {
-        'type': 'initiative_check',
-        'payload': {
-          'roomId': roomId, // String?.
-          'gameScore': gameScore.map((m) => {
-            'game': m.game, // String.
-            'time': m.time, // int.
-            'score1st': m.score1st == null // (String, int, String)?.
-                ? null
-                : {
-                    'name': m.score1st!.$1, // String.
-                    'initial': m.score1st!.$2, // int.
-                    'score': m.score1st!.$3, // String.
-                  },
-            'score2nd': m.score2nd == null // (String, int, String)?.
-                ? null
-                : {
-                    'name': m.score2nd!.$1, // String.
-                    'initial': m.score2nd!.$2, // int.
-                    'score': m.score2nd!.$3, // String.
-                  },
-            'score3rd': m.score3rd == null // (String, int, String)?.
-                ? null
-                : {
-                    'name': m.score3rd!.$1, // String.
-                    'initial': m.score3rd!.$2, // int.
-                    'score': m.score3rd!.$3, // String.
-                  },
-            'score4th': m.score4th == null // (String, int, String)?.
-                ? null
-                : {
-                    'name': m.score4th!.$1, // String.
-                    'initial': m.score4th!.$2, // int.
-                    'score': m.score4th!.$3, // String.
-                  },
-          }).toList(),
-          'players': players.map((m) => {
-            'playerId': m.playerId, // String?.
-          }).toList()
-        }
-      };
-
-      channel.sink.add(jsonEncode(msg));
-    }
-
     return GestureDetector( // 終局を押したら.
       behavior: HitTestBehavior.opaque,
       onTap: () async {
@@ -115,7 +68,7 @@ class FinishGame extends ConsumerWidget {
             .toList();
 
         final gameScore = ref.read(gameScoreProvider.notifier);
-        gameScore.set(
+        final scoreMemorySum = gameScore.set(
           game: game.string(),
           nextGame: game.nextString(),
           uma: uma!,
@@ -171,18 +124,9 @@ class FinishGame extends ConsumerWidget {
 
         if (resultNext == true) { // 親決め(next_game_content)のポップアップで完了が押されたら.
 
-          // /*-------------------------- リセット群 --------------------------*/
-          // ref.read(playerProvider.notifier).reset(); // 自風と点数.
-          // ref.read(reachProvider.notifier).reset(); // リーチ棒.
-          // ref.read(roundProvider.notifier).reset(); // 局と本場.
-          // ref.read(roundTableProvider.notifier).reset(); // 局内容.
-          // ref.read(gameSetProvider.notifier).reset(); // 試合終了フラグ.
-          // ref.read(reviseCommentProvider.notifier).reset(); // 修正コメント.
-          // /*----------------------------------------------------------------*/
+          socketFinishSend(scoreMemorySum.$1, scoreMemorySum.$2); // 親からもらった送信処理.
 
-          // ref.read(gameProvider.notifier).progress(); // 試合を進める.
-          initiativeCheck();
-          if (ref.read(debugProvider)) {
+          if (ref.read(debugProvider)) { // debugModeなら.
             /*-------------------------- リセット群 --------------------------*/
             ref.read(playerProvider.notifier).reset(); // 自風と点数.
             ref.read(reachProvider.notifier).reset(); // リーチ棒.
@@ -194,8 +138,7 @@ class FinishGame extends ConsumerWidget {
             ref.read(gameProvider.notifier).progress(); // 試合を進める.
           }
 
-          ref.read(playerProvider.notifier).debug();
-
+          // ref.read(playerProvider.notifier).debug();
         }
 
       },

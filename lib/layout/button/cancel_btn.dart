@@ -5,11 +5,13 @@ class CancelBtn extends StatelessWidget {
   const CancelBtn({
     required this.label,
     required this.onTap,
+    this.red,
     super.key,
   });
 
   final String label;
   final VoidCallback onTap;
+  final bool? red;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,9 @@ class CancelBtn extends StatelessWidget {
       onPressed: onTap,
       child: Text(
         label,
-        style: MahjongTextStyle.buttonBackBold
+        style: red ?? false
+            ? MahjongTextStyle.buttonBackBold
+            : MahjongTextStyle.buttonCancel
       ),
     );
   }

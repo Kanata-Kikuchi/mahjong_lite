@@ -21,6 +21,18 @@ class RuleNotifier extends Notifier<Rule> {
     );
   }
 
+  void fullReset() {
+    state = Rule(
+      name: null,
+      uma: null,
+      oka: null,
+      tobi: null,
+      syanyu: null,
+      agariyame: null,
+      id: null
+    );
+  }
+
   void debugMode() {
     state = Rule(
       name: 'debug_A',
@@ -30,6 +42,22 @@ class RuleNotifier extends Notifier<Rule> {
       syanyu: Syanyu.ari,
       agariyame: Agariyame.ari,
       id: 'debug'
+    );
+  }
+
+  void ruleSet({
+    required String uma,
+    required String oka,
+    required String tobi,
+    required String syanyu,
+    required String agariyame
+  }) {
+    state = state.copyWith(
+      uma: Uma.fromLabel(uma),
+      oka: Oka.fromLabel(oka),
+      tobi: Tobi.fromLabel(tobi),
+      syanyu: Syanyu.fromLabel(syanyu),
+      agariyame: Agariyame.fromLabel(agariyame)
     );
   }
 

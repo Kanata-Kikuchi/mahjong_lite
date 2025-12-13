@@ -7,4 +7,8 @@ enum Syanyu {
 
   static List<String> get labels =>
       Syanyu.values.map((m) => m.label).toList();
+
+  static Syanyu fromLabel(String label) {
+    return Syanyu.values.firstWhere((w) => w.label == label);
+  }
 }

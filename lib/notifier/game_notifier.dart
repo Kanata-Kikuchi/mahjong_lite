@@ -5,6 +5,10 @@ class GameNotifier extends Notifier<int> {
   @override
   build() => 1;
 
+  void  fullReset() {
+    state = 1;
+  }
+
   void debugMode() {
     state = 3;
   }

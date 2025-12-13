@@ -16,7 +16,7 @@ import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/notifier/rule_notifier.dart';
 import 'package:mahjong_lite/page/room_page/child/content_child.dart';
 import 'package:mahjong_lite/page/room_page/host/content_host.dart';
-import 'package:mahjong_lite/socket/socket_enable_join_provider.dart';
+import 'package:mahjong_lite/socket/flag/socket_enable_join_provider.dart';
 import 'package:mahjong_lite/socket/socket_listener_notifier.dart';
 import 'package:mahjong_lite/socket/socket_provider.dart';
 
@@ -29,8 +29,23 @@ class RoomPage extends ConsumerStatefulWidget {
 
 class _RoomPageState extends ConsumerState<RoomPage> {
 
+  ProviderSubscription? _joinSub;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _joinSub = ref.listenManual(socketEnableJoinProvider, (prev, next) {
+      if (!mounted) return;
+      if (next == true) {
+        Navigator.pushNamed(context, '/room_child');
+      }
+    });
+  }
+
   @override
   void dispose() {
+    _joinSub?.close();
     nameController.dispose();
     roomIDController.dispose();
     super.dispose();
@@ -52,7 +67,7 @@ class _RoomPageState extends ConsumerState<RoomPage> {
     ref.read(reachProvider.notifier).debugMode(); // 2
     ref.read(roundTableProvider.notifier).debugMode();
     ref.read(reviseCommentProvider.notifier).debugMode();
-    Navigator.pushNamed(context, '/share');
+    Navigator.pushNamedAndRemoveUntil(context, '/share', (route) => false);
   }
 
   void _check(bool enable) {
@@ -60,7 +75,6 @@ class _RoomPageState extends ConsumerState<RoomPage> {
   }
 
   void socketCreateRoom(String name) {
-    final channel = ref.read(socketProvider);
     final rule = ref.read(ruleProvider);
 
     final msg = {
@@ -77,11 +91,10 @@ class _RoomPageState extends ConsumerState<RoomPage> {
       }
     };
 
-    channel.sink.add(jsonEncode(msg));
+    ref.read(socketProvider.notifier).send(msg);
   }
 
   void socketJoinRoom(String name) {
-    final channel = ref.read(socketProvider);
     final rule = ref.read(ruleProvider);
 
     final msg = {
@@ -92,20 +105,13 @@ class _RoomPageState extends ConsumerState<RoomPage> {
       }
     };
 
-    channel.sink.add(jsonEncode(msg));
+    ref.read(socketProvider.notifier).send(msg);
   }
 
   @override
   Widget build(BuildContext context) {
 
-    ref.listen(socketEnableJoinProvider, (prev, next) {
-      if (next == true) {
-        Navigator.pushNamed(context, '/room_child');
-      }
-    });
-
     final rule = ref.read(ruleProvider.notifier);
-    ref.watch(socketListenerProvider);
 
     return CupertinoPageScaffold(
       child: Center(
@@ -177,7 +183,7 @@ class _RoomPageState extends ConsumerState<RoomPage> {
                             bold: true,
                             onTap: () {
                               socketCreateRoom(nameController.text);
-                              Navigator.pushNamed(context, '/room_host');
+                              Navigator.pushNamed(context, '/room_host'); // 調整。回線次第.
                             }
                           )
                         : EnableBtn(
@@ -187,6 +193,7 @@ class _RoomPageState extends ConsumerState<RoomPage> {
                             onTap: () {
                               // Navigator.pushNamed(context, '/room_child'); // debug用.
                               if (nameController.text == 'debug' && roomIDController.text == 'debug') {
+                                print('debugMode');
                                 debugMode();
                               } else {
                                 socketJoinRoom(nameController.text);

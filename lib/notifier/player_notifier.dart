@@ -39,12 +39,37 @@ class PlayerNotifier extends Notifier<List<Player>> {
     ];
   }
 
+  void fullReset() {
+    state = [
+      Player(playerId: null, name: null, initial: 0, zikaze: 0, score: null),
+      Player(playerId: null, name: null, initial: 1, zikaze: 1, score: null),
+      Player(playerId: null, name: null, initial: 2, zikaze: 2, score: null),
+      Player(playerId: null, name: null, initial: 3, zikaze: 3, score: null)
+    ];
+
+    memory = [
+      Player(playerId: null, name: null, initial: 0, zikaze: 0, score: null),
+      Player(playerId: null, name: null, initial: 1, zikaze: 1, score: null),
+      Player(playerId: null, name: null, initial: 2, zikaze: 2, score: null),
+      Player(playerId: null, name: null, initial: 3, zikaze: 3, score: null)
+    ];
+
+    initialNameList = [
+      null,
+      null,
+      null,
+      null
+    ];
+
+    initialScore = null;
+  }
+
   void debugMode() {
     memory = [
-      Player(playerId: '123aaa', name: 'debug_A', initial: 0, zikaze: 2, score: 12700),
-      Player(playerId: '123bbb', name: 'debug_B', initial: 1, zikaze: 3, score: 37000),
-      Player(playerId: '123ccc', name: 'debug_C', initial: 2, zikaze: 0, score: 26200),
-      Player(playerId: '123ddd', name: 'debug_D', initial: 3, zikaze: 1, score: 24100)
+      Player(playerId: null, name: 'debug_A', initial: 0, zikaze: 2, score: 12700),
+      Player(playerId: null, name: 'debug_B', initial: 1, zikaze: 3, score: 37000),
+      Player(playerId: null, name: 'debug_C', initial: 2, zikaze: 0, score: 26200),
+      Player(playerId: null, name: 'debug_D', initial: 3, zikaze: 1, score: 24100)
     ];
     initialNameList = [
       'debug_A',
@@ -54,17 +79,39 @@ class PlayerNotifier extends Notifier<List<Player>> {
     ];
     initialScore = 25000;
     state = [
-      Player(playerId: '123aaa', name: 'debug_A', initial: 0, zikaze: 1, score: 11700),
-      Player(playerId: '123bbb', name: 'debug_B', initial: 1, zikaze: 2, score: 37000),
-      Player(playerId: '123ccc', name: 'debug_C', initial: 2, zikaze: 3, score: 26200),
-      Player(playerId: '123ddd', name: 'debug_D', initial: 3, zikaze: 0, score: 23100)
+      Player(playerId: null, name: 'debug_A', initial: 0, zikaze: 1, score: 11700),
+      Player(playerId: null, name: 'debug_B', initial: 1, zikaze: 2, score: 37000),
+      Player(playerId: null, name: 'debug_C', initial: 2, zikaze: 3, score: 26200),
+      Player(playerId: null, name: 'debug_D', initial: 3, zikaze: 0, score: 23100)
+    ];
+  }
+
+  void newSeatSet({
+    required List<dynamic> newSeat
+  }) {
+    print(state);
+    final ids = newSeat.whereType<String>().toList();
+
+    final byId = {
+      for (final p in state)
+        p.playerId!: p
+    };
+
+    final reordered = [for (final id in ids) byId[id]!];
+    state = [
+      for (int i = 0; i < reordered.length; i++)
+        reordered[i].copyWith(initial: i)
     ];
   }
 
   void playerSet({
-    required List<Map<String, dynamic>> player
+    required List<dynamic> player
   }) {
-    for (final row in player) {
+    final rows = player
+        .map((m) => Map<String, dynamic>.from(m))
+        .toList();
+
+    for (final row in rows) {
       state = [
         for (final p in state)
           p.initial == row['initial']
@@ -98,10 +145,19 @@ class PlayerNotifier extends Notifier<List<Player>> {
     ];
   }
 
+  void roomStateRest() {
+    state = [
+      Player(playerId: null, name: null, initial: 0, zikaze: 0, score: state[0].score),
+      Player(playerId: null, name: null, initial: 1, zikaze: 1, score: state[0].score),
+      Player(playerId: null, name: null, initial: 2, zikaze: 2, score: state[0].score),
+      Player(playerId: null, name: null, initial: 3, zikaze: 3, score: state[0].score)
+    ];
+  }
+
   void changeTonNan() {
     state = [
-      state[0].copyWith(name: state[1].name),
-      state[1].copyWith(name: state[0].name),
+      state[0].copyWith(playerId: state[1].playerId, name: state[1].name),
+      state[1].copyWith(playerId: state[0].playerId, name: state[0].name),
       state[2],
       state[3]
     ];
@@ -110,8 +166,8 @@ class PlayerNotifier extends Notifier<List<Player>> {
   void changeNanSya() {
     state = [
       state[0],
-      state[1].copyWith(name: state[2].name),
-      state[2].copyWith(name: state[1].name),
+      state[1].copyWith(playerId: state[2].playerId, name: state[2].name),
+      state[2].copyWith(playerId: state[1].playerId, name: state[1].name),
       state[3]
     ];
   }
@@ -120,8 +176,8 @@ class PlayerNotifier extends Notifier<List<Player>> {
     state = [
       state[0],
       state[1],
-      state[2].copyWith(name: state[3].name),
-      state[3].copyWith(name: state[2].name)
+      state[2].copyWith(playerId: state[3].playerId, name: state[3].name),
+      state[3].copyWith(playerId: state[2].playerId, name: state[2].name)
     ];
   }
 
@@ -264,10 +320,10 @@ class PlayerNotifier extends Notifier<List<Player>> {
 
   void reset() {
     state = [
-      state[0].copyWith(zikaze: 0, score: initialScore),
-      state[1].copyWith(zikaze: 1, score: initialScore),
-      state[2].copyWith(zikaze: 2, score: initialScore),
-      state[3].copyWith(zikaze: 3, score: initialScore)
+      state[0].copyWith(zikaze: 0, initial: 0, score: initialScore),
+      state[1].copyWith(zikaze: 1, initial: 1, score: initialScore),
+      state[2].copyWith(zikaze: 2, initial: 2, score: initialScore),
+      state[3].copyWith(zikaze: 3, initial: 3, score: initialScore)
     ];
 
     memory = [

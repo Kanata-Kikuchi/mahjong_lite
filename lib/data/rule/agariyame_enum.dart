@@ -7,4 +7,8 @@ enum Agariyame {
 
   static List<String> get labels =>
       Agariyame.values.map((m) => m.label).toList();
+
+  static Agariyame fromLabel(String label) {
+    return Agariyame.values.firstWhere((w) => w.label == label);
+  }
 }

@@ -7,7 +7,7 @@ import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/layout/layout_page.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/notifier/rule_notifier.dart';
-import 'package:mahjong_lite/socket/socket_game_start_provider.dart';
+import 'package:mahjong_lite/socket/flag/socket_game_start_provider.dart';
 import 'package:mahjong_lite/socket/socket_provider.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
@@ -20,41 +20,55 @@ class RoomHost extends ConsumerStatefulWidget {
   ConsumerState<RoomHost> createState() => _RoomHostState();
 }
 
-bool _enable = false;
-
 class _RoomHostState extends ConsumerState<RoomHost> {
+
+  ProviderSubscription? _startSub;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _startSub = ref.listenManual(socketGameStartProvider, (prev, next) {
+      if (!mounted) return;
+      if (next == true) {
+        Navigator.pushNamedAndRemoveUntil(context, '/share', (route) => false);
+        ref.read(socketGameStartProvider.notifier).state = false;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _startSub?.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    ref.listen(socketGameStartProvider, (prev, next) {
-      if (next == true) {
-        Navigator.pushNamedAndRemoveUntil(context, '/share', (route) => false);
-      }
-    });
 
     final player = ref.read(playerProvider.notifier);
     final p = ref.watch(playerProvider);
     final id = ref.watch(ruleProvider).id;
 
     final length = p.where((w) => w.name != null).length;
+    final enable = p.where((w) => w.name != null).length == 4;
 
     void startGame() {
-      final channel = ref.read(socketProvider);
       final roomId = ref.read(ruleProvider).id;
+      final initialScore = ref.read(playerProvider)[0].score;
 
       final msg = {
         'type': 'start_game',
         'payload': {
-          'roomId': roomId
+          'roomId': roomId,
+          'initialScore': initialScore
         },
       };
 
-      channel.sink.add(jsonEncode(msg));
+      ref.read(socketProvider.notifier).send(msg);
     }
 
     void removeRoom() {
-      final channel = ref.read(socketProvider);
       final roomId = ref.read(ruleProvider).id;
 
       final msg = {
@@ -64,10 +78,28 @@ class _RoomHostState extends ConsumerState<RoomHost> {
         }
       };
 
-      channel.sink.add(jsonEncode(msg));
+      ref.read(socketProvider.notifier).send(msg);
+    }
+
+    void changeSeat() {
+      final roomId = ref.read(ruleProvider).id;
+      final players = ref.read(playerProvider);
+
+      final msg = {
+        'type': 'change_seat',
+        'payload': {
+          'roomId': roomId,
+          'players': players.map((m) => {
+            'name': m.name
+          }).toList()
+        }
+      };
+
+      ref.read(socketProvider.notifier).send(msg);
     }
 
     return CupertinoPageScaffold(
+      resizeToAvoidBottomInset: false,
       child: Center(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -131,10 +163,13 @@ class _RoomHostState extends ConsumerState<RoomHost> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               SizedBox(width: space),
-                              Expanded(child: _enable && length > 2
+                              Expanded(child: length > 2
                                 ? GestureDetector( // 切り替えボタン.
                                   behavior: HitTestBehavior.opaque,
-                                  onTap: () => player.changeNanSya(),
+                                  onTap: () {
+                                    player.changeNanSya();
+                                    changeSeat();
+                                  },
                                   child: const Icon(CupertinoIcons.arrow_up_arrow_down, size: 15)
                                 )
                                 : const Icon(CupertinoIcons.arrow_up_arrow_down, size: 15, color: CupertinoColors.systemGrey),)
@@ -166,10 +201,13 @@ class _RoomHostState extends ConsumerState<RoomHost> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               SizedBox(width: space),
-                              Expanded(child: _enable && length > 3
+                              Expanded(child: length > 3
                                 ? GestureDetector( // 切り替えボタン.
                                   behavior: HitTestBehavior.opaque,
-                                  onTap: () => player.changeSyaPei(),
+                                  onTap: () {
+                                    player.changeSyaPei();
+                                    changeSeat();
+                                  },
                                   child: const Icon(CupertinoIcons.arrow_up_arrow_down, size: 15)
                                 )
                                 : const Icon(CupertinoIcons.arrow_up_arrow_down, size: 15, color: CupertinoColors.systemGrey),)
@@ -210,18 +248,17 @@ class _RoomHostState extends ConsumerState<RoomHost> {
                       children: [
                         CancelBtn(
                           label: 'ルーム削除',
+                          red: true,
                           onTap: () {
                             removeRoom();
-                            Navigator.pop(context);
+                            Navigator.pop(context); // 調整。回線次第.
                           }
                         ),
                         EnableBtn(
                           label: 'ゲーム開始',
-                          enabled: _enable,
+                          enabled: enable,
                           onTap: () {
                             startGame();
-                            // ref.read(ruleProvider.notifier).debug();
-                            // ref.read(playerProvider.notifier).debug();
                             // Navigator.pushNamedAndRemoveUntil(context, '/share', (route) => false); // debug用.
                           },
                         )

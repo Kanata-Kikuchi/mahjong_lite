@@ -20,8 +20,11 @@ import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class InputRound extends ConsumerWidget {
   const InputRound({
+    required this.socketInputSend,
     super.key
   });
+
+  final void Function() socketInputSend;
 
   Future<bool?> agariPopup(BuildContext context) {
     return showCupertinoDialog(
@@ -197,6 +200,7 @@ class InputRound extends ConsumerWidget {
             }
           }
 
+          socketInputSend(); // 親からもらった送信処理.
           agari.reset();
         }
       },

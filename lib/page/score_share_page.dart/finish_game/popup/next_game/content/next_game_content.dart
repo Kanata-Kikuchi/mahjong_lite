@@ -17,7 +17,7 @@ class _NextGameContentState extends ConsumerState<NextGameContent> {
   Widget build(BuildContext context) {
 
     final player = ref.read(playerProvider.notifier);
-    final name = ref.read(playerProvider).map((m) => m.name!).toList();
+    final name = ref.watch(playerProvider).map((m) => m.name!).toList();
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 100),
@@ -45,7 +45,7 @@ class _NextGameContentState extends ConsumerState<NextGameContent> {
           ),
           GestureDetector( // 切り替えボタン.
             behavior: HitTestBehavior.opaque,
-            onTap: () => setState(() => player.changeTonNan()),
+            onTap: () => player.changeTonNan(),
             child: const Icon(CupertinoIcons.arrow_up_arrow_down, size: 15)
           ),
           Row( // 南.
@@ -69,7 +69,7 @@ class _NextGameContentState extends ConsumerState<NextGameContent> {
           ),
           GestureDetector( // 切り替えボタン.
             behavior: HitTestBehavior.opaque,
-            onTap: () => setState(() => player.changeNanSya()),
+            onTap: () => player.changeNanSya(),
             child: const Icon(CupertinoIcons.arrow_up_arrow_down, size: 15)
           ),
           Row( // 西.
@@ -93,7 +93,7 @@ class _NextGameContentState extends ConsumerState<NextGameContent> {
           ),
           GestureDetector( // 切り替えボタン.
             behavior: HitTestBehavior.opaque,
-            onTap: () => setState(() => player.changeSyaPei()),
+            onTap: () => player.changeSyaPei(),
             child: const Icon(CupertinoIcons.arrow_up_arrow_down, size: 15)
           ),
           Row( // 北.

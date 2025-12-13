@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/notifier/game_notifier.dart';
-import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/game_rule/content/rule_dialog.dart';
+import 'package:mahjong_lite/page/score_share_page.dart/game_rule/content/rule_dialog.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class GameRule extends ConsumerWidget {

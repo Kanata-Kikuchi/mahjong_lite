@@ -3,13 +3,6 @@ import 'package:flutter/cupertino.dart';
 class MahjongTextStyle {
 
   /*--------------------------------------- Button ---------------------------------------*/
-
-
-  static const TextStyle buttonCancel = TextStyle( // キャンセルボタン.
-    fontSize: 13,
-    fontWeight: FontWeight.w400,
-    color: CupertinoColors.black
-  );
   
   /*------------------ EnableBtn ------------------*/
 
@@ -65,13 +58,23 @@ class MahjongTextStyle {
 
   // + buttonNext.
 
+  /*------------------- CancelBtn -------------------*/
+
+  static const TextStyle buttonCancel = TextStyle( // キャンセルボタン.
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
+    color: CupertinoColors.black
+  );
+  
+  // + buttonBackBold.
+
   /*---------------------------------------- Popup ----------------------------------------*/
 
   /*------ PopupRon, PopupTsumo, PopupRyukyoku ------*/
 
   static const TextStyle tableLabel = TextStyle( // テーブルのラベル文字.
     fontSize: 12,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w400,
     color: CupertinoColors.black,
   );
 
@@ -85,7 +88,7 @@ class MahjongTextStyle {
 
   static const TextStyle sheetChoiceBlue = TextStyle( // 選択済み.
     fontSize: 16,
-    fontWeight: FontWeight.w200,
+    fontWeight: FontWeight.w400,
     color: CupertinoColors.systemBlue
   );
 
@@ -119,25 +122,25 @@ class MahjongTextStyle {
 
   static const TextStyle choiceLabel = TextStyle( // ラベル.
     fontSize: 12,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w400,
     color: CupertinoColors.black,
   );
 
   static const TextStyle choiceLabelL = TextStyle( // ボディのラベル文字、L.
     fontSize: 14,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w400,
     color: CupertinoColors.black,
   );
 
   static const TextStyle choiceBlue = TextStyle( // 選択済み.
     fontSize: 12,
-    fontWeight: FontWeight.w200,
+    fontWeight: FontWeight.w400,
     color: CupertinoColors.systemBlue
   );
 
   static const TextStyle choiceOpa = TextStyle( // プレースホルダー.
     fontSize: 12,
-    fontWeight: FontWeight.w200,
+    fontWeight: FontWeight.w400,
     color: CupertinoColors.systemGrey2
   );
 
@@ -199,7 +202,7 @@ static const TextStyle tableLabel = TextStyle( // テーブルのラベル文字
 
   static const TextStyle tableSel = TextStyle( // テーブルの中の文字.
     fontSize: 12,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w400,
     color: CupertinoColors.black,
   );
 
@@ -208,7 +211,7 @@ static const TextStyle tableLabel = TextStyle( // テーブルのラベル文字
 
   static const TextStyle choiceBlueL = TextStyle( // 選択された文字、L.
     fontSize: 16,
-    fontWeight: FontWeight.w200,
+    fontWeight: FontWeight.w400,
     color: CupertinoColors.systemBlue
   );
 

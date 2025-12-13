@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,11 +10,13 @@ import 'package:mahjong_lite/notifier/agari_notifier.dart';
 import 'package:mahjong_lite/notifier/game_set_notifier.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/notifier/reach_notifier.dart';
+import 'package:mahjong_lite/notifier/revise_comment_notifier.dart';
 import 'package:mahjong_lite/notifier/round_notifier.dart';
 import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/notifier/rule_notifier.dart';
 import 'package:mahjong_lite/page/round_content_page/popup/input_revise/revise_dialog.dart';
 import 'package:mahjong_lite/page/score_share_page.dart/input_round/popup/agari_yane_dialog/agari_yame_dialog.dart';
+import 'package:mahjong_lite/socket/socket_provider.dart';
 
 class InputRevise extends ConsumerWidget {
   const InputRevise({
@@ -40,6 +43,51 @@ class InputRevise extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    void socketInputRound() { // 局内容が入力されたら送る.
+      final roomId = ref.read(ruleProvider).id;
+      final round = ref.read(roundProvider);
+      final reach = ref.read(reachProvider);
+      final gameSet = ref.read(gameSetProvider);
+      final roundTable = ref.read(roundTableProvider); // List<RoundTable>.
+      final comment = ref.read(reviseCommentProvider);
+      final player = ref.read(playerProvider); // List<Player>.
+
+      final commentJson = {
+        for (final e in comment.entries)
+          e.key.toString(): e.value
+      };
+
+      final msg = {
+        'type': 'input_round',
+        'payload': {
+          'roomId': roomId, // String?.
+          'round': {
+            'kyoku': round.$1, // int.
+            'honba': round.$2, // int.
+          },
+          'reach': reach, // int.
+          'gameSet': gameSet, // bool.
+          'roundTable': roundTable.map((m) => {
+            'kyoku': m.kyoku, // String.
+            'honba': m.honba, // String.
+            'p0': m.p0, // int?.
+            'p1': m.p1, // int?.
+            'p2': m.p2, // int?.
+            'p3': m.p3, // int?.
+            'revise': m.revise
+          }).toList(),
+          'comment': commentJson, // Map<int, String>.
+          'score': player.map((m) => {
+            'initial': m.initial, // int.
+            'zikaze': m.zikaze, // int.
+            'score': m.score // int?.
+          }).toList()
+        }
+      };
+
+      ref.read(socketProvider.notifier).send(msg);
+    }
 
     final rule = ref.read(ruleProvider);
 
@@ -204,6 +252,7 @@ class InputRevise extends ConsumerWidget {
             }
           }
 
+          socketInputRound();
           agari.reset();
         }
       },

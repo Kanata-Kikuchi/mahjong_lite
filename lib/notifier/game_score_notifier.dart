@@ -36,6 +36,23 @@ class GameScoreNotifier extends Notifier<List<Game>> {
     )
   ];
 
+  void fullReset() {
+    state = [
+      Game(
+        game: '第1試合',
+        time: 0,
+      )
+    ];
+    memory = [
+      Game(
+        game: '第1試合',
+        time: 0,
+      )
+    ];
+    sum = [];
+    scoreMemory = [];
+  }
+
   void debugMode() {
     memory = [
       Game(
@@ -84,11 +101,42 @@ class GameScoreNotifier extends Notifier<List<Game>> {
   }
 
   void gameScoreSet({
-    required List<Map<String, dynamic>> gameScore
+    required List<dynamic>? sum,
+    required List<dynamic>? memory,
+    required List<dynamic>? gameScore
   }) {
+    if (sum == null || memory == null || gameScore == null) {
+      return;
+    }
+
+    final decoded = memory
+        .map((m) => (m as List).map((i) => i as int).toList())
+        .toList();
+    scoreMemory = decoded;
+
+    final List<List<(String, int)>> decodedSum = sum
+        .whereType<List>()
+        .map((game) => game
+            .whereType<Map>()
+            .map((p) {
+              final map = Map<String, dynamic>.from(p);
+              return (
+                map['name'] as String,
+                (map['score'] as num).toInt(),
+              );
+            })
+            .toList())
+        .toList();
+
+    this.sum = decodedSum;
+
+    final rows = gameScore
+      .map((e) => Map<String, dynamic>.from(e))
+      .toList();
+
     List<Game> buf = [];
 
-    for (final row in gameScore) {
+    for (final row in rows) {
       if (row['score1st'] == null && row['score2nd'] == null && row['score3rd'] == null && row['score4th'] == null) {
         buf = [
           ...buf,
@@ -98,15 +146,20 @@ class GameScoreNotifier extends Notifier<List<Game>> {
           )
         ];
       } else {
+        final s1 = Map<String, dynamic>.from(row['score1st'] as Map);
+        final s2 = Map<String, dynamic>.from(row['score2nd'] as Map);
+        final s3 = Map<String, dynamic>.from(row['score3rd'] as Map);
+        final s4 = Map<String, dynamic>.from(row['score4th'] as Map);
+
         buf = [
           ...buf,
           Game(
             game: row['game'],
             time: row['time'],
-            score1st: (row['score1st']['name'], row['initial'], row['score']),
-            score2nd: (row['score2nd']['name'], row['initial'], row['score']),
-            score3rd: (row['score3rd']['name'], row['initial'], row['score']),
-            score4th: (row['score4th']['name'], row['initial'], row['score'])
+            score1st: (s1['name'], s1['initial'], s1['score']),
+            score2nd: (s2['name'], s2['initial'], s2['score']),
+            score3rd: (s3['name'], s3['initial'], s3['score']),
+            score4th: (s4['name'], s4['initial'], s4['score']),
           )
         ];
       }
@@ -115,7 +168,7 @@ class GameScoreNotifier extends Notifier<List<Game>> {
     state = buf;
   }
 
-  void set({
+  (List<List<int>>, List<List<(String, int)>>) set({
     required String game,
     required String nextGame,
     required Uma uma,
@@ -206,6 +259,8 @@ class GameScoreNotifier extends Notifier<List<Game>> {
         time: 0
       )
     ];
+
+    return (scoreMemory, sum);
 
     // print('set() / state.length: ${state.length}');
 

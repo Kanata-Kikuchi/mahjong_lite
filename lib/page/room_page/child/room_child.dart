@@ -6,9 +6,9 @@ import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/layout/layout_page.dart';
 import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/notifier/rule_notifier.dart';
-import 'package:mahjong_lite/socket/socket_enable_join_provider.dart';
-import 'package:mahjong_lite/socket/socket_game_start_provider.dart';
-import 'package:mahjong_lite/socket/socket_playerid_provider.dart';
+import 'package:mahjong_lite/socket/flag/socket_enable_join_provider.dart';
+import 'package:mahjong_lite/socket/flag/socket_game_start_provider.dart';
+import 'package:mahjong_lite/socket/data/socket_playerid_provider.dart';
 import 'package:mahjong_lite/socket/socket_provider.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
@@ -21,26 +21,43 @@ class RoomChild extends ConsumerStatefulWidget {
 
 class _RoomChildState extends ConsumerState<RoomChild> {
 
-  @override
-  Widget build(BuildContext context) {
+  ProviderSubscription? _startSub;
+  ProviderSubscription? _enableSub;
 
-    ref.listen(socketGameStartProvider, (prev, next) {
+  @override
+  void initState() {
+    super.initState();
+
+    _startSub = ref.listenManual(socketGameStartProvider, (prev, next) {
+      if (!mounted) return;
       if (next == true) {
         Navigator.pushNamedAndRemoveUntil(context, '/share', (route) => false);
+        ref.read(socketGameStartProvider.notifier).state = false;
       }
     });
 
-    ref.listen(socketEnableJoinProvider, (prev, next) {
+    _enableSub = ref.listenManual(socketEnableJoinProvider, (prev, next) {
+      if (!mounted) return;
       if (next == false) {
         Navigator.pop(context);
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _startSub?.close();
+    _enableSub?.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     final roomId = ref.read(ruleProvider).id;
-    final name = ref.read(playerProvider).map((m) => m.name).toList();
+    final name = ref.watch(playerProvider).map((m) => m.name).toList();
 
     void exitRoom() {
-      final channel = ref.read(socketProvider);
       final roomId = ref.read(ruleProvider).id;
       final playerId = ref.read(socketPlayerIdProvider);
 
@@ -52,10 +69,11 @@ class _RoomChildState extends ConsumerState<RoomChild> {
         }
       };
 
-      channel.sink.add(jsonEncode(msg));
+      ref.read(socketProvider.notifier).send(msg);
     }
 
     return CupertinoPageScaffold(
+      resizeToAvoidBottomInset: false,
       child: Center(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -165,9 +183,9 @@ class _RoomChildState extends ConsumerState<RoomChild> {
                       children: [
                         CancelBtn(
                           label: '退出',
+                          red: true,
                           onTap: () {
                             exitRoom();
-                            Navigator.pop(context);
                           },
                         )
                       ],

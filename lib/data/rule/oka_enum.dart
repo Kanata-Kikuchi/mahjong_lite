@@ -11,4 +11,8 @@ enum Oka {
 
   static List<String> get labels =>
       Oka.values.map((m) => m.label).toList();
+
+  static Oka fromLabel(String label) {
+    return Oka.values.firstWhere((w) => w.label == label);
+  }
 }

@@ -7,7 +7,7 @@ import 'package:mahjong_lite/notifier/player_notifier.dart';
 import 'package:mahjong_lite/notifier/round_table_notifier.dart';
 import 'package:mahjong_lite/page/round_content_page/popup/input_revise/input_revise.dart';
 import 'package:mahjong_lite/page/round_content_page/popup/show_comment/show_comment.dart';
-import 'package:mahjong_lite/socket/socket_initiative_provider.dart';
+import 'package:mahjong_lite/socket/flag/socket_initiative_provider.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class RoundTableView extends ConsumerWidget {

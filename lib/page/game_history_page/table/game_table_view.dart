@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mahjong_lite/layout/column_divider.dart';
 import 'package:mahjong_lite/model/game_model.dart';
 import 'package:mahjong_lite/notifier/game_score_notifier.dart';
+import 'package:mahjong_lite/page/game_history_page/popup/plot_game.dart';
 import 'package:mahjong_lite/theme/mahjong_text_style.dart';
 
 class GameTableView extends ConsumerWidget {
@@ -168,16 +169,10 @@ class GameTableView extends ConsumerWidget {
               ),
               Expanded(
                 flex: 1,
-                child: SizedBox.shrink(),
-                /* ここに押すと試合の点数推移が表示されるグラフを作りたい */
-                // child: Align(
-                //   alignment: Alignment.centerRight,
-                //   child: Icon(
-                //     CupertinoIcons.right_chevron,
-                //     color: CupertinoColors.activeBlue,
-                //     size: 17,
-                //   )
-                // )
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: PlotGame()
+                )
               )
             ]
           )

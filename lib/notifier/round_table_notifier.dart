@@ -26,6 +26,15 @@ class RoundTableNotifier extends Notifier<List<RoundTable>> {
     ];
   }
 
+  void fullReset() {
+    state = [
+      RoundTable(
+        kyoku: '東1局',
+        honba: '0本場'
+      )
+    ];
+  }
+
   void debugMode() {
     state = [
       RoundTable(
@@ -77,11 +86,16 @@ class RoundTableNotifier extends Notifier<List<RoundTable>> {
   }
 
   void roundTableSet({
-    required List<Map<String, dynamic>> roundTable
+    required List<dynamic> roundTable
   }) {
+
+    final rows = roundTable
+      .map((e) => Map<String, dynamic>.from(e))
+      .toList();
+
     List<RoundTable> buf = [];
     
-    for (final row in roundTable) {
+    for (final row in rows) {
       if (row['revise'] == true) {
         buf = [
           ...buf,

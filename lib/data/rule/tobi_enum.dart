@@ -7,4 +7,8 @@ enum Tobi {
 
   static List<String> get labels =>
       Tobi.values.map((m) => m.label).toList();
+
+  static Tobi fromLabel(String label) {
+    return Tobi.values.firstWhere((w) => w.label == label);
+  }
 }

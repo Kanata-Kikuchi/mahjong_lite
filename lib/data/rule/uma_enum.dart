@@ -12,4 +12,7 @@ enum Uma {
   static List<String> get labels =>
       Uma.values.map((m) => m.label).toList();
 
+  static Uma fromLabel(String label) {
+    return Uma.values.firstWhere((w) => w.label == label);
+  }
 }

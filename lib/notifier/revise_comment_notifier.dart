@@ -5,6 +5,10 @@ class ReviseCommentNotifier extends Notifier<Map<int, String>> {
   @override
   Map<int, String> build() => {};
 
+  void fullReset() {
+    state = {};
+  }
+
   void debugMode() {
     state = {
       1: 'debug_Bのあがりだったのに間違えてdebug_Cで入力した'
@@ -12,9 +16,12 @@ class ReviseCommentNotifier extends Notifier<Map<int, String>> {
   }
 
   void reviseCommentSet({
-    required Map<String, String> comment
+    required Map<String, dynamic> comment
   }) {
-    state = comment.map((key, value) => MapEntry(int.parse(key), value));
+    state = {
+      for (final entry in comment.entries)
+        int.parse(entry.key): (entry.value ?? '').toString()
+    };
   }
 
   void set({

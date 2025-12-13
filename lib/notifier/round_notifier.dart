@@ -7,6 +7,11 @@ class RoundNotifier extends Notifier<(int, int)> {
   @override
   build() => (0, 0);
 
+  void fullReset() {
+    state = (0, 0);
+    memory = (0, 0);
+  }
+
   void debugMode() {
     state = (2, 1);
   }

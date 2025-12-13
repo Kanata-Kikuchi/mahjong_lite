@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class LogoPage extends StatelessWidget {
   const LogoPage({super.key});
@@ -9,10 +8,11 @@ class LogoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       child: Center(
-        child: GestureDetector(
-          onTap: () => Navigator.pushNamed(context, '/room'),
-          child: Transform.rotate(
-            angle: pi / 4,
+        child: Transform.rotate(
+          angle: pi / 4,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => {Navigator.pushNamedAndRemoveUntil(context, '/room', (route) => false)},
             child: Container(
               width: 100,
               height: 100,
@@ -20,9 +20,9 @@ class LogoPage extends StatelessWidget {
                 color: CupertinoColors.systemGrey,
               ),
             ),
-          ),
+          )
         ),
-      )
+      ),
     );
   }
 }
