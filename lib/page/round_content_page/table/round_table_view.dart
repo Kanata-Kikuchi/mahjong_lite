@@ -243,7 +243,7 @@ class RoundTableView extends ConsumerWidget {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: i == list.length - 2 && initiative // 主導権.
-                      ? const InputRevise() // 修正ポップアップ.
+                      ? InputRevise() // 修正ポップアップ.
                       : const SizedBox.shrink()
                 )
               )

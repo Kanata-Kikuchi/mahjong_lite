@@ -246,7 +246,7 @@ class _ScoreSharePageState extends ConsumerState<ScoreSharePage> {
                       child: gameSet // ゲームセットフラグ.
                           ? initiative // 主導権.
                             ? FinishGame(socketInputSend: socketInputRound, socketFinishSend: initiativeCheck)
-                            : const FinishGameMember()
+                            : FinishGameMember()
                           : initiative // 主導権.
                             ? InputRound(socketInputSend: socketInputRound)
                             : InputRoundMember()
@@ -254,7 +254,7 @@ class _ScoreSharePageState extends ConsumerState<ScoreSharePage> {
                     scoreBoxPosition(width: w / 3, height: h / 3 - 10, i: 2),
                     SizedBox( // 供託・本場表記.
                       width: w / 4,
-                      child: const ExtraRound(),
+                      child: ExtraRound(),
                     ),
                   ],
                 ),
@@ -262,7 +262,7 @@ class _ScoreSharePageState extends ConsumerState<ScoreSharePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     scoreBoxPosition(width: w / 3, height: h / 3 - 10, i: 3),
-                    const GameRule(), // ゲーム数表記.
+                    GameRule(), // ゲーム数表記.
                     scoreBoxPosition(width: w / 3, height: h / 3 - 10, i: 1),
                   ],
                 ),

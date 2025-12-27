@@ -16,6 +16,7 @@ import 'package:mahjong_lite/notifier/rule_notifier.dart';
 import 'package:mahjong_lite/page/room_page/child/content_child.dart';
 import 'package:mahjong_lite/page/room_page/host/content_host.dart';
 import 'package:mahjong_lite/socket/flag/socket_enable_join_provider.dart';
+import 'package:mahjong_lite/socket/flag/socket_initiative_provider.dart';
 import 'package:mahjong_lite/socket/socket_provider.dart';
 
 class RoomPage extends ConsumerStatefulWidget {
@@ -65,6 +66,7 @@ class _RoomPageState extends ConsumerState<RoomPage> {
     ref.read(reachProvider.notifier).debugMode(); // 2
     ref.read(roundTableProvider.notifier).debugMode();
     ref.read(reviseCommentProvider.notifier).debugMode();
+    ref.read(initiativeProvider.notifier).state = true;
     Navigator.pushNamedAndRemoveUntil(context, '/share', (route) => false);
   }
 
