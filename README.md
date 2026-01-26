@@ -1,16 +1,62 @@
 # mahjong_lite
 
-A new Flutter project.
+本プロジェクトは、前作※で得た反省をもとに再設計した、
+麻雀の点数共有を目的としたアプリです。
 
-## Getting Started
+前作では、その場で必要と感じた機能を追加していく形で開発を進めた結果、
+後半になるにつれて大規模な修正が必要となり、設計の重要性を実感しました。
+その経験を踏まえ、本作では開発初期段階から Figma を用いて画面構成を検討し、
+事前に要件を整理した上で実装を進めています。
 
-This project is a starting point for a Flutter application.
+主な改良点として、
+前作で実装していたアガリ牌選択による点数計算UIを廃止しました。
+点数計算よりも、複数人での点数状況を即座に共有できることを重視し、
+ユーザーの入力数を最小限に抑える設計としています。
+また、ソケット通信によるリアルタイムな点数共有を実現した点が挙げられます。
 
-A few resources to get you started if this is your first Flutter project:
+※ 前作：https://github.com/kanata-kikuchi/mahjong
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+
+## 主な機能
+
+- 4人同時接続によるリアルタイム点数共有
+- 局ごとの点数入力と持ち点の自動計算
+- 試合結果の履歴管理と順位表示
+- 全試合を通したユーザーごとの成績集計
+
+
+---
+
+
+## 技術構成
+
+使用言語：
+- Dart
+
+フレームワーク / ライブラリ：
+- Flutter
+- Riverpod
+
+サーバー（別リポジトリ）：
+- 言語：JavaScript
+- 実行環境：Node.js
+- 通信：Socket.IO
+- リポジトリ：https://github.com/Kanata-Kikuchi/mahjong_lite_server
+
+
+---
+
+
+## 使い方 / 起動方法
+
+動作確認は、GitHub Pages 上で行うことができます。
+
+デバッグモードでの確認手順：
+1. ページ上の「ルームに入る」を選択
+2. 名前・ルームID の両方に "debug" と入力
+3. ページ下の「入る」を押下
+
+[GitHub Pagesで動作確認する](https://kanata-kikuchi.github.io/mahjong_lite)

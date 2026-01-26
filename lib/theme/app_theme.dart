@@ -7,8 +7,13 @@ class AppTheme {
   );
 
   static CupertinoThemeData fromMediaQuery(BuildContext context) {
-    final brightness = MediaQuery.of(context).platformBrightness;
-    final isDark = brightness == Brightness.dark;
+
+    // ダークモードは一旦保留.
+    // final brightness = MediaQuery.of(context).platformBrightness;
+    // final isDark = brightness == Brightness.dark;
+
+    final brightness = Brightness.light;
+    final isDark = false;
     
     return CupertinoThemeData(
       brightness: brightness,
