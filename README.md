@@ -44,7 +44,7 @@
 - 言語：JavaScript
 - 実行環境：Node.js
 - 通信：Socket.IO
-- リポジトリ：https://github.com/Kanata-Kikuchi/mahjong_lite_server
+- リポジトリ：https://github.com/kanata-kikuchi/mahjong_lite_server
 
 
 ---
